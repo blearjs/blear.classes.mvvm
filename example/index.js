@@ -7,6 +7,14 @@
 
 'use strict';
 
+var MVVM = require('../src/index');
 
+var model = window.model = {
+    html: '<b>Hello World!</b>'
+};
+new MVVM({
+    view: '#app',
+    model: model
+});
 
 

@@ -38,11 +38,18 @@
     "url": "https://github.com/blearjs/blear.classes.mvvm/issues"
   },
   "dependencies": {
-    "blear.classes.events": "^1.0.5"
+    "blear.classes.events": "^1.0.5",
+    "blear.classes.watcher": "^1.0.2",
+    "blear.core.attribute": "^1.0.8",
+    "blear.core.selector": "^1.0.8",
+    "blear.utils.access": "^1.0.3",
+    "blear.utils.array": "^1.0.8",
+    "blear.utils.function": "^1.0.4",
+    "blear.utils.object": "^1.0.5"
   },
   "peerDependencies": {},
   "devDependencies": {
-    "coolie.js": "^2.0.21",
+    "coolie.js": "^2.0.22",
     "jasmine-core": "^2.4.1",
     "karma": "^0.13.22",
     "karma-chrome-launcher": "^1.0.1",
