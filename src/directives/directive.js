@@ -10,34 +10,36 @@
 var fun = require('blear.utils.function');
 
 module.exports = function (directive) {
-    return {
-        aborted: directive.aborted || false,
-        installed: false,
-        bound: false,
-        updated: false,
-        unbound: false,
-        install: function (node) {
-            var the = this;
-            fun.noop(directive.install || directive.bind).apply(the, arguments);
-            the.installed = true;
-        },
+    return function () {
+        return {
+            aborted: directive.aborted || false,
+            installed: false,
+            bound: false,
+            updated: false,
+            unbound: false,
+            install: function (node) {
+                var the = this;
+                fun.noop(directive.install || directive.bind).apply(the, arguments);
+                the.installed = true;
+            },
 
-        bind: function (node, newVal) {
-            var the = this;
-            fun.noop(directive.bind || directive.update).apply(the, arguments);
-            the.bound = true;
-        },
+            bind: function (node, newVal) {
+                var the = this;
+                fun.noop(directive.bind || directive.update).apply(the, arguments);
+                the.bound = true;
+            },
 
-        update: function (node, newVal, oldVal, operation) {
-            var the = this;
-            fun.noop(directive.update).apply(the, arguments);
-            the.updated = true;
-        },
+            update: function (node, newVal, oldVal, operation) {
+                var the = this;
+                fun.noop(directive.update).apply(the, arguments);
+                the.updated = true;
+            },
 
-        unbind: function () {
-            var the = this;
-            fun.noop(directive.unbind).apply(the, arguments);
-            the.unbound = true;
-        }
+            unbind: function () {
+                var the = this;
+                fun.noop(directive.unbind).apply(the, arguments);
+                the.unbound = true;
+            }
+        };
     };
 };

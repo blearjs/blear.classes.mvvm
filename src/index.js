@@ -54,7 +54,7 @@ pro[_compile] = function () {
 
     fragment.appendChild(rootEl);
     the[_watcher] = compile(fragment, the, options.data);
-    modification.insert(rootEl, addressNode, 0);
+    modification.insert(rootEl, addressNode, 3);
 };
 
 // static

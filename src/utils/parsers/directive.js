@@ -26,7 +26,7 @@ exports.attr = function (node, attr, mvvm, scope, watcher) {
 
     var name = nodeName.slice(1);
     var value = attr.nodeValue;
-    var directive = mvvm._directive(name);
+    var directive = mvvm._directive(name)();
     var director = {
         mvvm: mvvm,
         node: node,
@@ -45,6 +45,7 @@ exports.attr = function (node, attr, mvvm, scope, watcher) {
 
     if (directive) {
         directive.director = director;
+        directive.mvvm = mvvm;
         directive.install(node);
         directive.bind(node, watcher.get(director.expression));
         watcher.watch(director.expression, function (newVal, oldVal, operation) {

@@ -14,7 +14,6 @@ var templateEl = document.getElementById('template');
 var appEl = document.getElementById('app');
 
 var data = window.data = {
-    html: '<b>Hello World!</b>',
     list: [
         '<b>你好</b>',
         '<i>呵呵</i>'

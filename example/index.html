@@ -65,25 +65,18 @@
 <body ontouchstart="">
 
 <div class="container">
-    <h1>blear.classes.MVVM</h1>
     <h3>data:</h3>
     <pre id="data"></pre>
     <h2>+</h2>
     <h3>template:</h3>
     <pre id="template"></pre>
     <h2>=</h2>
-<div id="app">  <div @html="html"></div>
-    <ul>
-        <li @for="item in list">
-            <p @html="$index"></p>
-            <p @html="item"></p>
-        </li>
-        <li @for="index,item in list">
-            <p @html="index"></p>
-            <p @html="item"></p>
-        </li>
-    </ul>
-</div>
+<ul id="app">
+    <li @for="index,item in list">
+        <span @html="index"></span>
+        <span @html="item"></span>
+    </li>
+</ul>
 </div>
 
 <script src="/node_modules/coolie.js/coolie.js"
