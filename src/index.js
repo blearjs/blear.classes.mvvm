@@ -9,40 +9,34 @@
 var Events = require('blear.classes.events');
 var Watcher = require('blear.classes.watcher');
 var selector = require('blear.core.selector');
+var modification = require('blear.core.modification');
 var object = require('blear.utils.object');
 var array = require('blear.utils.array');
 var access = require('blear.utils.access');
 
 var compile = require('./utils/compile');
+var address = require('./utils/address');
 
 var defaults = {
-    view: 'body',
-    model: {},
+    el: 'body',
+    data: {},
     methods: {}
 };
 var directives = {
-    html: require('./directives/html')
+    html: require('./directives/html'),
+    for: require('./directives/for')
 };
 var MVVM = Events.extend({
     className: 'MVVM',
     constructor: function (options) {
         var the = this;
 
-        options = the[_options] = object.assign({}, defaults, options);
-        the[_watcher] = new Watcher(options.model);
+        the[_options] = object.assign({}, defaults, options);
         the[_compile]();
     },
 
     _directive: function (name) {
         return directives[name];
-    },
-
-    _bind: function (path, binding) {
-        binding(this[_watcher].get(path));
-    },
-
-    _update: function (path, updater) {
-        this[_watcher].watch(path, updater);
     }
 });
 var _options = MVVM.sole();
@@ -54,10 +48,13 @@ var pro = MVVM.prototype;
 pro[_compile] = function () {
     var the = this;
     var options = the[_options];
+    var rootEl = the.view = selector.query(options.el)[0];
+    var fragment = modification.create('#fragment');
+    var addressNode = address(rootEl, 'mvvm');
 
-    var rootEl = the.rootEl = selector.query(options.view)[0];
-
-    compile(rootEl, the);
+    fragment.appendChild(rootEl);
+    the[_watcher] = compile(fragment, the, options.data);
+    modification.insert(rootEl, addressNode, 0);
 };
 
 // static
@@ -71,5 +68,6 @@ MVVM.directive = function (name, directive) {
 
     directives[name] = directive;
 };
+
 
 module.exports = MVVM;

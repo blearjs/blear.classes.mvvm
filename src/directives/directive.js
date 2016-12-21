@@ -11,20 +11,33 @@ var fun = require('blear.utils.function');
 
 module.exports = function (directive) {
     return {
-        install: function () {
-            return fun.noop(directive.install || directive.bind).apply(this, arguments);
+        aborted: directive.aborted || false,
+        installed: false,
+        bound: false,
+        updated: false,
+        destroyed: false,
+        install: function (node) {
+            var the = this;
+            fun.noop(directive.install || directive.bind).apply(the, arguments);
+            the.installed = true;
         },
 
-        bind: function () {
-            return fun.noop(directive.bind || directive.update).apply(this, arguments);
+        bind: function (node, newVal) {
+            var the = this;
+            fun.noop(directive.bind || directive.update).apply(the, arguments);
+            the.bound = true;
         },
 
-        update: function () {
-            return fun.noop(directive.update).apply(this, arguments);
+        update: function (node, newVal, oldVal, operation) {
+            var the = this;
+            fun.noop(directive.update).apply(the, arguments);
+            the.updated = true;
         },
 
         destroy: function () {
-            return fun.noop(directive.destroy).apply(this, arguments);
+            var the = this;
+            fun.noop(directive.destroy).apply(the, arguments);
+            the.destroyed = true;
         }
     };
 };

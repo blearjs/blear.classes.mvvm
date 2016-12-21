@@ -18,18 +18,73 @@
     <meta name="description" content="描述语句">
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
     <title>index.html</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        h1 {
+            line-height: 3;
+        }
+
+        h2 {
+            line-height: 2;
+            text-align: center;
+        }
+
+        h3 {
+            line-height: 1;
+        }
+
+        pre {
+            display: block;
+            width: 100%;
+            border: 1px solid #ccc;
+            background: #eee;
+            padding: 10px;
+            font: 16px/20px -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        }
+
+        #app {
+            border: 1px solid #ccc;
+            background: #eee;
+            padding: 10px;
+        }
+    </style>
 </head>
 <body ontouchstart="">
 
-<h1>blear.classes.MVVM example</h1>
-
+<div class="container">
+    <h1>blear.classes.MVVM</h1>
+    <h3>data:</h3>
+    <pre id="data"></pre>
+    <h2>+</h2>
+    <h3>template:</h3>
+    <pre id="template"></pre>
+    <h2>=</h2>
 <div id="app">
     <div @html="html"></div>
+    <ul>
+        <li @for="item in list">
+            <p @html="item"></p>
+        </li>
+    </ul>
+</div>
 </div>
 
 <script src="/node_modules/coolie.js/coolie.js"
-data-config="/example/coolie-config.js"
-data-main="index.js"></script>
+        data-config="/example/coolie-config.js"
+        data-main="index.js"></script>
 
 </body>
 </html>

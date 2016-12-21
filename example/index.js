@@ -9,12 +9,24 @@
 
 var MVVM = require('../src/index');
 
-var model = window.model = {
-    html: '<b>Hello World!</b>'
+var dataEl = document.getElementById('data');
+var templateEl = document.getElementById('template');
+var appEl = document.getElementById('app');
+
+var data = window.data = {
+    html: '<b>Hello World!</b>',
+    list: [
+        '<b>你好</b>',
+        '<i>呵呵</i>'
+    ]
 };
+
+dataEl.textContent = JSON.stringify(data, null, 4);
+templateEl.textContent = appEl.outerHTML;
+
 new MVVM({
-    view: '#app',
-    model: model
+    el: '#app',
+    data: data
 });
 
 
