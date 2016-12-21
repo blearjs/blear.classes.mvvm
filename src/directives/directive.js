@@ -15,7 +15,7 @@ module.exports = function (directive) {
         installed: false,
         bound: false,
         updated: false,
-        destroyed: false,
+        unbound: false,
         install: function (node) {
             var the = this;
             fun.noop(directive.install || directive.bind).apply(the, arguments);
@@ -34,10 +34,10 @@ module.exports = function (directive) {
             the.updated = true;
         },
 
-        destroy: function () {
+        unbind: function () {
             var the = this;
-            fun.noop(directive.destroy).apply(the, arguments);
-            the.destroyed = true;
+            fun.noop(directive.unbind).apply(the, arguments);
+            the.unbound = true;
         }
     };
 };

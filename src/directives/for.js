@@ -41,17 +41,21 @@ module.exports = directive({
         var tplNode = the.tplNode;
         var data = director.get(expression);
 
-        array.each(data, function (index, data) {
-            // 以 parentScope 创建一个实例，这个实例属性是空的，但原型指向 parentScope
-            // 此时的 childScope 可以访问 parentScope 的属性
-            var childScope = Object.create(parentScope);
-            var childNode = tplNode.cloneNode(true);
+        if (the.bound) {
+            debugger;
+        } else {
+            array.each(data, function (index, data) {
+                // 以 parentScope 创建一个实例，这个实例属性是空的，但原型指向 parentScope
+                // 此时的 childScope 可以访问 parentScope 的属性
+                var childScope = Object.create(parentScope);
+                var childNode = tplNode.cloneNode(true);
 
-            childScope[aliasName] = data;
-            childScope[indexName] = index;
-            modification.insert(childNode, address, 0);
-            compile(childNode, director.mvvm, childScope);
-        });
+                childScope[aliasName] = data;
+                childScope[indexName] = index;
+                modification.insert(childNode, address, 0);
+                compile(childNode, director.mvvm, childScope);
+            });
+        }
     }
 });
 
