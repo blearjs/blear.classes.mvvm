@@ -19,10 +19,12 @@ module.exports = directive({
     install: function (node) {
         var the = this;
         var director = the.director;
-        var arr = director.value.match(/^(.*)\s+in\s+(.*)$/);
+        var arr1 = director.value.split(' in ');
+        var arr2 = arr1[0].split(',');
 
-        the.alias = arr[1];
-        director.expression = the.expression = arr[2];
+        the.aliasName = arr2.pop().trim();
+        the.indexName = (arr2[0] || '$index').trim();
+        director.expression = the.expression = arr1[1].trim();
         the.scope = director.scope;
         the.address = address(node, '@for');
         the.tplNode = node;
@@ -31,21 +33,22 @@ module.exports = directive({
     update: function (node, newVal, oldVal, operation) {
         var the = this;
         var director = the.director;
-        var alias = the.alias;
+        var indexName = the.indexName;
+        var aliasName = the.aliasName;
         var expression = the.expression;
         var parentScope = the.scope;
         var address = the.address;
         var tplNode = the.tplNode;
         var data = director.get(expression);
 
-        debugger;
         array.each(data, function (index, data) {
             // 以 parentScope 创建一个实例，这个实例属性是空的，但原型指向 parentScope
             // 此时的 childScope 可以访问 parentScope 的属性
             var childScope = Object.create(parentScope);
             var childNode = tplNode.cloneNode(true);
 
-            childScope[alias] = data;
+            childScope[aliasName] = data;
+            childScope[indexName] = index;
             modification.insert(childNode, address, 0);
             compile(childNode, director.mvvm, childScope);
         });

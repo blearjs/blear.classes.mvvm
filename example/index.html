@@ -72,10 +72,14 @@
     <h3>template:</h3>
     <pre id="template"></pre>
     <h2>=</h2>
-<div id="app">
-    <div @html="html"></div>
+<div id="app">  <div @html="html"></div>
     <ul>
         <li @for="item in list">
+            <p @html="$index"></p>
+            <p @html="item"></p>
+        </li>
+        <li @for="index,item in list">
+            <p @html="index"></p>
             <p @html="item"></p>
         </li>
     </ul>
