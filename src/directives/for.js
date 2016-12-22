@@ -21,6 +21,7 @@ var buildChildMVVM = function (directive, index, data, operation) {
     var childNode = directive.tplNode.cloneNode(true);
     var childScopeList = directive.childScopeList;
     var childNodeList = directive.childNodeList;
+    var watcherList = directive.watcherList;
     var startAddress = directive.startAddress;
     var endAddress = directive.endAddress;
     var insertTarget;
@@ -32,31 +33,28 @@ var buildChildMVVM = function (directive, index, data, operation) {
         default:
             insertTarget = endAddress;
             insertPosition = 0;
-            childScopeList.push(childScope);
-            childNodeList.push(childNode);
             break;
 
         case 'unshift':
             insertTarget = startAddress;
             insertPosition = 3;
-            childScopeList.unshift(childScope);
-            childNodeList.unshift(childNode);
             break;
     }
 
     childScope[directive.indexName] = index;
     childScope[directive.aliasName] = data;
-    // object.define(childScope, directive.aliasName, {
-    //     enumerable: true,
-    //     get: function () {
-    //         return index;
-    //     },
-    //     set: function (newIndex) {
-    //         index = newIndex;
-    //     }
-    // });
     modification.insert(childNode, insertTarget, insertPosition);
-    compile(childNode, directive.mvvm, childScope);
+    var watcher = compile(childNode, directive.mvvm, childScope);
+
+    switch (operator) {
+        case 'push':
+        case 'unshift':
+        default:
+            childScopeList[operator](childScope);
+            childNodeList[operator](childNode);
+            watcherList[operator](watcher);
+            break;
+    }
 };
 
 module.exports = directive({
@@ -73,6 +71,7 @@ module.exports = directive({
         the.scope = director.scope;
         the.childScopeList = [];
         the.childNodeList = [];
+        the.watcherList = [];
         the.startAddress = address(node, '@for-start');
         the.endAddress = address(node, '@for-end');
         the.tplNode = node;
@@ -82,12 +81,11 @@ module.exports = directive({
         var the = this;
         var director = the.director;
         var expression = the.expression;
-        var startAddress = the.startAddress;
-        var endAddress = the.endAddress;
         var indexName = the.indexName;
         var childScopeList = the.childScopeList;
+        var childNodeList = the.childNodeList;
+        var watcherList = the.watcherList;
         var data = director.get(expression);
-        var buildRet;
 
         if (the.bound) {
             var operateIndex = operation.operateIndex;
@@ -101,6 +99,12 @@ module.exports = directive({
                     }
                     break;
 
+                case 'pop':
+                    modification.remove(childNodeList.pop());
+                    childScopeList.pop();
+                    watcherList.pop().destroy();
+                    break;
+
                 case 'unshift':
                     operateIndex = newVal.length;
                     array.each(childScopeList, function (index, scope) {
@@ -112,7 +116,6 @@ module.exports = directive({
                     }
                     break;
             }
-
         } else {
             array.each(data, function (index, data) {
                 buildChildMVVM(the, index, data, {});
