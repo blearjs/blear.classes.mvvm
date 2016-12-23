@@ -10,7 +10,7 @@
 var array = require('blear.utils.array');
 var Watcher = require('blear.classes.watcher');
 
-var directiveParser = require('./parsers/directive');
+var directiveParser = require('../parsers/directive');
 
 var compileAttrs = function (node, mvvm, scope, watcher) {
     var attrs = array.from(node.attributes);

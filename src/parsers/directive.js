@@ -9,6 +9,8 @@
 
 var object = require('blear.utils.object');
 
+var expression = require('../utils/expression');
+
 /**
  * 解析属性节点为指令信息
  * @param {Node} node
@@ -40,6 +42,8 @@ exports.attr = function (node, attr, mvvm, scope, watcher) {
             return object.value(scope, path);
         }
     };
+
+    console.log(expression.parse(value));
 
     node.removeAttribute(nodeName);
 

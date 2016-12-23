@@ -107,12 +107,17 @@
 
     <div class="content">
         <ul id="app">
-            <li>开始占位</li>
+            <li>1层开始占位</li>
             <li @for="index,item in list">
-                <span @html="index"></span>
-                <span @html="item"></span>
+                <ul>
+                    <li>2层开始占位</li>
+                    <li @for="el in item">
+                        <span @html="index"></span>.<span @html="$index"></span>=<span @html="el"></span>
+                    </li>
+                    <li>2层结束占位</li>
+                </ul>
             </li>
-            <li>结束占位</li>
+            <li>1层结束占位</li>
         </ul>
     </div>
 </div>
@@ -120,7 +125,7 @@
 
 <script src="/node_modules/coolie.js/coolie.js"
         data-config="/example/coolie-config.js"
-        data-main="index.js"></script>
+        data-main="array-2.js"></script>
 
 </body>
 </html>
