@@ -47,7 +47,8 @@
     "blear.utils.access": "^1.0.3",
     "blear.utils.array": "^1.0.8",
     "blear.utils.function": "^1.0.4",
-    "blear.utils.object": "^1.0.5"
+    "blear.utils.object": "^1.0.5",
+    "blear.utils.random": "^1.0.2"
   },
   "peerDependencies": {},
   "devDependencies": {
