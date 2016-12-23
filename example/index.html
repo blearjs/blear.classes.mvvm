@@ -43,6 +43,7 @@
         .content {
             width: 30%;
             background: #eee;
+            padding: 10px;
         }
 
         .sep {
@@ -67,12 +68,27 @@
             display: block;
             padding: 10px;
             font: 16px/20px -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            line-height: 1.6;
+        }
+
+        li {
+            line-height: 1.6;
+            margin-left: 2em;
         }
     </style>
 </head>
 <body ontouchstart="">
 
 <div class="container">
+    <div class="content">
+        <h3>template:</h3>
+        <pre id="template"></pre>
+    </div>
+
+    <div class="sep">
+        <h2>+</h2>
+    </div>
+
     <div class="content">
         <h3>data:</h3>
         <button id="pushArray">push array</button>
@@ -84,14 +100,6 @@
         <pre id="data"></pre>
     </div>
 
-    <div class="sep">
-        <h2>+</h2>
-    </div>
-
-    <div class="content">
-        <h3>template:</h3>
-        <pre id="template"></pre>
-    </div>
 
     <div class="sep">
         <h2>=</h2>
@@ -99,10 +107,12 @@
 
     <div class="content">
         <ul id="app">
+            <li>开始占位</li>
             <li @for="index,item in list">
                 <span @html="index"></span>
                 <span @html="item"></span>
             </li>
+            <li>结束占位</li>
         </ul>
     </div>
 </div>

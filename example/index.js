@@ -17,8 +17,8 @@ var appEl = document.getElementById('app');
 
 var data = window.data = {
     list: [
-        'a',
-        'b'
+        random.string(),
+        random.string()
     ]
 };
 
@@ -26,7 +26,7 @@ var setData = function () {
     dataEl.textContent = JSON.stringify(data, null, 4);
 };
 
-templateEl.textContent = appEl.outerHTML;
+templateEl.textContent = appEl.outerHTML.replace(/^\s{4,8}/mg, '');
 
 new MVVM({
     el: '#app',
@@ -38,7 +38,7 @@ var buildArray = function () {
     var arr = [];
 
     while (length--) {
-        arr.push(random.string(1));
+        arr.push(random.string());
     }
 
     return arr;
@@ -77,7 +77,8 @@ document.getElementById('spliceArray').onclick = function () {
     var insertArray = buildArray();
 
     console.log('splice', startIndex, spliceLength, insertArray);
-    data.list.splice(startIndex, spliceLength, insertArray);
+    var args = [].concat([startIndex, spliceLength], insertArray);
+    data.list.splice.apply(data.list, args);
     setData();
 };
 

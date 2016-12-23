@@ -31,9 +31,11 @@ var buildChildMVVM = function (directive, index, data, operation) {
     var childNode = directive.tplNode.cloneNode(true);
     var childScopeList = directive.childScopeList;
     var childNodeList = directive.childNodeList;
-    var watcherList = directive.watcherList;
+    var childWatcherList = directive.childWatcherList;
     var startAddress = directive.startAddress;
     var endAddress = directive.endAddress;
+    var indexName = directive.indexName;
+    var aliasName = directive.aliasName;
     var insertTarget;
     var insertPosition;
     var operator = operation.operator;
@@ -48,10 +50,15 @@ var buildChildMVVM = function (directive, index, data, operation) {
             insertTarget = startAddress;
             insertPosition = 3;
             break;
+
+        case ARRAY_SPLICE:
+            insertTarget = childNodeList[index - 1] || startAddress;
+            insertPosition = 3;
+            break;
     }
 
-    childScope[directive.indexName] = index;
-    childScope[directive.aliasName] = data;
+    childScope[indexName] = index;
+    childScope[aliasName] = data;
     modification.insert(childNode, insertTarget, insertPosition);
     var watcher = compile(childNode, directive.mvvm, childScope);
 
@@ -60,7 +67,13 @@ var buildChildMVVM = function (directive, index, data, operation) {
         case ARRAY_UNSHIFT:
             childScopeList[operator](childScope);
             childNodeList[operator](childNode);
-            watcherList[operator](watcher);
+            childWatcherList[operator](watcher);
+            break;
+
+        case ARRAY_SPLICE:
+            childScopeList[ARRAY_SPLICE](index, 0, childScope);
+            childNodeList[ARRAY_SPLICE](index, 0, childNode);
+            childWatcherList[ARRAY_SPLICE](index, 0, watcher);
             break;
     }
 };
@@ -72,19 +85,10 @@ var sortChildScopeListOrder = function (directive) {
 };
 
 var moveList = function (list, from, to, howMany) {
-    var moveList = list.splice(from,  howMany);
+    var moveList = list.splice(from, howMany);
     moveList.unshift(0);
     moveList.unshift(to);
     list.splice.apply(list, moveList);
-};
-
-var moveList = function (list, diff, callback) {
-    var nodes = childNodeList.slice(diff.from, diff.from + diff.howMany);
-    var targetNode = childNodeList[diff.to];
-
-    array.each(nodes, function (index, node) {
-        modification.insert(node, targetNode, 0);
-    }, true);
 };
 
 module.exports = directive({
@@ -101,7 +105,7 @@ module.exports = directive({
         the.scope = director.scope;
         the.childScopeList = [];
         the.childNodeList = [];
-        the.watcherList = [];
+        the.childWatcherList = [];
         the.startAddress = address(node, '@for-start');
         the.endAddress = address(node, '@for-end');
         the.tplNode = node;
@@ -111,51 +115,19 @@ module.exports = directive({
         var the = this;
         var director = the.director;
         var expression = the.expression;
-        var indexName = the.indexName;
         var childScopeList = the.childScopeList;
         var childNodeList = the.childNodeList;
-        var watcherList = the.watcherList;
+        var childWatcherList = the.childWatcherList;
         var data = director.get(expression);
 
         if (the.bound) {
-            var operateIndex = operation.operateIndex;
-            var operateValue;
+            var spliceIndex = operation.spliceIndex;
+            var spliceCount = operation.spliceCount;
+            var insertValue = operation.insertValue;
 
             switch (operation.operator) {
-                case ARRAY_PUSH:
-                    while (operateValue = newVal.shift()) {
-                        operateIndex++;
-                        buildChildMVVM(the, operateIndex, operateValue, operation);
-                    }
-                    break;
-
-                case ARRAY_POP:
-                    modification.remove(childNodeList.pop());
-                    childScopeList.pop();
-                    watcherList.pop().destroy();
-                    break;
-
-                case ARRAY_UNSHIFT:
-                    operateIndex = newVal.length;
-                    while (operateValue = newVal.pop()) {
-                        operateIndex--;
-                        buildChildMVVM(the, operateIndex, operateValue, operation);
-                    }
-                    sortChildScopeListOrder(the);
-                    break;
-
-                case ARRAY_SHIFT:
-                    modification.remove(childNodeList.shift());
-                    childScopeList.shift();
-                    watcherList.shift().destroy();
-                    sortChildScopeListOrder(the);
-                    break;
-
                 case ARRAY_SORT:
                     var diffs = arrayDiff(oldVal, newVal);
-                    console.log(oldVal);
-                    console.log(newVal);
-                    console.log(diffs);
                     array.each(diffs, function (index, diff) {
                         switch (diff.type) {
                             case 'move':
@@ -206,14 +178,28 @@ module.exports = directive({
                                 // 移动 node、scope、watcher
                                 moveList(childNodeList, from1, to1, howMany);
                                 moveList(childScopeList, from1, to1, howMany);
-                                moveList(watcherList, from1, to1, howMany);
+                                moveList(childWatcherList, from1, to1, howMany);
                                 break;
                         }
                     });
                     sortChildScopeListOrder(the);
                     break;
 
-                case ARRAY_SPLICE:
+                default:
+                    var removeNodeList = childNodeList.splice(spliceIndex, spliceCount);
+                    childScopeList.splice(spliceIndex, spliceCount);
+                    childWatcherList.splice(spliceIndex, spliceCount);
+
+                    while (removeNodeList.length) {
+                        modification.remove(removeNodeList.pop());
+                    }
+
+                    array.each(insertValue, function (index, data) {
+                        buildChildMVVM(the, spliceIndex + index, data, {
+                            operator: ARRAY_SPLICE
+                        });
+                    });
+
                     sortChildScopeListOrder(the);
                     break;
             }
