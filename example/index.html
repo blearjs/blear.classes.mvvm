@@ -22,15 +22,32 @@
         * {
             margin: 0;
             padding: 0;
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
+            -webkit-content-sizing: border-content;
+            -moz-content-sizing: border-content;
+            content-sizing: border-content;
+        }
+
+        button {
+            font-size: 16px;
+            padding: 4px 8px;
+            margin: 5px;
         }
 
         .container {
-            width: 400px;
-            margin-left: auto;
-            margin-right: auto;
+            padding: 10px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .content {
+            width: 30%;
+            background: #eee;
+        }
+
+        .sep {
+            width: 5%;
+            background: #fff;
         }
 
         h1 {
@@ -48,36 +65,48 @@
 
         pre {
             display: block;
-            width: 100%;
-            border: 1px solid #ccc;
-            background: #eee;
             padding: 10px;
             font: 16px/20px -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-        }
-
-        #app {
-            border: 1px solid #ccc;
-            background: #eee;
-            padding: 10px;
         }
     </style>
 </head>
 <body ontouchstart="">
 
 <div class="container">
-    <h3>data:</h3>
-    <pre id="data"></pre>
-    <h2>+</h2>
-    <h3>template:</h3>
-    <pre id="template"></pre>
-    <h2>=</h2>
-<ul id="app">
-    <li @for="index,item in list">
-        <span @html="index"></span>
-        <span @html="item"></span>
-    </li>
-</ul>
+    <div class="content">
+        <h3>data:</h3>
+        <button id="pushArray">push array</button>
+        <button id="popArray">pop array</button>
+        <button id="unshiftArray">unshift array</button>
+        <button id="shiftArray">shift array</button>
+        <button id="sortArray">sort array random</button>
+        <button id="spliceArray">splice array random</button>
+        <pre id="data"></pre>
+    </div>
+
+    <div class="sep">
+        <h2>+</h2>
+    </div>
+
+    <div class="content">
+        <h3>template:</h3>
+        <pre id="template"></pre>
+    </div>
+
+    <div class="sep">
+        <h2>=</h2>
+    </div>
+
+    <div class="content">
+        <ul id="app">
+            <li @for="index,item in list">
+                <span @html="index"></span>
+                <span @html="item"></span>
+            </li>
+        </ul>
+    </div>
 </div>
+
 
 <script src="/node_modules/coolie.js/coolie.js"
         data-config="/example/coolie-config.js"

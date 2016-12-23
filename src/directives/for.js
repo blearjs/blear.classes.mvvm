@@ -14,7 +14,7 @@ var random = require('blear.utils.random');
 var directive = require('./directive');
 var compile = require('../utils/compile');
 var address = require('../utils/address');
-var arrayDiff = require('../utils/array-diff');
+var arrayDiff = window.arrayDiff = require('../utils/array-diff');
 
 var ARRAY_POP = 'pop';
 var ARRAY_PUSH = 'push';
@@ -69,6 +69,13 @@ var sortChildScopeListOrder = function (directive) {
     array.each(directive.childScopeList, function (index, scope) {
         scope[directive.indexName] = index;
     });
+};
+
+var moveList = function (list, from, to, howMany) {
+    var moveList = list.splice(from,  howMany);
+    moveList.unshift(0);
+    moveList.unshift(to);
+    list.splice.apply(list, moveList);
 };
 
 var moveList = function (list, diff, callback) {
@@ -145,39 +152,68 @@ module.exports = directive({
                     break;
 
                 case ARRAY_SORT:
+                    var diffs = arrayDiff(oldVal, newVal);
                     console.log(oldVal);
                     console.log(newVal);
-                    var diffs = arrayDiff(oldVal, newVal);
                     console.log(diffs);
-
-                    var fromOffset = 0;
-                    var toOffset = 0;
                     array.each(diffs, function (index, diff) {
                         switch (diff.type) {
-                            // case 'insert':
-                            //     array.each(diff.values, function (index, value) {
-                            //         var spliceIndex = diff.start + index;
-                            //         buildChildMVVM(the, spliceIndex, value, {
-                            //             operator: 'splice',
-                            //             operateIndex: spliceIndex
-                            //         });
-                            //     });
-                            //     break;
-
                             case 'move':
-                                debugger;
-                                var nodes = childNodeList.slice(diff.from, diff.from + diff.howMany);
-                                var targetNode = childNodeList[diff.to];
+                                var from0 = diff.from;
+                                var from1 = diff.from;
+                                var to0 = diff.to;
+                                var to1 = diff.to;
+                                var howMany = diff.howMany;
 
+                                // 计算相对移动
+                                array.each(diffs, function (preIndex, preDiff) {
+                                    if (preIndex === index) {
+                                        return false;
+                                    }
+
+                                    var preFrom = preDiff.from;
+                                    var preTo = preDiff.to;
+                                    var preHowMany = preDiff.howMany;
+
+                                    // oooAooooAooo
+                                    // ooooooBooooo
+                                    // 如果 A 移动是跨越 B 的，那么就需要计算偏移量了
+                                    // 1. B 的右边到 B 的左边
+                                    if (preFrom > from0 && preTo < from0) {
+                                        from1 += preHowMany;
+
+                                        if (preTo < to0) {
+                                            to1 += preHowMany;
+                                        }
+                                    }
+                                    // 2. B 的左边到 B 的右边
+                                    if (preFrom < from0 && preTo > from0) {
+                                        from1 -= preHowMany;
+
+                                        if (preTo > to0) {
+                                            to1 -= preHowMany;
+                                        }
+                                    }
+                                });
+
+                                // 移动节点
+                                var nodes = childNodeList.slice(from1, from1 + howMany);
+                                var targetNode = childNodeList[to1];
                                 array.each(nodes, function (index, node) {
                                     modification.insert(node, targetNode, 0);
                                 }, true);
-                                break;
 
-                            // case 'remove':
-                            //     break;
+                                // 移动 node、scope、watcher
+                                moveList(childNodeList, from1, to1, howMany);
+                                moveList(childScopeList, from1, to1, howMany);
+                                moveList(watcherList, from1, to1, howMany);
+                                break;
                         }
                     });
+                    sortChildScopeListOrder(the);
+                    break;
+
+                case ARRAY_SPLICE:
                     sortChildScopeListOrder(the);
                     break;
             }
