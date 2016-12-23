@@ -10,6 +10,7 @@
 var object = require('blear.utils.object');
 
 var expression = require('../utils/expression');
+var monitor = require('../utils/monitor');
 
 /**
  * 解析属性节点为指令信息
@@ -17,9 +18,8 @@ var expression = require('../utils/expression');
  * @param {Node} attr
  * @param {MVVM} mvvm
  * @param {Object} scope
- * @param {Watcher} watcher
  */
-exports.attr = function (node, attr, mvvm, scope, watcher) {
+exports.attr = function (node, attr, mvvm, scope) {
     var nodeName = attr.nodeName;
 
     if (nodeName[0] !== '@') {
@@ -29,32 +29,36 @@ exports.attr = function (node, attr, mvvm, scope, watcher) {
     var name = nodeName.slice(1);
     var value = attr.nodeValue;
     var directive = mvvm._directive(name)();
+    var getter = expression.parse(value);
     var director = {
         mvvm: mvvm,
         node: node,
         attr: attr,
-        name: name,
-        value: value,
+        // name: name,
+        // value: value,
         expression: value,
-        scope: scope,
-        watcher: watcher,
-        get: function (path) {
-            return object.value(scope, path);
-        }
+        scope: scope
     };
-
-    console.log(expression.parse(value));
+    var oldVal;
 
     node.removeAttribute(nodeName);
 
     if (directive) {
         directive.director = director;
-        directive.mvvm = mvvm;
+        // directive.mvvm = mvvm;
         directive.install(node);
-        directive.bind(node, watcher.get(director.expression));
-        watcher.watch(director.expression, function (newVal, oldVal, operation) {
+        monitor.directive = directive;
+        directive.bind(node, getter(scope));
+        directive.dispatch = function (_newVal, _oldVal, operation) {
+            var newVal = getter(scope);
+
+            if(oldVal === newVal) {
+                return;
+            }
+
             directive.update(node, newVal, oldVal, operation);
-        });
+            oldVal = newVal;
+        };
     }
 
     return directive.aborted;

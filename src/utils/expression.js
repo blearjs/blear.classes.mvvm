@@ -248,27 +248,22 @@ var isSimplePath = exports.isSimplePath = function isSimplePath(exp) {
 
 
 /**
- * Parse an expression into re-written getter/setters.
+ * Parse an expression into re-written getter
  * 解析表达式为可写的 getter 和 setter
  *
  * @param {String} exp 表达式
  * @return {Function}
  */
-var parseExpression = exports.parse = function parseExpression(exp) {
+exports.parse = function parseExpression(exp) {
     exp = exp.trim();
 
-    var res = {
-        exp: exp
-    };
     var isSimple = isSimplePath(exp) && exp.indexOf('[') < 0;
 
-    res.get = isSimple ?
+    return isSimple ?
         // optimized super simple getter
         makeGetterFn(SCOPE + '.' + exp) :
         // dynamic getter
         compileGetter(exp);
-
-    return res;
 };
 
 

@@ -8,10 +8,13 @@
 'use strict';
 
 var fun = require('blear.utils.function');
+var random = require('blear.utils.random');
+
 
 module.exports = function (directive) {
     return function () {
         return {
+            id: random.guid(),
             aborted: directive.aborted || false,
             installed: false,
             bound: false,

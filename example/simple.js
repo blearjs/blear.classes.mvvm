@@ -11,7 +11,8 @@
 var MVVM = require('../src/index');
 
 var data = window.data = {
-    html: '<b>你好</b>'
+    html: '<b>你好</b>',
+    list: ['<b>再见</b>', '<b>滚</b>']
 };
 
 new MVVM({

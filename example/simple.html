@@ -39,7 +39,10 @@
 </head>
 <body ontouchstart="">
 
-<div id="app" @html="'2' + html"></div>
+<div id="app" >
+    <p @html="'1' + html"></p>
+    <p @html="'2' + list[0]"></p>
+</div>
 
 <script src="/node_modules/coolie.js/coolie.js"
         data-config="/example/coolie-config.js"
