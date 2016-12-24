@@ -46,9 +46,8 @@ var directives = [];
  */
 exports.add = function (directive) {
     var scope = directive.scope;
-    var desc = directive.desc;
-
     var watcher = directive.watcher = new Watcher(scope);
+
     watcher.link(function () {
         if (!exports.target) {
             return;
@@ -62,44 +61,6 @@ exports.add = function (directive) {
     });
 
     directives.push(directive);
-
-    // watcher.watch(function (_newVal, _oldVal, operation) {
-    //     var newVal = directive.get();
-    //     directive.update(desc.node, newVal, oldVal, operation);
-    // });
-
-    // directive.dispatch = function (_newVal, _oldVal, operation) {
-    //     var the = this;
-    //     var newVal = directive.get();
-    //     var node = the.desc.node;
-    //
-    //     if (oldVal === newVal) {
-    //         return;
-    //     }
-    //
-    //     directive.update(node, newVal, oldVal, operation);
-    //     oldVal = newVal;
-    // };
-
-    // if (directiveGuidMap[guid]) {
-    //     return;
-    // }
-    //
-    // return new Watcher(scope, {
-    //     inject: function () {
-    //         if (!exports.target) {
-    //             return;
-    //         }
-    //
-    //         var bindingDirective = exports.target;
-    //         // 不能省略
-    //         exports.target = null;
-    //
-    //         return function (newVal, oldVal, operation) {
-    //             bindingDirective.dispatch(newVal, oldVal, operation);
-    //         };
-    //     }
-    // });
 };
 
 

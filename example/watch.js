@@ -37,3 +37,9 @@ document.getElementById('set2').onclick = function () {
 document.getElementById('set3').onclick = function () {
     data.list.push(random.string());
 };
+
+document.getElementById('set6').onclick = function () {
+    data.list.sort(function () {
+        return Math.random() > 0.5;
+    });
+};
