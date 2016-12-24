@@ -58,10 +58,8 @@ exports.add = function (directive) {
         // 不能省略
         exports.target = null;
 
-        return function (newVal, oldVal, operation) {
-            bindingDirective;
-            debugger;
-        };
+        debugger;
+        return bindingDirective.dispath;
     });
 
     directives.push(directive);
@@ -115,10 +113,25 @@ exports.start = function () {
         var scope = directive.scope;
         var getter = directive.getter;
         var node = desc.node;
-        // 传递 directive
-        var oldVal = getter(scope, monitor, directive);
+        var oldVal;
 
+        // 传递 directive
+        exports.target = directive;
+
+        directive.dispath = function () {
+            var newVal = directive.get();
+
+            debugger;
+
+            if (newVal === oldVal) {
+                return;
+            }
+
+            directive.update(node, newVal, oldVal);
+            oldVal = newVal;
+        };
         directive.init(node);
+        oldVal = getter(scope, monitor, directive);
         directive.bind(node, oldVal);
     });
 };

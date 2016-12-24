@@ -13,7 +13,8 @@ var MVVM = require('../src/index');
 
 var data = window.data = {
     html: '1',
-    list: ['2']
+    text: '2',
+    list: ['3']
 };
 
 new MVVM({
@@ -23,6 +24,10 @@ new MVVM({
 
 document.getElementById('set1').onclick = function () {
     data.html = random.string();
+};
+
+document.getElementById('set4').onclick = function () {
+    data.text = random.string();
 };
 
 document.getElementById('set2').onclick = function () {

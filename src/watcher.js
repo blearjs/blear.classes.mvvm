@@ -69,7 +69,7 @@ module.exports = Watcher;
 
 var WATCHER_LIST = Watcher.sole();
 var BROADCAST = Watcher.sole();
-var LINKAGE_LIST = Watcher.sole();
+var LINKAGE_MAP = Watcher.sole();
 var odf = object.define;
 
 function watch(obj, watcher) {
@@ -86,8 +86,8 @@ function watch(obj, watcher) {
         });
 
         // 添加 关联 列表
-        odf(obj, LINKAGE_LIST, {
-            value: []
+        odf(obj, LINKAGE_MAP, {
+            value: {}
         });
 
         // 添加广播方法
@@ -119,13 +119,15 @@ function watchArr(arr) {
 
 
 /**
- * 关联一对一的 get、set，给实例去操作，一个 watcher 只能有一个 linkage
+ * 精确关联一对一的 get、set，给实例去操作
  * @param obj
+ * @param key
  */
-function linkWatcher(obj) {
+function linkWatcher(obj, key) {
     var watcherList = obj[WATCHER_LIST];
-    var linkageList = obj[LINKAGE_LIST];
+    var linkageList = obj[LINKAGE_MAP][key] || [];
 
+    obj[LINKAGE_MAP][key] = linkageList;
     array.each(watcherList, function (index, watcher) {
         var link = watcher[_link];
 
@@ -142,17 +144,19 @@ function linkWatcher(obj) {
 
 
 /**
- * 响应
- * @param obj
- * @param newVal
- * @param oldVal
+ * 关联响应
+ * @param args
  */
-function linkageReact(obj, newVal, oldVal) {
-    var linkaegList = obj[LINKAGE_LIST];
+function linkageReact(args) {
+    var obj = args[0];
+    var key = args[1];
+    var newVal = args[2];
+    var oldVal = args[3];
+    var operation = args[4];
+    var linkaegList = obj[LINKAGE_MAP][key] || [];
 
     array.each(linkaegList, function (index, linkage) {
-        // 不保证精确
-        linkage(newVal, oldVal);
+        linkage(newVal, oldVal, operation);
     });
 }
 
@@ -168,7 +172,7 @@ function watchObjWithKeyVal(obj, key, val) {
     odf(obj, key, {
         enumerable: true,
         get: function () {
-            linkWatcher(obj);
+            linkWatcher(obj, key);
             return oldVal;
         },
         set: function (newVal) {
@@ -176,8 +180,9 @@ function watchObjWithKeyVal(obj, key, val) {
                 return;
             }
 
-            linkageReact(obj, newVal, oldVal);
+            var args = [obj, key, newVal, oldVal];
             oldVal = newVal;
+            linkageReact(args);
         }
     });
 }
