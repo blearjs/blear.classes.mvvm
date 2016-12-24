@@ -9,11 +9,11 @@
 
 var fun = require('blear.utils.function');
 var random = require('blear.utils.random');
+var array = require('blear.utils.array');
 
 
 module.exports = function (directive) {
     return function () {
-        var oldVal;
         return {
             id: random.guid(),
             watchers: [],
@@ -45,20 +45,13 @@ module.exports = function (directive) {
             unbind: function () {
                 var the = this;
                 fun.noop(directive.unbind).apply(the, arguments);
+                // array.each(the.watchers, function (index, watcher) {
+                //     watcher.destroy();
+                // });
+                the.watchers = null;
+                the.children = null;
+                the.parent = null;
                 the.unbound = true;
-            },
-
-            dispatch: function (_newVal, _oldVal, operation) {
-                var the = this;
-                var newVal = the.get();
-                var node = the.desc.node;
-
-                if (oldVal === newVal) {
-                    return;
-                }
-
-                this.update(node, newVal, oldVal, operation);
-                oldVal = newVal;
             }
         };
     };

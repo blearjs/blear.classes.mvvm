@@ -49,16 +49,16 @@ exports.attr = function (node, attr, mvvm, scope) {
         directive.get = function () {
             return getter(scope);
         };
-        monitor.push(directive);
+        monitor.directives.push(directive);
         return directive.aborted;
-    } else {
-        if (typeof DEBUG !== 'undefined' && DEBUG) {
-            console.error(
-                '当前正在编译的指令无法解析\n' +
-                'name: ' + name + '\n' +
-                'value: ' + value
-            );
-        }
+    }
+
+    if (typeof DEBUG !== 'undefined' && DEBUG) {
+        console.error(
+            '当前正在编译的指令无法解析\n' +
+            'name: ' + name + '\n' +
+            'value: ' + value
+        );
     }
 };
 

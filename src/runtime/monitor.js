@@ -7,17 +7,17 @@
 
 'use strict';
 
-var Watcher = require('blear.classes.watcher');
+var Watcher = require('../watcher');
 var object = require('blear.utils.object');
 var array = require('blear.utils.array');
 
+window.monitor = exports;
 
 // 设置当前正在绑定的指令关系
 // 因为 JS 是单线程的，一个时刻只可能只有一个指令指向
-var bindingDirective = null;
+exports.target = null;
 
-var directives = [];
-var directiveGuidMap = {};
+// var directiveGuidMap = {};
 // var oldDirective = null;
 //
 // object.define(exports, 'directive', {
@@ -38,34 +38,33 @@ var directiveGuidMap = {};
 // });
 
 
+var directives = [];
+exports.directives = directives;
+
 /**
- * 添加监视，将编译好的指令放置在监视列表里
- * @param directive
+ * 添加数据监视
+ * @param scope
  */
-exports.push = function (directive) {
-    var guid = directive.guid;
-
-    if (directiveGuidMap[guid]) {
-        return;
-    }
-
-    new Watcher(directive.scope, {
+exports.add = function (scope) {
+    // if (directiveGuidMap[guid]) {
+    //     return;
+    // }
+    //
+    return new Watcher(scope, {
         inject: function () {
-            bindingDirective = directive;
-
-            if (!directive) {
+            if (!exports.target) {
                 return;
             }
 
-            directive.watchers.push(this);
+            var bindingDirective = exports.target;
+            // 不能省略
+            exports.target = null;
+
             return function (newVal, oldVal, operation) {
-                directive.dispatch(newVal, oldVal, operation);
+                bindingDirective.dispatch(newVal, oldVal, operation);
             };
         }
     });
-
-    directives.push(directive);
-    directiveGuidMap[guid] = directive;
 };
 
 
@@ -75,10 +74,27 @@ exports.push = function (directive) {
 exports.start = function () {
     array.each(directives, function (index, directive) {
         var desc = directive.desc;
+        var scope = directive.scope;
+        var getter = directive.getter;
         var node = desc.node;
+        // 传递 directive
+        var oldVal = getter(scope, monitor, directive);
 
         directive.init(node);
-        exports.directive = directive;
-        directive.bind(node, directive.get());
+        directive.bind(node, oldVal);
+        directive.dispatch = function (_newVal, _oldVal, operation) {
+            var the = this;
+            var newVal = directive.get();
+            var node = the.desc.node;
+
+            if (oldVal === newVal) {
+                return;
+            }
+
+            directive.update(node, newVal, oldVal, operation);
+            oldVal = newVal;
+        };
     });
 };
+
+

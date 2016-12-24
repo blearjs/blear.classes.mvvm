@@ -271,16 +271,48 @@ module.exports = function (expression) {
     var keyName = varible();
     var scopeName = varible();
     var evalStrName = varible();
+    var monitorName = varible();
+    var directiveName = varible();
+    var errorName = varible();
 
-    var body = '' +
+    var body =
+        // 定义执行变量
         'var ' + evalStrName + ' = "";' +
         'for (var ' + keyName + ' in ' + scopeName + ') {' +
-        /**/  evalStrName + ' += " var " + ' + keyName + " + \' = " + scopeName + "[\"\' + " + keyName + " + \'\"];\'" +
+        /****/evalStrName + ' += " var " + ' + keyName + " + \' = " + scopeName + "[\"\' + " + keyName + " + \'\"];\'" +
         '}' +
         // 执行注入变量
         'eval(' + evalStrName + ');' +
-        'return ' + expression;
+        // 设置监听指向，因为上面 eval 执行的时候也会指向 define get，但真正指向在下面的表达式里
+        'if (' + monitorName + ' && ' + directiveName + ') {' +
+        /****/monitorName + '.target = ' + directiveName + ';' +
+        '}' +
+        // 表达式的健壮性
+        'try {' +
+        /****/'return ' + expression + ';' +
+        '} catch(' + errorName + ') {' +
+        /****/'if (typeof DEBUG !== "undefined" && DEBUG) {' +
+        /****//****/'return ' + errorName + '.message;' +
+        /****/'}' +
+        /****/'return "";' +
+        '}';
 
-    return new Function(scopeName, body);
+    try {
+        return new Function(scopeName, monitorName, directiveName, body);
+    } catch (err) {
+        if (typeof DEBUG !== 'undefined' && DEBUG) {
+            console.error('表达式书写有误：');
+            console.error(expression);
+            console.error(err.stack);
+
+            return function () {
+                return err.message;
+            };
+        }
+
+        return function () {
+            return '';
+        };
+    }
 };
 

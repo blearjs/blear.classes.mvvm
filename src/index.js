@@ -7,7 +7,6 @@
 'use strict';
 
 var Events = require('blear.classes.events');
-var Watcher = require('blear.classes.watcher');
 var selector = require('blear.core.selector');
 var modification = require('blear.core.modification');
 var object = require('blear.utils.object');

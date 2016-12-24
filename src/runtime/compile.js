@@ -8,7 +8,6 @@
 'use strict';
 
 var array = require('blear.utils.array');
-var Watcher = require('blear.classes.watcher');
 
 var parse = require('./parse');
 var monitor = require('./monitor');
@@ -56,5 +55,6 @@ var compileNode = function (node, mvvm, scope) {
 
 module.exports = function (rootEl, mvvm, scope) {
     compileNode(rootEl, mvvm, scope);
+    return monitor.add(scope);
 };
 

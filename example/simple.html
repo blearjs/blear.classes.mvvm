@@ -27,23 +27,38 @@
             content-sizing: border-content;
         }
 
+        button {
+            padding: 5px 10px;
+            font-size: 20px;
+        }
+
         #app {
             display: block;
-            width: 200px;
+            width: 400px;
             font-size: 30px;
             padding: 30px;
             border: 1px solid #ccf;
             margin: 30px auto;
+            line-height: 2;
+        }
+
+        hr {
+            margin: 10px 0;
         }
     </style>
 </head>
 <body ontouchstart="">
 
 <div id="app" >
-    <p @html="'1' + html"></p>
-    <p>{{html}}</p>
-    <p @html="'2' + list[0]"></p>
+    <!--<p @html="'data.html: ' + html"></p>-->
+    <p @html="'data.list.size: ' + list.size"></p>
+    <p @html="'data.list[0]: ' + list[0]"></p>
+    <hr>
+    <button id="set1">set data.html</button>
+    <button id="set2">set data.list[0]</button>
+    <button id="set3">push data.list</button>
 </div>
+
 
 <script src="/node_modules/coolie.js/coolie.js"
         data-config="/example/coolie-config.js"
