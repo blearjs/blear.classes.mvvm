@@ -45,7 +45,10 @@ exports.attr = function (node, attr, mvvm, scope) {
         directive.scope = scope;
         directive.mvvm = mvvm;
         directive.desc = desc;
-        directive.getter = expressionParse(value);
+        var getter = directive.getter = expressionParse(value);
+        directive.get = function () {
+            return getter(scope);
+        };
         monitor.push(directive);
         return directive.aborted;
     } else {
@@ -62,5 +65,4 @@ exports.attr = function (node, attr, mvvm, scope) {
 
 exports.text = function (node, mvvm, scope) {
     textParse(node.textContent);
-    debugger;
 };

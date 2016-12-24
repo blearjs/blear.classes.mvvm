@@ -175,6 +175,4 @@ var lexer = new Lexer();
 
 module.exports = function (text) {
     var tokens = lexer.lex(text);
-
-    debugger;
 };

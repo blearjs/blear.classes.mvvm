@@ -24,9 +24,9 @@ module.exports = function (directive) {
             bound: false,
             updated: false,
             unbound: false,
-            install: function (node) {
+            init: function (node) {
                 var the = this;
-                fun.noop(directive.install || directive.bind).apply(the, arguments);
+                fun.noop(directive.init || directive.bind).apply(the, arguments);
                 the.installed = true;
             },
 
@@ -49,8 +49,9 @@ module.exports = function (directive) {
             },
 
             dispatch: function (_newVal, _oldVal, operation) {
-                var newVal = this.getter();
-                var node = this.desc.node;
+                var the = this;
+                var newVal = the.get();
+                var node = the.desc.node;
 
                 if (oldVal === newVal) {
                     return;

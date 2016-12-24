@@ -7,6 +7,7 @@
 
 'use strict';
 
+var Watcher = require('blear.classes.watcher');
 var object = require('blear.utils.object');
 var array = require('blear.utils.array');
 
@@ -75,10 +76,9 @@ exports.start = function () {
     array.each(directives, function (index, directive) {
         var desc = directive.desc;
         var node = desc.node;
-        var getter = directive.getter;
 
-        directive.install(node);
+        directive.init(node);
         exports.directive = directive;
-        directive.bind(node, getter(directive.scope));
+        directive.bind(node, directive.get());
     });
 };

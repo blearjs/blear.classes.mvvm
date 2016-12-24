@@ -90,7 +90,7 @@ var moveList = function (list, from, to, howMany) {
 
 module.exports = pack({
     aborted: true,
-    install: function (node) {
+    init: function (node) {
         var the = this;
         var director = the.director;
         var arr1 = director.value.split(' in ');
