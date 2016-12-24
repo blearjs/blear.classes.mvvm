@@ -12,6 +12,7 @@ var object = require('blear.utils.object');
 var expressionParse = require('../parsers/expression');
 var textParse = require('../parsers/text');
 var directives = require('../directives/index');
+var monitor = require('./monitor');
 
 var reVarible = /\{\{([^{}]+?)}}/g;
 
@@ -42,12 +43,20 @@ exports.attr = function (node, attr, mvvm, scope) {
 
     if (directive) {
         directive.scope = scope;
+        directive.mvvm = mvvm;
         directive.desc = desc;
         directive.getter = expressionParse(value);
-        mvvm._directive(directive);
+        monitor.push(directive);
+        return directive.aborted;
+    } else {
+        if (typeof DEBUG !== 'undefined' && DEBUG) {
+            console.error(
+                '当前正在编译的指令无法解析\n' +
+                'name: ' + name + '\n' +
+                'value: ' + value
+            );
+        }
     }
-
-    return directive.aborted;
 };
 
 

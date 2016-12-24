@@ -12,7 +12,7 @@ var array = require('blear.utils.array');
 var random = require('blear.utils.random');
 
 var pack = require('./pack');
-var compile = require('../utils/compile');
+var compile = require('../runtime/compile');
 var address = require('../utils/address');
 var arrayDiff = window.arrayDiff = require('../utils/array-diff');
 
@@ -31,7 +31,6 @@ var buildChildMVVM = function (directive, index, data, operation) {
     var childNode = directive.tplNode.cloneNode(true);
     var childScopeList = directive.childScopeList;
     var childNodeList = directive.childNodeList;
-    var childWatcherList = directive.childWatcherList;
     var startAddress = directive.startAddress;
     var endAddress = directive.endAddress;
     var indexName = directive.indexName;
@@ -60,20 +59,18 @@ var buildChildMVVM = function (directive, index, data, operation) {
     childScope[indexName] = index;
     childScope[aliasName] = data;
     modification.insert(childNode, insertTarget, insertPosition);
-    var watcher = compile(childNode, directive.mvvm, childScope);
+    compile(childNode, directive.mvvm, childScope);
 
     switch (operator) {
         case ARRAY_PUSH:
         case ARRAY_UNSHIFT:
             childScopeList[operator](childScope);
             childNodeList[operator](childNode);
-            childWatcherList[operator](watcher);
             break;
 
         case ARRAY_SPLICE:
             childScopeList[ARRAY_SPLICE](index, 0, childScope);
             childNodeList[ARRAY_SPLICE](index, 0, childNode);
-            childWatcherList[ARRAY_SPLICE](index, 0, watcher);
             break;
     }
 };
@@ -105,7 +102,6 @@ module.exports = pack({
         the.scope = director.scope;
         the.childScopeList = [];
         the.childNodeList = [];
-        the.childWatcherList = [];
         the.startAddress = address(node, '@for-start');
         the.endAddress = address(node, '@for-end');
         the.tplNode = node;
@@ -117,7 +113,6 @@ module.exports = pack({
         var expression = the.expression;
         var childScopeList = the.childScopeList;
         var childNodeList = the.childNodeList;
-        var childWatcherList = the.childWatcherList;
         var data = director.get(expression);
 
         if (the.bound) {
@@ -178,7 +173,6 @@ module.exports = pack({
                                 // 移动 node、scope、watcher
                                 moveList(childNodeList, from1, to1, howMany);
                                 moveList(childScopeList, from1, to1, howMany);
-                                moveList(childWatcherList, from1, to1, howMany);
                                 break;
                         }
                     });
@@ -188,7 +182,6 @@ module.exports = pack({
                 default:
                     var removeNodeList = childNodeList.splice(spliceIndex, spliceCount);
                     childScopeList.splice(spliceIndex, spliceCount);
-                    childWatcherList.splice(spliceIndex, spliceCount);
 
                     while (removeNodeList.length) {
                         modification.remove(removeNodeList.pop());

@@ -16,6 +16,9 @@ module.exports = function (directive) {
         var oldVal;
         return {
             id: random.guid(),
+            watchers: [],
+            children: [],
+            parent: null,
             aborted: directive.aborted || false,
             installed: false,
             bound: false,
