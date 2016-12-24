@@ -10,7 +10,6 @@
 var array = require('blear.utils.array');
 
 var parse = require('./parse');
-var monitor = require('./monitor');
 
 var compileAttrs = function (node, mvvm, scope) {
     var attrs = array.from(node.attributes);
@@ -55,6 +54,5 @@ var compileNode = function (node, mvvm, scope) {
 
 module.exports = function (rootEl, mvvm, scope) {
     compileNode(rootEl, mvvm, scope);
-    return monitor.add(scope);
 };
 

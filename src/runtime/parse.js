@@ -49,7 +49,7 @@ exports.attr = function (node, attr, mvvm, scope) {
         directive.get = function () {
             return getter(scope);
         };
-        monitor.directives.push(directive);
+        monitor.add(directive);
         return directive.aborted;
     }
 

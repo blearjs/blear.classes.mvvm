@@ -39,32 +39,70 @@ exports.target = null;
 
 
 var directives = [];
-exports.directives = directives;
 
 /**
  * 添加数据监视
- * @param scope
+ * @param directive
  */
-exports.add = function (scope) {
+exports.add = function (directive) {
+    var scope = directive.scope;
+    var desc = directive.desc;
+
+    var watcher = directive.watcher = new Watcher(scope);
+    watcher.link(function () {
+        if (!exports.target) {
+            return;
+        }
+
+        var bindingDirective = exports.target;
+        // 不能省略
+        exports.target = null;
+
+        return function (newVal, oldVal, operation) {
+            bindingDirective;
+            debugger;
+        };
+    });
+
+    directives.push(directive);
+
+    // watcher.watch(function (_newVal, _oldVal, operation) {
+    //     var newVal = directive.get();
+    //     directive.update(desc.node, newVal, oldVal, operation);
+    // });
+
+    // directive.dispatch = function (_newVal, _oldVal, operation) {
+    //     var the = this;
+    //     var newVal = directive.get();
+    //     var node = the.desc.node;
+    //
+    //     if (oldVal === newVal) {
+    //         return;
+    //     }
+    //
+    //     directive.update(node, newVal, oldVal, operation);
+    //     oldVal = newVal;
+    // };
+
     // if (directiveGuidMap[guid]) {
     //     return;
     // }
     //
-    return new Watcher(scope, {
-        inject: function () {
-            if (!exports.target) {
-                return;
-            }
-
-            var bindingDirective = exports.target;
-            // 不能省略
-            exports.target = null;
-
-            return function (newVal, oldVal, operation) {
-                bindingDirective.dispatch(newVal, oldVal, operation);
-            };
-        }
-    });
+    // return new Watcher(scope, {
+    //     inject: function () {
+    //         if (!exports.target) {
+    //             return;
+    //         }
+    //
+    //         var bindingDirective = exports.target;
+    //         // 不能省略
+    //         exports.target = null;
+    //
+    //         return function (newVal, oldVal, operation) {
+    //             bindingDirective.dispatch(newVal, oldVal, operation);
+    //         };
+    //     }
+    // });
 };
 
 
@@ -82,18 +120,6 @@ exports.start = function () {
 
         directive.init(node);
         directive.bind(node, oldVal);
-        directive.dispatch = function (_newVal, _oldVal, operation) {
-            var the = this;
-            var newVal = directive.get();
-            var node = the.desc.node;
-
-            if (oldVal === newVal) {
-                return;
-            }
-
-            directive.update(node, newVal, oldVal, operation);
-            oldVal = newVal;
-        };
     });
 };
 
