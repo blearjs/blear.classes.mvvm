@@ -14,6 +14,7 @@ var array = require('blear.utils.array');
 var typeis = require('blear.utils.typeis');
 var access = require('blear.utils.access');
 var fun = require('blear.utils.function');
+var random = require('blear.utils.random');
 
 var ARRAY_POP = 'pop';
 var ARRAY_PUSH = 'push';
@@ -38,6 +39,7 @@ var Watcher = Events.extend({
         the[_link] = null;
         the[_linkage] = null;
         the[_watchStart](data);
+        the[_guid] = random.guid();
     },
     watch: function (callback) {
 
@@ -54,6 +56,7 @@ var Watcher = Events.extend({
     }
 });
 var _options = Watcher.sole();
+var _guid = Watcher.sole();
 var _linking = Watcher.sole();
 var _linked = Watcher.sole();
 var _linkage = Watcher.sole();
@@ -67,9 +70,21 @@ var _broadcast = Watcher.sole();
 var _linkWatcher = Watcher.sole();
 var _linkageReact = Watcher.sole();
 var WATCHER_LIST = Watcher.sole();
+var WATCHER_MAP = Watcher.sole();
 var LINKAGE_MAP = Watcher.sole();
 var odf = object.define;
 var pro = Watcher.prototype;
+
+
+/**
+ * 判断数据是否被监听
+ * @param data
+ * @returns {boolean}
+ */
+var hasWatch = function (data) {
+    var list = data[WATCHER_LIST] || [];
+    return list && list.length > 0;
+};
 
 /**
  * 监听开始
@@ -82,8 +97,8 @@ pro[_watchStart] = function (data) {
         the[_watchRegist](data);
         the[_watchArr](data);
     } else if (typeis.Object(data)) {
-        the[_watchRegist](data);
         the[_watchObj](data);
+        the[_watchRegist](data);
     }
 };
 
@@ -94,8 +109,16 @@ pro[_watchStart] = function (data) {
 pro[_watchRegist] = function (data) {
     var the = this;
     var list = data[WATCHER_LIST];
+    var map = data[WATCHER_MAP];
 
     if (list) {
+        var guid = the[_guid];
+
+        if (map[guid]) {
+            return;
+        }
+
+        map[guid] = the;
         list.push(the);
     } else {
         list = [the];
@@ -117,8 +140,10 @@ pro[_watchRegist] = function (data) {
  * @param obj
  */
 pro[_watchObj] = function (obj) {
+    var the = this;
+
     object.each(obj, function (key, val) {
-        watchObjWithKeyVal(obj, key, val);
+        the[_watchObjWithKeyVal](obj, key, val);
     });
 };
 
@@ -126,7 +151,7 @@ pro[_watchObj] = function (obj) {
  * watch 数组
  * @param arr
  */
-pro[_watchArr] = function watchArr(arr) {
+pro[_watchArr] = function (arr) {
     array.each(OVERRIDE_ARRAY_METHODS, function (index, method) {
 
     });
@@ -142,7 +167,7 @@ pro[_watchArr] = function watchArr(arr) {
  * @param key
  * @param val
  */
-pro[_linkWatcher] = function linkWatcher(obj, key, val) {
+pro[_linkWatcher] = function (obj, key, val) {
     // 如果是数组，则挂载在数组上
     var target = typeis.Array(val) ? val : obj;
     var watcherList = target[WATCHER_LIST];
@@ -168,7 +193,7 @@ pro[_linkWatcher] = function linkWatcher(obj, key, val) {
  * @param key
  * @param args
  */
-pro[_linkageReact] = function linkageReact(any, key, args) {
+pro[_linkageReact] = function (any, key, args) {
     var linkaegList = any[LINKAGE_MAP][key] || [];
 
     array.each(linkaegList, function (index, linkage) {
@@ -182,7 +207,7 @@ pro[_linkageReact] = function linkageReact(any, key, args) {
  * @param key
  * @param args
  */
-pro[_broadcast] = function broadcast(any, key, args) {
+pro[_broadcast] = function (any, key, args) {
     var list = any[WATCHER_LIST] || [];
 
     array.each(list, function (index, watcher) {
@@ -198,28 +223,30 @@ pro[_broadcast] = function broadcast(any, key, args) {
  * @param key
  * @param val
  */
-pro[_watchObjWithKeyVal] = function watchObjWithKeyVal(obj, key, val) {
+pro[_watchObjWithKeyVal] = function (obj, key, val) {
     var the = this;
     var oldVal = val;
 
-    odf(obj, key, {
-        enumerable: true,
-        get: function () {
-            linkWatcher(obj, key, val);
-            return oldVal;
-        },
-        set: function (newVal) {
-            if (newVal === oldVal) {
-                return;
-            }
+    if (!hasWatch[obj]) {
+        odf(obj, key, {
+            enumerable: true,
+            get: function () {
+                linkWatcher(obj, key, val);
+                return oldVal;
+            },
+            set: function (newVal) {
+                if (newVal === oldVal) {
+                    return;
+                }
 
-            var args1 = [newVal, oldVal, {}];
-            var args2 = [newVal, oldVal, {}];
-            oldVal = newVal;
-            linkageReact(obj, key, args1);
-            broadcast(obj, key, args2);
-        }
-    });
+                var args1 = [newVal, oldVal, {}];
+                var args2 = [newVal, oldVal, {}];
+                oldVal = newVal;
+                linkageReact(obj, key, args1);
+                broadcast(obj, key, args2);
+            }
+        });
+    }
 
     the[_watchStart](val);
 };
