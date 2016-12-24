@@ -59,17 +59,44 @@ var _linked = Watcher.sole();
 var _linkage = Watcher.sole();
 var _link = Watcher.sole();
 var _watchStart = Watcher.sole();
+var _watchRegist = Watcher.sole();
+var _watchObj = Watcher.sole();
+var _watchArr = Watcher.sole();
+var _watchObjWithKeyVal = Watcher.sole();
+var _broadcast = Watcher.sole();
+var _linkWatcher = Watcher.sole();
+var _linkageReact = Watcher.sole();
+var WATCHER_LIST = Watcher.sole();
+var LINKAGE_MAP = Watcher.sole();
+var odf = object.define;
 var pro = Watcher.prototype;
 
-
+/**
+ * 监听开始
+ * @param data
+ */
 pro[_watchStart] = function (data) {
     var the = this;
 
+    if (typeis.Array(data)) {
+        the[_watchRegist](data);
+        the[_watchArr](data);
+    } else if (typeis.Object(data)) {
+        the[_watchRegist](data);
+        the[_watchObj](data);
+    }
+};
+
+
+/**
+ * 监听注册
+ */
+pro[_watchRegist] = function (data) {
+    var the = this;
     var list = data[WATCHER_LIST];
 
     if (list) {
         list.push(the);
-        return;
     } else {
         list = [the];
         // 添加 watcher 列表
@@ -82,39 +109,24 @@ pro[_watchStart] = function (data) {
             value: {}
         });
     }
-
-    if (typeis.Array(data)) {
-        watchArr(data);
-    } else if (typeis.Object(data)) {
-        watchObj(data);
-    }
 };
-
-
-Watcher.defaults = defaults;
-module.exports = Watcher;
-
-
-var WATCHER_LIST = Watcher.sole();
-var LINKAGE_MAP = Watcher.sole();
-var odf = object.define;
 
 
 /**
  * watch 对象
  * @param obj
  */
-function watchObj(obj) {
+pro[_watchObj] = function (obj) {
     object.each(obj, function (key, val) {
         watchObjWithKeyVal(obj, key, val);
     });
-}
+};
 
 /**
  * watch 数组
  * @param arr
  */
-function watchArr(arr) {
+pro[_watchArr] = function watchArr(arr) {
     array.each(OVERRIDE_ARRAY_METHODS, function (index, method) {
 
     });
@@ -122,7 +134,7 @@ function watchArr(arr) {
     array.each(arr, function (index, val) {
 
     });
-}
+};
 
 /**
  * 精确关联一对一的 get、set，给实例去操作
@@ -130,7 +142,7 @@ function watchArr(arr) {
  * @param key
  * @param val
  */
-function linkWatcher(obj, key, val) {
+pro[_linkWatcher] = function linkWatcher(obj, key, val) {
     // 如果是数组，则挂载在数组上
     var target = typeis.Array(val) ? val : obj;
     var watcherList = target[WATCHER_LIST];
@@ -148,8 +160,7 @@ function linkWatcher(obj, key, val) {
             }
         }
     });
-}
-
+};
 
 /**
  * 关联响应
@@ -157,14 +168,13 @@ function linkWatcher(obj, key, val) {
  * @param key
  * @param args
  */
-function linkageReact(any, key, args) {
+pro[_linkageReact] = function linkageReact(any, key, args) {
     var linkaegList = any[LINKAGE_MAP][key] || [];
 
     array.each(linkaegList, function (index, linkage) {
         linkage.apply(any, args);
     });
-}
-
+};
 
 /**
  * 对应变化广播
@@ -172,7 +182,7 @@ function linkageReact(any, key, args) {
  * @param key
  * @param args
  */
-function broadcast(any, key, args) {
+pro[_broadcast] = function broadcast(any, key, args) {
     var list = any[WATCHER_LIST] || [];
 
     array.each(list, function (index, watcher) {
@@ -180,7 +190,7 @@ function broadcast(any, key, args) {
         args.unshift(key);
         watcher.emit.apply(watcher, args);
     });
-}
+};
 
 /**
  * 按键值对监听对象
@@ -188,7 +198,8 @@ function broadcast(any, key, args) {
  * @param key
  * @param val
  */
-function watchObjWithKeyVal(obj, key, val) {
+pro[_watchObjWithKeyVal] = function watchObjWithKeyVal(obj, key, val) {
+    var the = this;
     var oldVal = val;
 
     odf(obj, key, {
@@ -210,9 +221,9 @@ function watchObjWithKeyVal(obj, key, val) {
         }
     });
 
-    if (typeis.Array(val)) {
-        watchArr(val);
-    } else if (typeis.Object(val)) {
+    the[_watchStart](val);
+};
 
-    }
-}
+
+Watcher.defaults = defaults;
+module.exports = Watcher;
