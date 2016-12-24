@@ -1,5 +1,5 @@
 /**
- * 监视器
+ * 监视
  * @author ydr.me
  * @created 2016-12-23 16:27
  */
@@ -9,4 +9,3 @@
 
 exports.directive = null;
 
-// exports.

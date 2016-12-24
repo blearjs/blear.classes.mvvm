@@ -1,5 +1,5 @@
 /**
- * 文件描述
+ * 编译
  * @author ydr.me
  * @create 2016-11-12 17:25
  */
@@ -10,52 +10,52 @@
 var array = require('blear.utils.array');
 var Watcher = require('blear.classes.watcher');
 
-var directiveParser = require('../parsers/directive');
-var monitor = require('../utils/monitor');
+var parse = require('./parse');
+var monitor = require('./monitor');
 
-var compileAttrs = function (node, mvvm, scope, watcher) {
+var compileAttrs = function (node, mvvm, scope) {
     var attrs = array.from(node.attributes);
     var aborted = false;
 
     array.each(attrs, function (index, attr) {
-        aborted = directiveParser.attr(node, attr, mvvm, scope, watcher);
+        aborted = parse.attr(node, attr, mvvm, scope);
     });
 
     return aborted;
 };
 
-var compileElement = function (node, mvvm, scope, watcher) {
+var compileElement = function (node, mvvm, scope) {
     // 属性指令中止遍历
-    if (compileAttrs(node, mvvm, scope, watcher)) {
+    if (compileAttrs(node, mvvm, scope)) {
         return;
     }
 
     var childNodes = array.from(node.childNodes);
 
     array.each(childNodes, function (index, childNode) {
-        compileNode(childNode, mvvm, scope, watcher);
+        compileNode(childNode, mvvm, scope);
     });
 };
 
-var compileText = function (node, mvvm, scope, watcher) {
-
+var compileText = function (node, mvvm, scope) {
+    parse.text(node, mvvm, scope);
 };
 
-var compileNode = function (node, mvvm, scope, watcher) {
+var compileNode = function (node, mvvm, scope) {
     switch (node.nodeType) {
         case 1:
         case 11:
-            compileElement(node, mvvm, scope, watcher);
+            compileElement(node, mvvm, scope);
             break;
 
         case 3:
-            compileText(node, mvvm, scope, watcher);
+            compileText(node, mvvm, scope);
             break;
     }
 };
 
 module.exports = function (rootEl, mvvm, scope) {
-    var watcher = new Watcher(scope, {
+    new Watcher(scope, {
         inject: function () {
             // 获取到当前正在获取的值的指令
             // 因为 JS 是单线程的，一个时刻只可能只有一个指令访问
@@ -71,7 +71,6 @@ module.exports = function (rootEl, mvvm, scope) {
             };
         }
     });
-    compileNode(rootEl, mvvm, scope, watcher);
-    return watcher;
+    compileNode(rootEl, mvvm, scope);
 };
 

@@ -44,11 +44,13 @@
     "blear.core.attribute": "^1.0.8",
     "blear.core.modification": "^1.0.5",
     "blear.core.selector": "^1.0.8",
+    "blear.shims.lexer": "^1.0.2",
     "blear.utils.access": "^1.0.3",
     "blear.utils.array": "^1.0.8",
     "blear.utils.function": "^1.0.4",
     "blear.utils.object": "^1.0.5",
     "blear.utils.random": "^1.0.2",
+    "blear.utils.string": "^1.0.7",
     "blear.utils.typeis": "^1.0.3"
   },
   "peerDependencies": {},

@@ -11,7 +11,7 @@ var modification = require('blear.core.modification');
 var array = require('blear.utils.array');
 var random = require('blear.utils.random');
 
-var directive = require('./directive');
+var pack = require('./pack');
 var compile = require('../utils/compile');
 var address = require('../utils/address');
 var arrayDiff = window.arrayDiff = require('../utils/array-diff');
@@ -91,7 +91,7 @@ var moveList = function (list, from, to, howMany) {
     list.splice.apply(list, moveList);
 };
 
-module.exports = directive({
+module.exports = pack({
     aborted: true,
     install: function (node) {
         var the = this;

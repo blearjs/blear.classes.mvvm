@@ -13,6 +13,7 @@ var random = require('blear.utils.random');
 
 module.exports = function (directive) {
     return function () {
+        var oldVal;
         return {
             id: random.guid(),
             aborted: directive.aborted || false,
@@ -42,6 +43,18 @@ module.exports = function (directive) {
                 var the = this;
                 fun.noop(directive.unbind).apply(the, arguments);
                 the.unbound = true;
+            },
+
+            dispatch: function (_newVal, _oldVal, operation) {
+                var newVal = this.getter();
+                var node = this.desc.node;
+
+                if (oldVal === newVal) {
+                    return;
+                }
+
+                this.update(node, newVal, oldVal, operation);
+                oldVal = newVal;
             }
         };
     };

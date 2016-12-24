@@ -9,9 +9,9 @@
 
 var attribute = require('blear.core.attribute');
 
-var directive = require('./directive');
+var pack = require('./pack');
 
-module.exports = directive({
+module.exports = pack({
     update: function (node, newVal, oldVal) {
         attribute.html(node, newVal);
     }
