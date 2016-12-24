@@ -58,7 +58,6 @@ exports.add = function (directive) {
         // 不能省略
         exports.target = null;
 
-        debugger;
         return bindingDirective.dispath;
     });
 
@@ -120,8 +119,6 @@ exports.start = function () {
 
         directive.dispath = function () {
             var newVal = directive.get();
-
-            debugger;
 
             if (newVal === oldVal) {
                 return;
