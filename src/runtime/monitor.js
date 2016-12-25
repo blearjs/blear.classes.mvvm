@@ -78,9 +78,6 @@ exports.start = function () {
         var node = desc.node;
         var oldVal;
 
-        // 传递 directive
-        exports.target = directive;
-
         directive.dispath = function () {
             var newVal = directive.get();
 
@@ -92,6 +89,7 @@ exports.start = function () {
             oldVal = newVal;
         };
         directive.init(node);
+        // 第一次取值时传递 directive
         oldVal = getter(scope, monitor, directive);
         directive.bind(node, oldVal);
     });

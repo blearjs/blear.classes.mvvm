@@ -315,6 +315,7 @@ pro[_linkWatcher] = function (obj, key, val) {
             var linkage = link();
 
             if (typeis.Function(linkage)) {
+                watcher[_linked] = true;
                 linkageList.push(linkage);
             }
         }
