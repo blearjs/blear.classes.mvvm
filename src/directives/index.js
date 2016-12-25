@@ -11,5 +11,6 @@
 exports.html = require('./html');
 exports.text = require('./text');
 exports.for = require('./for');
+exports.on = require('./on');
 
 

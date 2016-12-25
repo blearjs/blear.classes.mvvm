@@ -34,7 +34,7 @@ var MVVM = Events.extend({
     }
 });
 var _options = MVVM.sole();
-var _watcher = MVVM.sole();
+var _rootVM = MVVM.sole();
 var _compile = MVVM.sole();
 var pro = MVVM.prototype;
 
@@ -45,9 +45,10 @@ pro[_compile] = function () {
     var rootEl = the.view = selector.query(options.el)[0];
     var fragment = modification.create('#fragment');
     var anchorNode = anchor(rootEl, 'mvvm');
+    var scope = object.assign(options.data, options.methods);
 
     fragment.appendChild(rootEl);
-    the[_watcher] = compile(fragment, the, options.data);
+    compile(rootEl, scope, null);
     monitor.start();
     modification.insert(rootEl, anchorNode, 3);
 };

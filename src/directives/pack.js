@@ -15,7 +15,7 @@ var array = require('blear.utils.array');
 module.exports = function (directive) {
     return function () {
         return {
-            id: random.guid(),
+            guid: random.guid(),
             watchers: [],
             children: [],
             parent: null,

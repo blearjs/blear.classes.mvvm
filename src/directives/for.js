@@ -59,7 +59,7 @@ var buildChildMVVM = function (directive, index, data, operation) {
     childScope[indexName] = index;
     childScope[aliasName] = data;
     modification.insert(childNode, insertTarget, insertPosition);
-    compile(childNode, directive.mvvm, childScope);
+    compile(childNode, childScope, directive.vm);
 
     switch (operator) {
         case ARRAY_PUSH:

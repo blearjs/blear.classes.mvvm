@@ -8,51 +8,70 @@
 'use strict';
 
 var array = require('blear.utils.array');
+var random = require('blear.utils.random');
+var Class = require('blear.classes.class');
 
 var parse = require('./parse');
 
-var compileAttrs = function (node, mvvm, scope) {
+var compileAttrs = function (node, scope, vm) {
     var attrs = array.from(node.attributes);
     var aborted = false;
 
     array.each(attrs, function (index, attr) {
-        aborted = parse.attr(node, attr, mvvm, scope);
+        aborted = parse.attr(node, attr, scope, vm);
     });
 
     return aborted;
 };
 
-var compileElement = function (node, mvvm, scope) {
+var compileElement = function (node, scope, vm) {
     // 属性指令中止遍历
-    if (compileAttrs(node, mvvm, scope) === true) {
+    if (compileAttrs(node, scope, vm) === true) {
         return;
     }
 
     var childNodes = array.from(node.childNodes);
 
     array.each(childNodes, function (index, childNode) {
-        compileNode(childNode, mvvm, scope);
+        compileNode(childNode, scope, vm);
     });
 };
 
-var compileText = function (node, mvvm, scope) {
-    parse.text(node, mvvm, scope);
+var compileText = function (node, scope, vm) {
+    parse.text(node, scope, vm);
 };
 
-var compileNode = function (node, mvvm, scope) {
+var compileNode = function (node, scope, vm) {
     switch (node.nodeType) {
         case 1:
-        case 11:
-            compileElement(node, mvvm, scope);
+            compileElement(node, scope, vm);
             break;
 
         case 3:
-            compileText(node, mvvm, scope);
+            compileText(node, scope, vm);
             break;
     }
 };
 
-module.exports = function (rootEl, mvvm, scope) {
-    compileNode(rootEl, mvvm, scope);
+var ViewModel = Class.extend({
+    className: 'ViewModel',
+    constructor: function (el, scope, parent) {
+        var the = this;
+
+        the.guid = random.guid();
+        the.el = el;
+        the.scope = scope;
+        the.parent = parent;
+        the.children = [];
+        the.directives = [];
+    },
+    add: function (directive) {
+        this.directives.push(directive);
+    }
+});
+
+module.exports = function (rootEl, scope, parentVM) {
+    var vm = new ViewModel(rootEl, scope, parentVM);
+    compileNode(rootEl, scope, vm);
 };
 

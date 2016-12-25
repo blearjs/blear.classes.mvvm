@@ -362,6 +362,9 @@ pro[_watchObjWithKeyVal] = function (obj, key, val) {
     var the = this;
     var oldVal = val;
 
+    if (typeis.Function(val)) {
+        return;
+    }
 
     if (!hasWatched[obj]) {
         odf(obj, WATCHED_FLAG, {

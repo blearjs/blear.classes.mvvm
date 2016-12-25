@@ -3,7 +3,7 @@
 - 对象精细监听 √
 - 表达式解析 √
 - @html √
-- @text
+- @text √
 - @once（一次性绑定，不监听）
 - @event
 - @model（checkbox、radio、select、text）
