@@ -16,8 +16,6 @@ var eventParser = require('../parsers/event');
 var directives = require('../directives/index');
 var monitor = require('./monitor');
 
-var reVarible = /\{\{([^{}]+?)}}/g;
-
 /**
  * 解析属性节点为指令信息
  * @param {Node} node
@@ -57,31 +55,29 @@ exports.attr = function (node, attr, scope, vm) {
 
     var maybeOnDirective = !directiveFn;
     var directive = maybeOnDirective ? directives.on() : directiveFn();
-
-    directive.scope = scope;
-    directive.vm = vm;
-    directive.desc = desc;
+    var getter;
 
     if (maybeOnDirective) {
-        directive.name = 'on';
-        directive.type = directiveName;
-        var call = eventParser(exp);
-        directive.exec = function (el, ev) {
-            return call.call(scope, el, ev, scope);
+        directive.type = 'on';
+        getter = eventParser(exp);
+        directive.get = function (el, ev) {
+            return getter.call(scope, el, ev, scope);
         };
-        vm.add(directive);
-        monitor.add(directive);
     } else {
-        var getter = expressionParser(exp);
-        directive.getter = getter;
-        directive.name = directiveName;
+        getter = expressionParser(exp);
         directive.get = function () {
             return getter.call(scope, scope);
         };
-        vm.add(directive);
-        monitor.add(directive);
-        return directive.aborted;
     }
+
+    directive.name = directiveName;
+    directive.scope = scope;
+    directive.vm = vm;
+    directive.desc = desc;
+    directive.getter = getter;
+    vm.add(directive);
+    monitor.add(directive);
+    return directive.aborted;
 };
 
 

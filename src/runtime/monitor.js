@@ -78,13 +78,10 @@ exports.start = function () {
         directive.dispath = function () {
             var newVal = directive.get();
 
-            if (newVal === oldVal) {
-                return;
-            }
-
             directive.update(node, newVal, oldVal);
             oldVal = newVal;
         };
+
         directive.init(node);
 
         if (directive.getter) {

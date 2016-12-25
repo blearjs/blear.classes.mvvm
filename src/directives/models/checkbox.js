@@ -72,7 +72,6 @@ exports.init = function (directive, node) {
     var modelName = directive.modelName;
     var set = setter(directive.modelName);
     var elementName = configs.elementName;
-    var eventName = configs.eventName;
 
     directive.set = eventParser(elementName + '.checked=' + utilsName + '.fd(' + modelName + ',' + elementName + '.value) !== -1;', utilsName);
 
