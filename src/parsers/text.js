@@ -9,6 +9,7 @@
 
 var string = require('blear.utils.string');
 var array = require('blear.utils.array');
+var modification = require('blear.core.modification');
 
 var expression = require('./expression.js');
 var configs = require('../configs');
@@ -60,6 +61,7 @@ function parseTextToTokens(text) {
     var index;
     var value;
     var firstChar;
+    var foundTag = false;
     var html = false;
 
     while (match = tagRE.exec(text)) {
@@ -85,6 +87,7 @@ function parseTextToTokens(text) {
             value: value.trim(),
             html: html
         });
+        foundTag = true;
 
         lastIndex = index + match[0].length
     }
@@ -96,41 +99,55 @@ function parseTextToTokens(text) {
         })
     }
 
+    if (!foundTag) {
+        return null;
+    }
+
     return tokens
 }
 
 
 /**
  * 解析文本为表达式执行函数
+ * @param node
  * @param text
- * @returns {Function}
+ * @returns {Array|null}
  */
-module.exports = function parseTextToExpression(text) {
+module.exports = function parseTextToGetter(node, text) {
     var tokens = parseTextToTokens(text);
-    var escapleName = varible();
-    var expressionList = [];
 
+    if (tokens === null) {
+        return null;
+    }
+
+    var childNodes = [];
     array.each(tokens, function (index, token) {
-        var expression = '';
+        var childNode;
 
         if (token.tag) {
-            // if (!token.html) {
-            //     expression += escapleName + '('
-            // }
-
-            expression += token.value;
-
-            // if (!token.html) {
-            //     expression += ')'
-            // }
+            childNode = modification.create('#comment', token.value);
         } else {
-            expression += '"' + string.textify(token.value) + '"';
+            childNode = modification.create('#text', token.value);
         }
 
-        expressionList.push(expression);
+        childNodes.push(childNode);
     });
 
-    return parseExpression(expressionList.join(' + '));
+    // var expressionList = [];
+    //
+    // array.each(tokens, function (index, token) {
+    //     var expression = '';
+    //
+    //     if (token.tag) {
+    //         expression += '(' + token.value + ')';
+    //     } else {
+    //         expression += '"' + string.textify(token.value) + '"';
+    //     }
+    //
+    //     expressionList.push(expression);
+    // });
+    //
+    // return parseExpression(expressionList.join(' + '));
 };
 
 // var Lexer = require('blear.shims.lexer');

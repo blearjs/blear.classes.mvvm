@@ -15,7 +15,7 @@ var access = require('blear.utils.access');
 
 var compile = require('./runtime/compile');
 var monitor = require('./runtime/monitor');
-var address = require('./utils/address');
+var anchor = require('./utils/anchor');
 var directives = require('./directives/index');
 
 var defaults = {
@@ -44,12 +44,12 @@ pro[_compile] = function () {
     var options = the[_options];
     var rootEl = the.view = selector.query(options.el)[0];
     var fragment = modification.create('#fragment');
-    var addressNode = address(rootEl, 'mvvm');
+    var anchorNode = anchor(rootEl, 'mvvm');
 
     fragment.appendChild(rootEl);
     the[_watcher] = compile(fragment, the, options.data);
     monitor.start();
-    modification.insert(rootEl, addressNode, 3);
+    modification.insert(rootEl, anchorNode, 3);
 };
 
 // static

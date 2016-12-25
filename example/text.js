@@ -12,7 +12,7 @@ var random = require('blear.utils.random');
 var MVVM = require('../src/index');
 
 var data = window.data = {
-    text: '1'
+    text: '<b>1</b>'
 };
 
 new MVVM({

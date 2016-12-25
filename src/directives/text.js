@@ -13,6 +13,7 @@ var pack = require('./pack');
 
 module.exports = pack({
     update: function (node, newVal, oldVal) {
+        debugger;
         attribute.text(node, newVal);
     }
 });

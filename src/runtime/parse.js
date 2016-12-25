@@ -27,7 +27,7 @@ exports.attr = function (node, attr, mvvm, scope) {
     var nodeName = attr.nodeName;
 
     if (nodeName[0] !== '@') {
-        return null;
+        return;
     }
 
     var name = nodeName.slice(1);
@@ -49,7 +49,7 @@ exports.attr = function (node, attr, mvvm, scope) {
         directive.desc = desc;
         directive.getter = expressionParse(value);
         monitor.add(directive);
-        return directive.aborted;
+        return !directive.aborted;
     }
 
     if (typeof DEBUG !== 'undefined' && DEBUG) {
@@ -69,18 +69,22 @@ exports.attr = function (node, attr, mvvm, scope) {
  * @param {Object} scope
  */
 exports.text = function (node, mvvm, scope) {
-    var getter = textParse(node.textContent);
+    var expression = node.textContent;
+    var getter = textParse(node, expression);
+
+    if (getter === null) {
+        return;
+    }
+
     var directive = directives.text();
     var desc = {
         node: node,
         attr: null,
-        expression: null
+        expression: expression
     };
     directive.scope = scope;
     directive.mvvm = mvvm;
     directive.desc = desc;
     directive.getter = getter;
     monitor.add(directive);
-
-    return false;
 };

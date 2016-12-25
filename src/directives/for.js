@@ -13,7 +13,7 @@ var random = require('blear.utils.random');
 
 var pack = require('./pack');
 var compile = require('../runtime/compile');
-var address = require('../utils/address');
+var anchor = require('../utils/anchor');
 var arrayDiff = window.arrayDiff = require('../utils/array-diff');
 
 var ARRAY_POP = 'pop';
@@ -31,8 +31,8 @@ var buildChildMVVM = function (directive, index, data, operation) {
     var childNode = directive.tplNode.cloneNode(true);
     var childScopeList = directive.childScopeList;
     var childNodeList = directive.childNodeList;
-    var startAddress = directive.startAddress;
-    var endAddress = directive.endAddress;
+    var anchorStart = directive.anchorStart;
+    var anchorEnd = directive.anchorEnd;
     var indexName = directive.indexName;
     var aliasName = directive.aliasName;
     var insertTarget;
@@ -41,17 +41,17 @@ var buildChildMVVM = function (directive, index, data, operation) {
 
     switch (operator) {
         case ARRAY_PUSH:
-            insertTarget = endAddress;
+            insertTarget = anchorEnd;
             insertPosition = 0;
             break;
 
         case ARRAY_UNSHIFT:
-            insertTarget = startAddress;
+            insertTarget = anchorStart;
             insertPosition = 3;
             break;
 
         case ARRAY_SPLICE:
-            insertTarget = childNodeList[index - 1] || startAddress;
+            insertTarget = childNodeList[index - 1] || anchorStart;
             insertPosition = 3;
             break;
     }
@@ -102,8 +102,8 @@ module.exports = pack({
         the.scope = director.scope;
         the.childScopeList = [];
         the.childNodeList = [];
-        the.startAddress = address(node, '@for-start');
-        the.endAddress = address(node, '@for-end');
+        the.anchorStart = anchor(node, '@for-start');
+        the.anchorEnd = anchor(node, '@for-end');
         the.tplNode = node;
         modification.remove(node);
     },

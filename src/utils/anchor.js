@@ -1,5 +1,5 @@
 /**
- * 文件描述
+ * 位置标记
  * @author ydr.me
  * @created 2016-12-21 00:13
  */
@@ -9,7 +9,7 @@
 
 var modification = require('blear.core.modification');
 
-var addressId = 0;
+var anchorId = 0;
 
 
 /**
@@ -21,9 +21,17 @@ var addressId = 0;
 module.exports = function (targetNode, name) {
     name = name || '';
     name = name ? name + '-' : name;
-    var addressNode = modification.create('#comment', name + addressId++);
-    modification.insert(addressNode, targetNode, 0);
-    return addressNode;
+
+    var anchorNode;
+
+    if (typeof DEBUG !== 'undefined' && DEBUG) {
+        anchorNode = modification.create('#comment', name + anchorId++);
+    } else {
+        anchorNode = modification.create('#text');
+    }
+
+    modification.insert(anchorNode, targetNode, 0);
+    return anchorNode;
 };
 
 

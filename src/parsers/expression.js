@@ -7,9 +7,10 @@
 
 'use strict';
 
-var typeis = require('blear.utils.typeis');
+// var typeis = require('blear.utils.typeis');
 
 var varible = require('../utils/varible');
+
 //
 // var SCOPE = varible();
 //
@@ -269,7 +270,7 @@ var varible = require('../utils/varible');
 // };
 
 
-module.exports = function (expression) {
+module.exports = function parseExpressionToGetter(expression) {
     var keyName = varible();
     var scopeName = varible();
     var evalStrName = varible();
@@ -283,18 +284,16 @@ module.exports = function (expression) {
         /****/monitorName + '.target=' + directiveName + ';' +
         '}' +
 
-        'with(' + scopeName + '){' +
-
-        /****/'try{' +
+        'try{' +
+        /****/'with(' + scopeName + '){' +
         /****//****/'return ' + expression + ';' +
-        /****/'}catch(' + errorName + '){' +
-        /****//****/'if(typeof DEBUG!=="undefined"&&DEBUG) {' +
-        /****//****//****/'return ' + errorName + '.message;' +
-        /****//****/'}' +
-
-        /****//****/'return "";' +
         /****/'}' +
-
+        '}catch(' + errorName + '){' +
+        /****/'if(typeof DEBUG!=="undefined"&&DEBUG) {' +
+        /****//****/'return ' + errorName + '.message;' +
+        /****/'}' +
+        /****/
+        /****/'return "";' +
         '}';
 
     try {
@@ -315,4 +314,3 @@ module.exports = function (expression) {
         };
     }
 };
-
