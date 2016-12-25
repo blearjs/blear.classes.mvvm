@@ -47,10 +47,7 @@ exports.attr = function (node, attr, mvvm, scope) {
         directive.scope = scope;
         directive.mvvm = mvvm;
         directive.desc = desc;
-        var getter = directive.getter = expressionParse(value);
-        directive.get = function () {
-            return getter(scope);
-        };
+        directive.getter = expressionParse(value);
         monitor.add(directive);
         return directive.aborted;
     }
@@ -65,6 +62,25 @@ exports.attr = function (node, attr, mvvm, scope) {
 };
 
 
+/**
+ * 解析文本节点为指令信息
+ * @param {Node} node
+ * @param {MVVM} mvvm
+ * @param {Object} scope
+ */
 exports.text = function (node, mvvm, scope) {
-    var tokens = textParse(node.textContent);
+    var getter = textParse(node.textContent);
+    var directive = directives.text();
+    var desc = {
+        node: node,
+        attr: null,
+        expression: null
+    };
+    directive.scope = scope;
+    directive.mvvm = mvvm;
+    directive.desc = desc;
+    directive.getter = getter;
+    monitor.add(directive);
+
+    return false;
 };

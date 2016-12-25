@@ -47,6 +47,9 @@ var directives = [];
 exports.add = function (directive) {
     var scope = directive.scope;
     var watcher = directive.watcher = new Watcher(scope);
+    directive.get = function () {
+        return directive.getter(scope);
+    };
 
     watcher.link(function () {
         if (!exports.target) {
