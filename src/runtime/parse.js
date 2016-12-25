@@ -49,7 +49,7 @@ exports.attr = function (node, attr, mvvm, scope) {
         directive.desc = desc;
         directive.getter = expressionParse(value);
         monitor.add(directive);
-        return !directive.aborted;
+        return directive.aborted;
     }
 
     if (typeof DEBUG !== 'undefined' && DEBUG) {
@@ -70,7 +70,7 @@ exports.attr = function (node, attr, mvvm, scope) {
  */
 exports.text = function (node, mvvm, scope) {
     var expression = node.textContent;
-    var getter = textParse(node, expression);
+    var getter = textParse(expression);
 
     if (getter === null) {
         return;

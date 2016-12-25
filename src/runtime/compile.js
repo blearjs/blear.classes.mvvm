@@ -24,7 +24,7 @@ var compileAttrs = function (node, mvvm, scope) {
 
 var compileElement = function (node, mvvm, scope) {
     // 属性指令中止遍历
-    if (compileAttrs(node, mvvm, scope) === false) {
+    if (compileAttrs(node, mvvm, scope) === true) {
         return;
     }
 

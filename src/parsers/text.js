@@ -11,15 +11,11 @@ var string = require('blear.utils.string');
 var array = require('blear.utils.array');
 var modification = require('blear.core.modification');
 
-var expression = require('./expression.js');
+var parseExpression = require('./expression.js');
 var configs = require('../configs');
-var varible = require('../utils/varible');
-var parseExpression = require('./expression');
 
 var tagRE;
 var DELIMITERS = [configs.textOpenTag, configs.textCloseTag];
-var HTML_CHAR = configs.htmlChar;
-// var ONE_TIME_CHAR = configs.oneTimeChar;
 var escapeRegExp = string.escapeRegExp;
 
 
@@ -46,8 +42,6 @@ var compileRegex = function compileRegex() {
  * @return {Array<Object> | null}
  *               - {String} type
  *               - {String} value
- *               - {Boolean} [html]
- *               - {Boolean} [oneTime]
  */
 
 function parseTextToTokens(text) {
@@ -60,9 +54,7 @@ function parseTextToTokens(text) {
     var match;
     var index;
     var value;
-    var firstChar;
     var foundTag = false;
-    var html = false;
 
     while (match = tagRE.exec(text)) {
         index = match.index;
@@ -75,17 +67,10 @@ function parseTextToTokens(text) {
         }
 
         value = match[1];
-        firstChar = value.charAt(0);
-        html = firstChar === HTML_CHAR;
-
-        if (html) {
-            value = value.slice(1);
-        }
 
         tokens.push({
             tag: true,
-            value: value.trim(),
-            html: html
+            value: value.trim()
         });
         foundTag = true;
 
@@ -109,53 +94,30 @@ function parseTextToTokens(text) {
 
 /**
  * 解析文本为表达式执行函数
- * @param node
  * @param text
- * @returns {Array|null}
+ * @returns {Function|null}
  */
-module.exports = function parseTextToGetter(node, text) {
+module.exports = function parseTextToGetter(text) {
     var tokens = parseTextToTokens(text);
 
     if (tokens === null) {
         return null;
     }
 
-    var childNodes = [];
+    var expressionList = [];
+
     array.each(tokens, function (index, token) {
-        var childNode;
+        var expression = '';
 
         if (token.tag) {
-            childNode = modification.create('#comment', token.value);
+            expression += '(' + token.value + ')';
         } else {
-            childNode = modification.create('#text', token.value);
+            expression += '"' + string.textify(token.value) + '"';
         }
 
-        childNodes.push(childNode);
+        expressionList.push(expression);
     });
 
-    // var expressionList = [];
-    //
-    // array.each(tokens, function (index, token) {
-    //     var expression = '';
-    //
-    //     if (token.tag) {
-    //         expression += '(' + token.value + ')';
-    //     } else {
-    //         expression += '"' + string.textify(token.value) + '"';
-    //     }
-    //
-    //     expressionList.push(expression);
-    // });
-    //
-    // return parseExpression(expressionList.join(' + '));
+    return parseExpression(expressionList.join(' + '));
 };
 
-// var Lexer = require('blear.shims.lexer');
-//
-// var lexer = new Lexer();
-//
-// module.exports = function (text) {
-//     var tokens = lexer.lex(text);
-//
-//     debugger;
-// };

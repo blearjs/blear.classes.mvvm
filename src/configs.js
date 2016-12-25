@@ -11,11 +11,3 @@
 exports.textOpenTag = '{{';
 exports.textCloseTag = '}}';
 
-// {{= html}}
-exports.htmlChar = '=';
-
-// // {{* oneTime}}
-// // {{*= oneTimeHTML}}
-// exports.oneTimeChar = '*';
-
-
