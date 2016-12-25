@@ -16,18 +16,17 @@ module.exports = function (directive) {
     return function () {
         return {
             guid: random.guid(),
-            watchers: [],
             children: [],
             parent: null,
             aborted: directive.aborted || false,
-            installed: false,
+            inited: false,
             bound: false,
             updated: false,
-            unbound: false,
+            destroyed: false,
             init: function (node) {
                 var the = this;
                 fun.noop(directive.init || directive.bind).apply(the, arguments);
-                the.installed = true;
+                the.inited = true;
             },
 
             bind: function (node, newVal) {
@@ -42,16 +41,15 @@ module.exports = function (directive) {
                 the.updated = true;
             },
 
-            unbind: function () {
+            destroy: function () {
                 var the = this;
-                fun.noop(directive.unbind).apply(the, arguments);
+                fun.noop(directive.destroy).apply(the, arguments);
                 // array.each(the.watchers, function (index, watcher) {
                 //     watcher.destroy();
                 // });
-                the.watchers = null;
-                the.children = null;
-                the.parent = null;
-                the.unbound = true;
+                the.watcher.destroy();
+                the.watcher = the.children = the.parent = null;
+                the.destroyed = true;
             }
         };
     };

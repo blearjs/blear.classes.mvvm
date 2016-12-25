@@ -42,6 +42,17 @@
             line-height: 2;
         }
 
+        fieldset {
+            padding: 10px;
+        }
+
+        input {
+            padding: 6px;
+            font-size: 14px;
+            display: block;
+            width: 90%;
+        }
+
         hr {
             margin: 10px 0;
         }
@@ -50,15 +61,17 @@
 <body ontouchstart="">
 
 <div id="app">
-    <p @text="'@text: ' + text + '!'"></p>
-    <p>"escape text'": {{text}} !</p>
-    <a id="change1" @click.false="onClick" href="#">change text</a>
+    <fieldset>
+        <legend>input:text</legend>
+        <p>text: {{text}}</p>
+        <p><input type="text" @model="text"></p>
+    </fieldset>
 </div>
 
 
 <script src="/node_modules/coolie.js/coolie.js"
         data-config="/example/coolie-config.js"
-        data-main="click.js"></script>
+        data-main="model.js"></script>
 
 </body>
 </html>

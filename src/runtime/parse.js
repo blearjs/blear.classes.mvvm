@@ -7,7 +7,7 @@
 
 'use strict';
 
-var object = require('blear.utils.object');
+var array = require('blear.utils.array');
 var event = require('blear.core.event');
 
 var expressionParser = require('../parsers/expression');
@@ -38,7 +38,10 @@ exports.attr = function (node, attr, scope, vm) {
     var nameArr = name.split('.');
     var directiveName = nameArr.shift();
     var directiveFn = directives[directiveName];
-    var directiveFilters = nameArr;
+    var directiveFilters = array.reduce(nameArr, function (prevVal, nowVal) {
+        prevVal[nowVal] = true;
+        return prevVal;
+    }, {});
 
     if (typeof DEBUG === 'undefined' || !DEBUG) {
         node.removeAttribute(attrName);
@@ -79,17 +82,6 @@ exports.attr = function (node, attr, scope, vm) {
         monitor.add(directive);
         return directive.aborted;
     }
-
-    // 其余指令当做事件处理
-
-
-    // if (typeof DEBUG !== 'undefined' && DEBUG) {
-    //     console.error(
-    //         '当前正在编译的指令无法解析\n' +
-    //         'name: ' + name + '\n' +
-    //         'value: ' + attrVal
-    //     );
-    // }
 };
 
 

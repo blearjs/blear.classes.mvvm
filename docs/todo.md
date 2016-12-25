@@ -5,7 +5,7 @@
 - @html √
 - @text √
 - @once（一次性绑定，不监听）
-- @event
+- @event √
 - @model（checkbox、radio、select、text）
 - @class（注意连字符）
 - @style（注意连字符）
