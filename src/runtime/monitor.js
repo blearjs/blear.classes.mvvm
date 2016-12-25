@@ -47,9 +47,6 @@ var directives = [];
 exports.add = function (directive) {
     var scope = directive.scope;
     var watcher = directive.watcher = new Watcher(scope);
-    directive.get = function () {
-        return directive.getter(scope);
-    };
 
     watcher.link(function () {
         if (!exports.target) {
@@ -89,8 +86,13 @@ exports.start = function () {
             oldVal = newVal;
         };
         directive.init(node);
-        // 第一次取值时传递 directive
-        oldVal = getter(scope, monitor, directive);
+
+        if (directive.getter) {
+            // 第一次取值时传递 directive
+            oldVal = getter(scope, monitor, directive);
+            directive.getter = null;
+        }
+
         directive.bind(node, oldVal);
     });
 };

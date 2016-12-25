@@ -27,10 +27,16 @@ var keyCodes = {
 
 module.exports = pack({
     bind: function (node, newVal) {
+        var the = this;
+        var vm = the.vm;
+        var eventType = the.type;
+        var filters = the.filters;
 
-    },
-    update: function (node, newVal, oldVal) {
-        attribute.text(node, newVal);
+        debugger;
+
+        event.on(vm.el, eventType, node, the.listener = function (ev) {
+            var ret = the.exec(ev);
+        });
     }
 });
 

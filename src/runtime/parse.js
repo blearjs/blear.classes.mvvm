@@ -10,8 +10,9 @@
 var object = require('blear.utils.object');
 var event = require('blear.core.event');
 
-var expressionParse = require('../parsers/expression');
-var textParse = require('../parsers/text');
+var expressionParser = require('../parsers/expression');
+var textParser = require('../parsers/text');
+var eventParser = require('../parsers/event');
 var directives = require('../directives/index');
 var monitor = require('./monitor');
 
@@ -32,7 +33,7 @@ exports.attr = function (node, attr, scope, vm) {
     }
 
     var name = attrName.slice(1);
-    var attrVal = attr.nodeValue;
+    var exp = attr.nodeValue;
     // @click.enter.false
     var nameArr = name.split('.');
     var directiveName = nameArr.shift();
@@ -47,7 +48,7 @@ exports.attr = function (node, attr, scope, vm) {
         node: node,
         attr: attr,
         name: directiveName,
-        exp: attrVal,
+        exp: exp,
         filters: directiveFilters
     };
 
@@ -59,13 +60,21 @@ exports.attr = function (node, attr, scope, vm) {
     directive.desc = desc;
 
     if (maybeOnDirective) {
-        event.on(vm.el, directiveName, node, function () {
-            directive;
-            desc;
-            debugger;
-        });
+        directive.name = 'on';
+        directive.type = directiveName;
+        var call = eventParser(exp);
+        directive.exec = function (ev) {
+            return call(ev, scope);
+        };
+        vm.add(directive);
+        monitor.add(directive);
     } else {
-        directive.getter = expressionParse(attrVal);
+        var getter = expressionParser(exp);
+        directive.getter = getter;
+        directive.name = directiveName;
+        directive.get = function () {
+            return getter(scope);
+        };
         vm.add(directive);
         monitor.add(directive);
         return directive.aborted;
@@ -92,7 +101,7 @@ exports.attr = function (node, attr, scope, vm) {
  */
 exports.text = function (node, scope, vm) {
     var expression = node.textContent;
-    var getter = textParse(expression);
+    var getter = textParser(expression);
 
     if (getter === null) {
         return;
@@ -108,6 +117,9 @@ exports.text = function (node, scope, vm) {
     directive.vm = vm;
     directive.desc = desc;
     directive.getter = getter;
+    directive.get = function () {
+        return getter(scope);
+    };
 
     vm.add(directive);
     monitor.add(directive);

@@ -48,7 +48,7 @@ module.exports = function (expression) {
         '}';
 
     try {
-        return new Function(scopeName, eventName, body);
+        return new Function(eventName, scopeName, body);
     } catch (err) {
         if (typeof DEBUG !== 'undefined' && DEBUG) {
             console.error('表达式书写有误：');
