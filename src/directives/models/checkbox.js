@@ -71,7 +71,11 @@ exports.init = function (directive, node) {
     );
 
     directive[updateName] = eventParser(
-        elementName + '.checked=' + utilsName + '.fd(' + modelName + ',' + elementName + '.value) !== -1;',
+        'if(' + utilsName + '.boo(' + modelName + ')){' +
+        /****/elementName + '.checked=Boolean(' + modelName + ');' +
+        '}else{' +
+        /****/elementName + '.checked=' + utilsName + '.fd(' + modelName + ',' + elementName + '.value)!==-1;' +
+        '}',
         utilsName
     );
 
