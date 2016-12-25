@@ -13,14 +13,19 @@ var pack = require('./pack');
 var cateMap = {
     text: require('./models/text'),
     checkbox: require('./models/checkbox'),
-    radio: require('./models/radio')
+    single: require('./models/single')
 };
 
 module.exports = pack({
     init: function (node) {
         var the = this;
         var desc = the.desc;
-        var inputType = (node.type || node.tagName).toLowerCase();
+        var tagName = node.tagName.toLowerCase();
+        var inputType = node.type;
+
+        if (tagName === 'select' || tagName === 'textarea') {
+            inputType = tagName;
+        }
 
         the.modelName = desc.exp;
         the.modelType = inputType;
@@ -35,8 +40,15 @@ module.exports = pack({
                 break;
 
             case 'checkbox':
-            case 'radio':
                 modelCate = inputType;
+                break;
+
+            case 'radio':
+                modelCate = 'single';
+                break;
+
+            case 'select':
+                modelCate = node.multiple ? 'multiple' : 'single';
                 break;
         }
 

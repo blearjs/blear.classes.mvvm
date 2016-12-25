@@ -15,7 +15,8 @@ var data = window.data = {
     text: 'text',
     checkbox: [1],
     checkbox2: true,
-    radio: 1
+    radio: 1,
+    select: 222
 };
 
 new MVVM({
