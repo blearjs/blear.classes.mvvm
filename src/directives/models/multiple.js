@@ -8,36 +8,48 @@
 'use strict';
 
 var event = require('blear.core.event');
+var selector = require('blear.core.selector');
+var array = require('blear.utils.array');
+var time = require('blear.utils.time');
 
 var eventParser = require('../../parsers/event');
-var strFlow = require('../../utils/string-flow');
+var arrFlow = require('../../utils/array-flow');
 var varible = require('../../utils/varible');
 var configs = require('../../configs');
 
-var utilsName = varible();
-var updateName = varible();
+var selecting = varible();
+var getOptionVal = function (el) {
+    return el.value || el.textContent;
+};
 
-exports.init = function (directive, node) {
-    var elementName = configs.elementName;
-    var modelName = directive.modelName;
+exports.bind = function (directive, node, newVal) {
     var vm = directive.vm;
 
-    directive[updateName] = eventParser(
-        elementName + '.checked=Boolean(' + utilsName + '.similar(' + modelName + ',' + elementName + '.value));',
-        utilsName
-    );
-
-    var change = eventParser(
-        modelName + '=' + elementName + '.value;'
-    );
-
     event.on(vm.el, 'change', node, directive.listener = function (ev) {
-        change(node, ev, directive.scope);
+        vm[selecting] = node;
+        var children = selector.children(node);
+        array.each(children, function (index, optionEl) {
+            var optionVal = getOptionVal(optionEl);
+            if (arrFlow.fd(newVal, optionVal) > -1) {
+                arrFlow.set(newVal, optionVal);
+            } else {
+                arrFlow.rm(newVal, optionVal);
+            }
+        });
+        time.nextTick(function () {
+            vm[selecting] = null;
+        });
     });
 };
 
-exports.update = function (directive, node) {
-    directive[updateName](node, null, directive.scope, strFlow);
+exports.update = function (directive, node, newVal) {
+    if (directive.vm[selecting] !== node) {
+        var children = selector.children(node);
+        array.each(children, function (index, optionEl) {
+            var optionVal = getOptionVal(optionEl);
+            optionEl.selected = arrFlow.fd(newVal, optionVal) > -1;
+        });
+    }
 };
 
 

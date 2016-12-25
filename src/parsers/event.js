@@ -45,7 +45,7 @@ module.exports = function (expression, utilsName) {
     body +=
         /****/ '}' +
         '}catch(' + errorName + '){' +
-        /****/'if(typeof EDBUG!=="undefined"&&DEBUG){' +
+        /****/'if(typeof DEBUG!=="undefined"&&DEBUG){' +
         /****//****/'console.error(' + errorName + ');' +
         /****/'}' +
         '}';

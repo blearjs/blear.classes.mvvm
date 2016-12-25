@@ -19,7 +19,7 @@ var utils = require('../../utils/array-flow');
 var utilsName = varible();
 var updateName = varible();
 
-exports.init = function (directive, node) {
+exports.bind = function (directive, node, newVal) {
     var vm = directive.vm;
     var el = vm.el;
     var scope = directive.scope;

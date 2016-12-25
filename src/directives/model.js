@@ -13,11 +13,12 @@ var pack = require('./pack');
 var cateMap = {
     text: require('./models/text'),
     checkbox: require('./models/checkbox'),
-    single: require('./models/single')
+    single: require('./models/single'),
+    multiple: require('./models/multiple')
 };
 
 module.exports = pack({
-    init: function (node) {
+    bind: function (node) {
         var the = this;
         var desc = the.desc;
         var tagName = node.tagName.toLowerCase();
@@ -53,7 +54,7 @@ module.exports = pack({
         }
 
         the.modelCate = modelCate;
-        cateMap[modelCate].init(the, node);
+        cateMap[modelCate].bind(the, node);
     },
     update: function (node, newVal, oldVal) {
         var the = this;

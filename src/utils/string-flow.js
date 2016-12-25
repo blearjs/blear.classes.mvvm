@@ -14,7 +14,7 @@ var toString = exports.to = function (str) {
 
 
 exports.similar = function (a, b) {
-    return toString(a) === toString(b);
+    return toString(a).trim() === toString(b).trim();
 };
 
 
