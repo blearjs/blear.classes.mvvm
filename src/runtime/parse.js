@@ -63,13 +63,11 @@ exports.attr = function (node, attr, scope, vm) {
         directive.exec = function (el, ev) {
             return exectter.call(scope, el, ev, scope);
         };
-        directive.set = function (val) {
-            scope[exp] = val;
-        };
     }
     // 普通指令
     else {
         var getter = expressionParser(exp);
+        directive.getter = getter;
         directive.get = function () {
             return getter.call(scope, scope);
         };
