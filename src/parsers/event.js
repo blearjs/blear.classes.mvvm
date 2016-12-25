@@ -19,7 +19,7 @@ module.exports = function (expression) {
     var errorName = varible();
     var body =
         'try{' +
-        /****/'with(scope){';
+        /****/'with(' + scopeName + '){';
 
     // 运算
     // 如：abc.def += 123
@@ -41,14 +41,14 @@ module.exports = function (expression) {
 
     body +=
         /****/ '}' +
-        '}catch(err){' +
+        '}catch(' + errorName + '){' +
         /****/'if(typeof EDBUG!=="undefined"&&DEBUG){' +
         /****//****/'console.error(err);' +
         /****/'}' +
         '}';
 
     try {
-        return new Function(eventName, body);
+        return new Function(scopeName, eventName, body);
     } catch (err) {
         if (typeof DEBUG !== 'undefined' && DEBUG) {
             console.error('表达式书写有误：');

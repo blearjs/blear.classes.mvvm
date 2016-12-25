@@ -15,7 +15,6 @@ var parseExpression = require('./expression.js');
 var configs = require('../configs');
 
 var tagRE;
-var DELIMITERS = [configs.textOpenTag, configs.textCloseTag];
 var escapeRegExp = string.escapeRegExp;
 
 
@@ -25,8 +24,8 @@ var escapeRegExp = string.escapeRegExp;
  * @type {function}
  */
 var compileRegex = function compileRegex() {
-    var open = escapeRegExp(DELIMITERS[0]);
-    var close = escapeRegExp(DELIMITERS[1]);
+    var open = escapeRegExp(configs.textOpenTag);
+    var close = escapeRegExp(configs.textCloseTag);
 
     tagRE = new RegExp(
         open + '(.+?)' + close,
