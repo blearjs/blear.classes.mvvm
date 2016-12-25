@@ -13,11 +13,13 @@ var configs = require('../configs');
 var excuteRE = /\(.*?\)\s*?$/;
 var operatorRE = /[!+-=*/]/;
 
-module.exports = function (expression) {
+
+module.exports = function (expression, utilsName) {
+    utilsName = utilsName || varible();
     var scopeName = varible();
+    var errorName = varible();
     var eventName = configs.eventName;
     var elName = configs.elementName;
-    var errorName = varible();
     var body =
         'try{' +
         /****/'with(' + scopeName + '){';
@@ -44,17 +46,17 @@ module.exports = function (expression) {
         /****/ '}' +
         '}catch(' + errorName + '){' +
         /****/'if(typeof EDBUG!=="undefined"&&DEBUG){' +
-        /****//****/'console.error(err);' +
+        /****//****/'console.error(' + errorName + ');' +
         /****/'}' +
         '}';
 
     try {
-        return new Function(elName, eventName, scopeName, body);
+        return new Function(elName, eventName, scopeName, utilsName, body);
     } catch (err) {
         if (typeof DEBUG !== 'undefined' && DEBUG) {
             console.error('表达式书写有误：');
-            console.error(expression);
-            console.error(err.stack);
+            console.error(body);
+            console.error(err);
         }
 
         return function () {

@@ -13,44 +13,70 @@ var time = require('blear.utils.time');
 
 var pack = require('./pack');
 var eventParser = require('../parsers/event');
+var varible = require('../utils/varible');
+var checkbox = require('./models/checkbox');
+var configs = require('../configs');
 
 module.exports = pack({
     init: function (node) {
         var the = this;
         var vm = the.vm;
+        var scope = the.scope;
         var el = vm.el;
         var desc = the.desc;
-        var exec = eventParser(desc.exp + '= $el.value;');
+        var modelName = the.modelName = desc.exp;
+        var exec = eventParser(modelName + '=' + configs.elementName + '.value;');
         var compositionstart = false;
+        var inputType = the.modelType = (node.type || node.tagName).toLowerCase();
 
-        event.on(el, 'compositionstart', node, the.compositionstart = function () {
-            compositionstart = true;
-        });
-
-        event.on(el, 'compositionend', node, the.compositionend = function () {
-            compositionstart = false;
-        });
-
-        event.on(el, 'input', node, the.listener = function (ev) {
-            var el = this;
-            var _exec = function () {
-                vm.inputingEl = el;
-                exec(el, ev, the.scope);
-                time.nextTick(function () {
-                    vm.inputingEl = null;
+        switch (inputType) {
+            case 'text':
+            case 'password':
+            case 'textarea':
+                event.on(el, 'compositionstart', node, the.compositionstart = function () {
+                    compositionstart = true;
                 });
-            };
 
-            if (compositionstart) {
-                time.nextFrame(_exec);
-            } else {
-                _exec();
-            }
-        });
+                event.on(el, 'compositionend', node, the.compositionend = function () {
+                    compositionstart = false;
+                });
+
+                event.on(el, 'input', node, the.listener = function (ev) {
+                    var el = this;
+                    var _exec = function () {
+                        vm.inputingEl = el;
+                        exec(el, ev, scope);
+                        time.nextTick(function () {
+                            vm.inputingEl = null;
+                        });
+                    };
+
+                    if (compositionstart) {
+                        time.nextFrame(_exec);
+                    } else {
+                        _exec();
+                    }
+                });
+                break;
+
+            case 'checkbox':
+                checkbox.init(the, node);
+                break;
+        }
     },
     update: function (node, newVal, oldVal) {
-        if (this.vm.inputingEl !== node) {
-            node.value = newVal;
+        var the = this;
+
+        switch (the.modelType) {
+            case 'checkbox':
+                checkbox.update(the, node, newVal);
+                break;
+
+            default:
+                if (the.vm.inputingEl !== node) {
+                    node.value = newVal;
+                }
+                break;
         }
     },
     destroy: function () {

@@ -7,13 +7,11 @@
 
 'use strict';
 
-module.exports = {
-    // 文本表达式开始标签
-    textOpenTag: '{{',
-    // 文本表达式关闭标签
-    textCloseTag: '}}',
-    // 元素名称
-    elementName: '$el',
-    // 事件名称
-    eventName: '$ev'
-};
+// 文本表达式开始标签
+exports.textOpenTag = '{{';
+// 文本表达式关闭标签
+exports.textCloseTag = '}}';
+// 元素名称
+exports.elementName = '$el';
+// 事件名称
+exports.eventName = '$ev';
