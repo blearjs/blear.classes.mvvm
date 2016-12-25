@@ -12,6 +12,8 @@ module.exports = {
     textOpenTag: '{{',
     // 文本表达式关闭标签
     textCloseTag: '}}',
+    // 元素名称
+    elementName: '$el',
     // 事件名称
-    eventName: '$event'
+    eventName: '$ev'
 };

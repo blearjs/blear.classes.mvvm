@@ -16,6 +16,7 @@ var operatorRE = /[!+-=*/]/;
 module.exports = function (expression) {
     var scopeName = varible();
     var eventName = configs.eventName;
+    var elName = configs.elementName;
     var errorName = varible();
     var body =
         'try{' +
@@ -48,7 +49,7 @@ module.exports = function (expression) {
         '}';
 
     try {
-        return new Function(eventName, scopeName, body);
+        return new Function(elName, eventName, scopeName, body);
     } catch (err) {
         if (typeof DEBUG !== 'undefined' && DEBUG) {
             console.error('表达式书写有误：');

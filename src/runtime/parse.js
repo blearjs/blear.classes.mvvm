@@ -66,8 +66,8 @@ exports.attr = function (node, attr, scope, vm) {
         directive.name = 'on';
         directive.type = directiveName;
         var call = eventParser(exp);
-        directive.exec = function (ev) {
-            return call(ev, scope);
+        directive.exec = function (el, ev) {
+            return call.call(scope, el, ev, scope);
         };
         vm.add(directive);
         monitor.add(directive);
@@ -76,7 +76,7 @@ exports.attr = function (node, attr, scope, vm) {
         directive.getter = getter;
         directive.name = directiveName;
         directive.get = function () {
-            return getter(scope);
+            return getter.call(scope, scope);
         };
         vm.add(directive);
         monitor.add(directive);
@@ -110,7 +110,7 @@ exports.text = function (node, scope, vm) {
     directive.desc = desc;
     directive.getter = getter;
     directive.get = function () {
-        return getter(scope);
+        return getter.call(scope, scope);
     };
 
     vm.add(directive);

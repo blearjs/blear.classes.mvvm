@@ -52,6 +52,7 @@
     "blear.utils.object": "^1.0.5",
     "blear.utils.random": "^1.0.2",
     "blear.utils.string": "^1.0.7",
+    "blear.utils.time": "^1.0.4",
     "blear.utils.typeis": "^1.0.3"
   },
   "peerDependencies": {},
