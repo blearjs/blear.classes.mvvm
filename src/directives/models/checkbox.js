@@ -1,5 +1,5 @@
 /**
- * 文件描述
+ * checkbox model
  * @author ydr.me
  * @created 2016-12-25 17:43
  */
@@ -49,10 +49,15 @@ var utils = {
 };
 
 var utilsName = varible();
-var setter = function (modelName) {
+var updateName = varible();
+
+exports.init = function (directive, node) {
+    var vm = directive.vm;
+    var el = vm.el;
+    var scope = directive.scope;
+    var modelName = directive.modelName;
     var elementName = configs.elementName;
-    var eventName = configs.eventName;
-    var body =
+    var change = eventParser(
         'if(' + utilsName + '.boo(' + modelName + ')){' +
         /****/modelName + ' = Boolean(' + elementName + '.checked);' +
         '}else{' +
@@ -61,29 +66,22 @@ var setter = function (modelName) {
         /****/'}else{' +
         /****//****/utilsName + '.rm(' + modelName + ', ' + elementName + '.value);' +
         /****/'}' +
-        '}';
-    return eventParser(body, utilsName);
-};
+        '}',
+        utilsName
+    );
 
-exports.init = function (directive, node) {
-    var vm = directive.vm;
-    var el = vm.el;
-    var scope = directive.scope;
-    var modelName = directive.modelName;
-    var set = setter(directive.modelName);
-    var elementName = configs.elementName;
-
-    directive.set = eventParser(elementName + '.checked=' + utilsName + '.fd(' + modelName + ',' + elementName + '.value) !== -1;', utilsName);
+    directive[updateName] = eventParser(
+        elementName + '.checked=' + utilsName + '.fd(' + modelName + ',' + elementName + '.value) !== -1;',
+        utilsName
+    );
 
     event.on(el, 'change', node, directive.listener = function (ev) {
-        set(this, ev, scope, utils);
+        change(this, ev, scope, utils);
     });
 };
 
 exports.update = function (directive, node, newVal) {
-    var set = directive.set;
     var scope = directive.scope;
-    var modelName = directive.modelName;
 
-    directive.set(node, null, scope, utils);
+    directive[updateName](node, null, scope, utils);
 };
