@@ -12,7 +12,7 @@ var attribute = require('blear.core.attribute');
 var pack = require('./pack');
 
 module.exports = pack({
-    update: function (node, newVal, oldVal) {
+    bind: function (node, newVal, oldVal) {
         attribute.text(node, newVal);
     }
 });

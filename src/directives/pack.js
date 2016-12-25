@@ -25,7 +25,7 @@ module.exports = function (directive) {
             destroyed: false,
             init: function (node) {
                 var the = this;
-                fun.noop(directive.init || directive.bind).apply(the, arguments);
+                fun.noop(directive.init).apply(the, arguments);
                 the.inited = true;
             },
 
@@ -37,7 +37,7 @@ module.exports = function (directive) {
 
             update: function (node, newVal, oldVal, operation) {
                 var the = this;
-                fun.noop(directive.update).apply(the, arguments);
+                fun.noop(directive.update || directive.bind).apply(the, arguments);
                 the.updated = true;
             },
 

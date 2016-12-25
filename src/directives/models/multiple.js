@@ -12,7 +12,6 @@ var selector = require('blear.core.selector');
 var array = require('blear.utils.array');
 var time = require('blear.utils.time');
 
-var eventParser = require('../../parsers/event');
 var arrFlow = require('../../utils/array-flow');
 var varible = require('../../utils/varible');
 var configs = require('../../configs');
@@ -30,7 +29,8 @@ exports.bind = function (directive, node, newVal) {
         var children = selector.children(node);
         array.each(children, function (index, optionEl) {
             var optionVal = getOptionVal(optionEl);
-            if (arrFlow.fd(newVal, optionVal) > -1) {
+
+            if (optionEl.selected) {
                 arrFlow.set(newVal, optionVal);
             } else {
                 arrFlow.rm(newVal, optionVal);

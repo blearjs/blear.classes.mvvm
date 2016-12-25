@@ -17,7 +17,7 @@ var configs = require('../../configs');
 var utilsName = varible();
 var updateName = varible();
 
-exports.init = function (directive, node, newVal) {
+exports.bind = function (directive, node, newVal) {
     var elementName = configs.elementName;
     var modelName = directive.modelName;
     var vm = directive.vm;

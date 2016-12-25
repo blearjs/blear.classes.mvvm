@@ -16,7 +16,7 @@ var varible = require('../../utils/varible');
 
 var inputingName = varible();
 
-exports.init = function (directive, node, newVal) {
+exports.bind = function (directive, node, newVal) {
     var modelName = directive.modelName;
     var scope = directive.scope;
     var vm = directive.vm;
