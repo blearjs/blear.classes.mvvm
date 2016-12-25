@@ -18,9 +18,10 @@ var cateMap = {
 };
 
 module.exports = pack({
-    bind: function (node, newVal) {
+    init: function (node) {
         var the = this;
         var desc = the.desc;
+        var scope = the.scope;
         var tagName = node.tagName.toLowerCase();
         var inputType = node.type;
 
@@ -28,8 +29,13 @@ module.exports = pack({
             inputType = tagName;
         }
 
-        the.modelName = desc.exp;
+        var modelName =  desc.exp;
+
+        the.modelName = modelName;
         the.modelType = inputType;
+        the.set = function (val) {
+            scope[modelName] = val;
+        };
 
         var modelCate;
 
@@ -54,8 +60,7 @@ module.exports = pack({
         }
 
         the.modelCate = modelCate;
-        cateMap[modelCate].bind(the, node, newVal);
-        cateMap[modelCate].update(the, node, newVal);
+        cateMap[modelCate].init(the, node);
     },
     update: function (node, newVal, oldVal) {
         var the = this;

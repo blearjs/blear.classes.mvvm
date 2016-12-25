@@ -19,7 +19,7 @@ var utils = require('../../utils/array-flow');
 var utilsName = varible();
 var updateName = varible();
 
-exports.bind = function (directive, node, newVal) {
+exports.init = function (directive, node, newVal) {
     var vm = directive.vm;
     var el = vm.el;
     var scope = directive.scope;
@@ -48,7 +48,11 @@ exports.bind = function (directive, node, newVal) {
     );
 
     event.on(el, 'change', node, directive.listener = function (ev) {
-        change(this, ev, scope, utils);
+        if(typeis.Boolean(scope[modelName])){
+
+        } else {
+
+        }
     });
 };
 

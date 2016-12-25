@@ -9,39 +9,25 @@
 
 var event = require('blear.core.event');
 
-var eventParser = require('../../parsers/event');
 var strFlow = require('../../utils/string-flow');
 var varible = require('../../utils/varible');
 var configs = require('../../configs');
 
-var utilsName = varible();
-var updateName = varible();
-
-exports.bind = function (directive, node, newVal) {
-    var elementName = configs.elementName;
+exports.init = function (directive, node, newVal) {
     var modelName = directive.modelName;
     var vm = directive.vm;
 
-    directive[updateName] = eventParser(
-        'if(' + elementName + '.type==="radio"){' +
-        /****/elementName + '.checked=Boolean(' + utilsName + '.similar(' + modelName + ',' + elementName + '.value));' +
-        '}else{' +
-        /****/elementName + '.value=' + modelName + ';' +
-        '}',
-        utilsName
-    );
-
-    var change = eventParser(
-        modelName + '=' + elementName + '.value;'
-    );
-
     event.on(vm.el, 'change', node, directive.listener = function (ev) {
-        change(node, ev, directive.scope);
+        directive.scope[modelName] = node.value;
     });
 };
 
-exports.update = function (directive, node) {
-    directive[updateName](node, null, directive.scope, strFlow);
+exports.update = function (directive, node, newVal) {
+    if (node.type === 'radio') {
+        node.checked = Boolean(strFlow.similar(newVal, node.value));
+    } else {
+        node.value = newVal;
+    }
 };
 
 

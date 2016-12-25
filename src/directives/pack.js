@@ -37,7 +37,7 @@ module.exports = function (directive) {
 
             update: function (node, newVal, oldVal, operation) {
                 var the = this;
-                fun.noop(directive.update || directive.bind).apply(the, arguments);
+                fun.noop(directive.update).apply(the, arguments);
                 the.updated = true;
             },
 

@@ -10,19 +10,15 @@
 var event = require('blear.core.event');
 var time = require('blear.utils.time');
 
-var eventParser = require('../../parsers/event');
 var configs = require('../../configs');
 var varible = require('../../utils/varible');
 
-var inputingName = varible();
+var inputing = varible();
 
-exports.bind = function (directive, node, newVal) {
-    var modelName = directive.modelName;
-    var scope = directive.scope;
+exports.init = function (directive, node) {
     var vm = directive.vm;
     var el = vm.el;
     var compositionstart = false;
-    var change = eventParser(modelName + '=' + configs.elementName + '.value;');
 
     event.on(el, 'compositionstart', node, directive.compositionstart = function () {
         compositionstart = true;
@@ -35,10 +31,10 @@ exports.bind = function (directive, node, newVal) {
     event.on(el, 'input', node, directive.listener = function (ev) {
         var el = this;
         var smoothChange = function () {
-            vm[inputingName] = el;
-            change(el, ev, scope);
+            vm[inputing] = el;
+            directive.set(node.value);
             time.nextTick(function () {
-                vm[inputingName] = null;
+                vm[inputing] = null;
             });
         };
 
@@ -52,7 +48,7 @@ exports.bind = function (directive, node, newVal) {
 
 exports.update = function (directive, node, newVal) {
     // 避免当前正在输入的输入框重新赋值影响输入体验
-    if (directive.vm[inputingName] !== node) {
+    if (directive.vm[inputing] !== node) {
         node.value = newVal;
     }
 };

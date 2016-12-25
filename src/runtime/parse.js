@@ -55,16 +55,21 @@ exports.attr = function (node, attr, scope, vm) {
 
     var maybeOnDirective = !directiveFn;
     var directive = maybeOnDirective ? directives.on() : directiveFn();
-    var getter;
 
+    // 事件指令
     if (maybeOnDirective) {
         directive.type = 'on';
-        getter = eventParser(exp);
-        directive.get = function (el, ev) {
-            return getter.call(scope, el, ev, scope);
+        var exectter = eventParser(exp);
+        directive.exec = function (el, ev) {
+            return exectter.call(scope, el, ev, scope);
         };
-    } else {
-        getter = expressionParser(exp);
+        directive.set = function (val) {
+            scope[exp] = val;
+        };
+    }
+    // 普通指令
+    else {
+        var getter = expressionParser(exp);
         directive.get = function () {
             return getter.call(scope, scope);
         };
@@ -74,7 +79,6 @@ exports.attr = function (node, attr, scope, vm) {
     directive.scope = scope;
     directive.vm = vm;
     directive.desc = desc;
-    directive.getter = getter;
     vm.add(directive);
     monitor.add(directive);
     return directive.aborted;

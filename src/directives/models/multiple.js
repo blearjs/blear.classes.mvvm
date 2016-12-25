@@ -21,7 +21,7 @@ var getOptionVal = function (el) {
     return el.value || el.textContent;
 };
 
-exports.bind = function (directive, node, newVal) {
+exports.init = function (directive, node, newVal) {
     var vm = directive.vm;
 
     event.on(vm.el, 'change', node, directive.listener = function (ev) {
