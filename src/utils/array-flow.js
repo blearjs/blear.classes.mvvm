@@ -1,5 +1,5 @@
 /**
- * 数组流动（不严格）
+ * 数组流
  * @author ydr.me
  * @created 2016-12-25 19:54
  */
@@ -8,14 +8,9 @@
 'use strict';
 
 var array = require('blear.utils.array');
+var typeis = require('blear.utils.typeis');
 
-var toString = function (str) {
-    return str === null || str === undefined ? '' : str + '';
-};
-
-var isSimilar = function (a, b) {
-    return toString(a) === toString(b);
-};
+var strFlow = require('./string-flow');
 
 exports.boo = typeis.Boolean;
 
@@ -23,7 +18,7 @@ var fd = exports.fd = function (arr, val) {
     var foundIndex = -1;
 
     array.each(arr, function (index, item) {
-        if (isSimilar(item, val)) {
+        if (strFlow.similar(item, val)) {
             foundIndex = index;
             return false;
         }

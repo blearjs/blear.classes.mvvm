@@ -7,16 +7,14 @@
 
 'use strict';
 
-var attribute = require('blear.core.attribute');
 var event = require('blear.core.event');
-var time = require('blear.utils.time');
 
 var pack = require('./pack');
-var eventParser = require('../parsers/event');
-var varible = require('../utils/varible');
-var checkbox = require('./models/checkbox');
-var text = require('./models/text');
-var configs = require('../configs');
+var cateMap = {
+    text: require('./models/text'),
+    checkbox: require('./models/checkbox'),
+    radio: require('./models/radio')
+};
 
 module.exports = pack({
     init: function (node) {
@@ -34,29 +32,20 @@ module.exports = pack({
             case 'password':
             case 'textarea':
                 modelCate = 'text';
-                text.init(the, node);
                 break;
 
             case 'checkbox':
+            case 'radio':
                 modelCate = inputType;
-                checkbox.init(the, node);
                 break;
         }
 
         the.modelCate = modelCate;
+        cateMap[modelCate].init(the, node);
     },
     update: function (node, newVal, oldVal) {
         var the = this;
-
-        switch (the.modelCate) {
-            case 'checkbox':
-                checkbox.update(the, node, newVal);
-                break;
-
-            case 'text':
-                text.update(the, node, newVal);
-                break;
-        }
+        cateMap[the.modelCate].update(the, node, newVal);
     },
     destroy: function () {
         var the = this;

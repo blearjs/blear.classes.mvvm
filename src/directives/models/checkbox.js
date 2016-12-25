@@ -14,39 +14,7 @@ var event = require('blear.core.event');
 var varible = require('../../utils/varible');
 var eventParser = require('../../parsers/event');
 var configs = require('../../configs');
-
-var utils = {
-    boo: typeis.Boolean,
-
-    fd: function (arr, val) {
-        var foundIndex = -1;
-
-        array.each(arr, function (index, item) {
-            if (item + '' === val + '') {
-                foundIndex = index;
-                return false;
-            }
-        });
-
-        return foundIndex;
-    },
-
-    set: function (arr, val) {
-        var foundIndex = utils.fd(arr, val);
-
-        if (foundIndex === -1) {
-            arr.push(val);
-        }
-    },
-
-    rm: function (arr, val) {
-        var foundIndex = utils.fd(arr, val);
-
-        if (foundIndex !== -1) {
-            arr.splice(foundIndex, 1);
-        }
-    }
-};
+var utils = require('../../utils/array-flow');
 
 var utilsName = varible();
 var updateName = varible();

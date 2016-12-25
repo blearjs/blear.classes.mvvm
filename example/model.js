@@ -13,8 +13,9 @@ var MVVM = require('../src/index');
 
 var data = window.data = {
     text: 'text',
-    checkbox: [],
-    checkbox2: true
+    checkbox: [1],
+    checkbox2: true,
+    radio: 1
 };
 
 new MVVM({
