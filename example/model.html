@@ -74,7 +74,7 @@
         <p><input type="text" @model="text"></p>
     </fieldset>
     <fieldset>
-        <legend>input:checkbox</legend>
+        <legend>input:checkbox:array</legend>
         <p>checkbox: {{checkbox}}</p>
         <label><input type="checkbox" @model="checkbox" name="checkbox" value="1">1</label>
         <label><input type="checkbox" @model="checkbox" name="checkbox" value="2">2</label>
@@ -84,6 +84,12 @@
         <label><input type="checkbox" @model="checkbox" name="checkbox" value="2">2</label>
         <label><input type="checkbox" @model="checkbox" name="checkbox" value="3">3</label>
         <label><input type="checkbox" @model="checkbox" name="checkbox" value="4">4</label>
+    </fieldset>
+    <fieldset>
+        <legend>input:checkbox:boolean</legend>
+        <p>checkbox: {{checkbox2 ? '已阅读' : '未阅读'}}</p>
+        <label><input type="checkbox" @model="checkbox2" name="checkbox2" value="4">已阅读</label><br>
+        <label><input type="checkbox" @model="checkbox2" name="checkbox2" value="4">已阅读</label>
     </fieldset>
 </div>
 
