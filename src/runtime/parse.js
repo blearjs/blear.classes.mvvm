@@ -32,16 +32,18 @@ exports.attr = function (node, attr, mvvm, scope) {
 
     var name = nodeName.slice(1);
     var value = attr.nodeValue;
-    var directive = directives[name]();
-    var desc = {
-        node: node,
-        attr: attr,
-        expression: value
-    };
+    var directiveFn = directives[name];
 
     node.removeAttribute(nodeName);
 
-    if (directive) {
+    if (directiveFn) {
+        var directive = directiveFn();
+        var desc = {
+            node: node,
+            attr: attr,
+            expression: value
+        };
+
         directive.scope = scope;
         directive.mvvm = mvvm;
         directive.desc = desc;
@@ -64,5 +66,5 @@ exports.attr = function (node, attr, mvvm, scope) {
 
 
 exports.text = function (node, mvvm, scope) {
-    textParse(node.textContent);
+    var tokens = textParse(node.textContent);
 };

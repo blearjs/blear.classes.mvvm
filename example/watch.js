@@ -42,4 +42,5 @@ document.getElementById('set6').onclick = function () {
     data.list.sort(function () {
         return Math.random() > 0.5;
     });
+    console.log(data.list);
 };
