@@ -279,7 +279,6 @@ module.exports = function parseExpressionToGetter(expression) {
     var body =
         // 设置监听指向
         'if(' + monitorName + '&&' + directiveName + '){' +
-            'debugger;' +
         /****/monitorName + '.target=' + directiveName + ';' +
         '}' +
 

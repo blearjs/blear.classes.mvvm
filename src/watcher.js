@@ -50,16 +50,35 @@ var Watcher = Events.extend({
     watch: function (callback) {
 
     },
+
+    /**
+     * 私有方法，仅限制 blear 模块之间调用，
+     * 除非你知道如何使用，
+     * link 方法将数据获取与源头字段一一关联，
+     * 需要使用者自己处理监听的 watcher 是否一致。
+     *
+     * @param callback
+     * @returns {*}
+     * @private
+     */
     _link: function (callback) {
         var the = this;
 
         if (the[_linking]) {
-            return the;
+            return;
         }
 
         the[_linking] = true;
         the[_linker] = fun.noop(callback);
     },
+
+
+    /**
+     * 私有方法，仅限制 blear 模块之间调用，
+     * 在处理完成精确数据变化监听关系之后断开连接。
+     *
+     * @private
+     */
     _linkEnd: function () {
         this[_linkend] = true;
     }

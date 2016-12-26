@@ -49,11 +49,17 @@ exports.add = function (directive) {
     var watcher = directive.watcher = new Watcher(scope);
 
     watcher._link(function () {
+        // 当前没有绑定阶段的监听
         if (!exports.target) {
             return;
         }
 
         var bindingDirective = exports.target;
+
+        // 不是指令对应的 watcher
+        if (bindingDirective.watcher !== watcher) {
+            return;
+        }
 
         return bindingDirective.dispath;
     });
@@ -80,6 +86,7 @@ exports.start = function () {
             directive.update(node, newVal, oldVal);
             oldVal = newVal;
         };
+        directive.dispath.directive = directive;
 
         directive.init(node);
 
