@@ -60,26 +60,48 @@
 
         .c {
             background: #eee;
+        }
+
+        .red {
             color: #ff5783;
         }
 
-        .d {
+        .blue {
             color: #4855ff;
+        }
+
+        .e {
+            font-size: 14px;
+        }
+
+        .f {
+            font-style: italic;
+        }
+
+        .g {
+            text-align: right;
         }
     </style>
 </head>
 <body ontouchstart="">
 
 <div id="app">
-    <p class="a" @class="'b'">这里应该是黑底白字</p>
-    <p class="a" @class="['b']">这里应该是黑底白字</p>
-    <p class="a" @class="{b}">这里应该是黑底白字</p>
-    <p class="a" @class="[{b}]">这里应该是黑底白字</p>
-    <p class="a" @class="{b: true}">这里应该是黑底白字</p>
-    <p class="a" @class="[{b: true}]">这里应该是黑底白字</p>
+    <!--<p class="a" @class="'b'">这里应该是黑底白字</p>-->
+    <!--<p class="a" @class="['b']">这里应该是黑底白字</p>-->
+    <!--<p class="a" @class="{b}">这里应该是黑底白字</p>-->
+    <!--<p class="a" @class="[{b}]">这里应该是黑底白字</p>-->
+    <!--<p class="a" @class="{b: true}">这里应该是黑底白字</p>-->
+    <!--<p class="a" @class="[{b: true}]">这里应该是黑底白字</p>-->
     <hr>
-    <p class="c" @class="[d]">灰底{{d ? '红字' : '蓝字'}}</p>
-    <button @click="d=!d">改变 d 变量</button>
+    <p class="c" @class="[d]">灰底{{d == 'red' ? '红字' : '蓝字'}}</p>
+    <button @click="d = d === 'red' ? 'blue' : 'red';">d = {{d}}</button>
+    <!--<hr>-->
+    <!--<p class="c" @class="[{e}, d]">小字体，灰底{{d == 'red' ? '红字' : '蓝字'}}</p>-->
+    <!--<hr>-->
+    <!--<p class="c" @class="[{e, f: true}, d]">斜体，小字体，灰底{{d == 'red' ? '红字' : '蓝字'}}</p>-->
+    <!--<hr>-->
+    <!--<p class="c" @class="[{e, f: true, g: g}, d]">{{g?'左':'右'}}对齐，斜体，小字体，灰底{{d == 'red' ? '红字' : '蓝字'}}</p>-->
+    <!--<button @click="g = !g">改为 {{g?'左':'右'}} 对齐</button>-->
 </div>
 
 

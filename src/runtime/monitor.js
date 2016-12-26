@@ -48,14 +48,12 @@ exports.add = function (directive) {
     var scope = directive.scope;
     var watcher = directive.watcher = new Watcher(scope);
 
-    watcher.link(function () {
+    watcher._link(function () {
         if (!exports.target) {
             return;
         }
 
         var bindingDirective = exports.target;
-        // 不能省略
-        exports.target = null;
 
         return bindingDirective.dispath;
     });
@@ -72,6 +70,7 @@ exports.start = function () {
         var desc = directive.desc;
         var scope = directive.scope;
         var getter = directive.getter;
+        var watcher = directive.watcher;
         var node = desc.node;
         var oldVal;
 
@@ -90,7 +89,16 @@ exports.start = function () {
             directive.getter = null;
         }
 
+        // 不能省略
+        exports.target = null;
+        watcher._linkEnd();
+
         directive.bind(node, oldVal);
+
+        if (typeof DEBUG !== 'undefined' && DEBUG) {
+            node.directives = node.directives || [];
+            node.directives.push(directive);
+        }
     });
 };
 

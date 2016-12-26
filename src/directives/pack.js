@@ -30,7 +30,7 @@ module.exports = function (directive) {
                     return directive.parse.call(this, desc);
                 }
 
-                return desc.val;
+                return desc.value;
             },
 
             init: function (node) {

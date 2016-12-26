@@ -42,8 +42,7 @@ var Watcher = Events.extend({
         Watcher.parent(the);
         the[_options] = object.assign({}, defaults, options);
         the[_linking] = false;
-        the[_linked] = false;
-        the[_link] = null;
+        the[_linker] = null;
         the[_linkage] = null;
         the[_guid] = random.guid();
         the[_watchStart](data);
@@ -51,7 +50,7 @@ var Watcher = Events.extend({
     watch: function (callback) {
 
     },
-    link: function (callback) {
+    _link: function (callback) {
         var the = this;
 
         if (the[_linking]) {
@@ -59,15 +58,18 @@ var Watcher = Events.extend({
         }
 
         the[_linking] = true;
-        the[_link] = fun.noop(callback);
+        the[_linker] = fun.noop(callback);
+    },
+    _linkEnd: function () {
+        this[_linkend] = true;
     }
 });
 var _options = Watcher.sole();
 var _guid = Watcher.sole();
 var _linking = Watcher.sole();
-var _linked = Watcher.sole();
 var _linkage = Watcher.sole();
-var _link = Watcher.sole();
+var _linker = Watcher.sole();
+var _linkend = Watcher.sole();
 var _watchStart = Watcher.sole();
 var _watchRegist = Watcher.sole();
 var _watchObj = Watcher.sole();
@@ -309,13 +311,12 @@ pro[_linkWatcher] = function (obj, key, val) {
 
     mountTarget[LINKAGE_MAP][mountKey] = linkageList;
     array.each(watcherList, function (index, watcher) {
-        var link = watcher[_link];
+        var link = watcher[_linker];
 
-        if (watcher[_linking] && !watcher[_linked]) {
+        if (watcher[_linking] && !watcher[_linkend]) {
             var linkage = link();
 
             if (typeis.Function(linkage)) {
-                watcher[_linked] = true;
                 linkageList.push(linkage);
             }
         }

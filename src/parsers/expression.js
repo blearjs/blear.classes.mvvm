@@ -274,25 +274,19 @@ module.exports = function parseExpressionToGetter(expression) {
     var scopeName = varible();
     var monitorName = varible();
     var directiveName = varible();
-    var resultName = varible();
     var errorName = varible();
 
     var body =
         // 设置监听指向
         'if(' + monitorName + '&&' + directiveName + '){' +
+            'debugger;' +
         /****/monitorName + '.target=' + directiveName + ';' +
         '}' +
 
-        'try{' +
-        /****/'var ' + resultName + '="";' +
-        /****/'with(' + scopeName + '){' +
-        /****//****/resultName + '=' + expression + ';' +
-        /****/'}' +
 
-        /****/'if(' + resultName + '===null||' + resultName + '===undefined){' +
-        /****//****/'return "";' +
-        /****/'}else{' +
-        /****//****/'return ' + resultName + ';' +
+        'try{' +
+        /****/'with(' + scopeName + '){' +
+        /****//****/ 'return ' + expression + ';' +
         /****/'}' +
         '}catch(' + errorName + '){' +
         /****/'if(typeof DEBUG!=="undefined"&&DEBUG) {' +

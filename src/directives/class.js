@@ -13,6 +13,7 @@ var attribute = require('blear.core.attribute');
 
 var pack = require('./pack');
 var varible = require('../utils/varible');
+var arrayCompare = require('../utils/array-compare');
 
 var mapRE = /\{.*?}/g;
 var groupRE = /\s*,\s*/;
@@ -33,12 +34,12 @@ module.exports = pack({
     // [{a: b, c}, d] => map: {"a": "b", c: true}, list: ["d"]
     // [{a: b, c}, d, "e"] => map: {"a": "b", c: true, e: true}, list: ["d"]
     parse: function (desc) {
-        var val = desc.val;
+        var value = desc.value;
         var map = {};
         var list = [];
 
         // 先按 {} 分组
-        var mapMatches = val.match(mapRE) || [];
+        var mapMatches = value.match(mapRE) || [];
         array.each(mapMatches, function (index, match) {
             // 去除左右 {、}
             match = match.slice(1, -1);
@@ -55,8 +56,8 @@ module.exports = pack({
         });
 
         // 剩余部分
-        val = val.replace(mapRE, '').replace(arrRE, '');
-        var listMatches = val.split(groupRE);
+        value = value.replace(mapRE, '').replace(arrRE, '');
+        var listMatches = value.split(groupRE);
         array.each(listMatches, function (index, match) {
             if (!match) {
                 return;
@@ -81,20 +82,32 @@ module.exports = pack({
         var listExpList = [];
         array.each(list, function (index, val) {
             listExpList.push(
-                val
+                'String(' + val + ')'
             );
         });
         var listExp = '[' + listExpList.join(',') + ']';
 
         return '{map:' + mapExp + ',list:' + listExp + '}';
     },
-    update: function (node, newVal) {
+    update: function (node, newVal, oldVal) {
+        oldVal = oldVal || {list: []};
+
         object.each(newVal.map, function (key, val) {
             if (val) {
                 attribute.addClass(node, key);
             } else {
                 attribute.removeClass(node, key);
             }
+        });
+
+        var diff = arrayCompare(oldVal.list, newVal.list);
+
+        array.each(diff.insert, function (index, val) {
+            attribute.addClass(node, val);
+        });
+
+        array.each(diff.remove, function (index, val) {
+            attribute.removeClass(node, val);
         });
     }
 });

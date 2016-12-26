@@ -12,7 +12,8 @@ var random = require('blear.utils.random');
 var MVVM = require('../src/index');
 
 var data = window.data = {
-    d: true
+    d: 'red',
+    g: false
 };
 
 new MVVM({
