@@ -7,7 +7,7 @@
 - @once（一次性绑定，不监听）
 - @event √
 - @model（checkbox、radio、select、text）√
-- @class（注意连字符）
+- @class（注意连字符）√
 - @style（注意连字符）
 - @attr（注意连字符）
 - @if

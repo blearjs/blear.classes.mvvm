@@ -270,6 +270,11 @@ var varible = require('../utils/varible');
 // };
 
 
+/**
+ * 解析字符串表达式为函数表达式
+ * @param expression
+ * @returns {Function}
+ */
 module.exports = function parseExpressionToGetter(expression) {
     var scopeName = varible();
     var monitorName = varible();

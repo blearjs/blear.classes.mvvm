@@ -14,6 +14,12 @@ var excuteRE = /\(.*?\)\s*?$/;
 var operatorRE = /[!+-=*/]/;
 
 
+/**
+ * 解析事件字符串为函数表达式
+ * @param expression
+ * @param utilsName
+ * @returns {Function}
+ */
 module.exports = function (expression, utilsName) {
     utilsName = utilsName || varible();
     var scopeName = varible();

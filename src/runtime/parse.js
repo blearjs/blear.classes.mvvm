@@ -19,28 +19,48 @@ var directives = require('../directives/index');
 var monitor = require('./monitor');
 var configs = require('../configs');
 
-var directiveAttrRE;
+var eventDirectiveRE;
+var attrDirectiveRE;
+var controlDirectiveRE;
+var EVENT_STR = 'event';
+var ATTR_STR = 'attr';
+var CONTROL_STR = 'control';
+
+
+function compileRegExp() {
+    eventDirectiveRE = new RegExp('^' + string.escapeRegExp(configs.eventDirective));
+    attrDirectiveRE = new RegExp('^' + string.escapeRegExp(configs.attrDirective));
+    controlDirectiveRE = new RegExp('^' + string.escapeRegExp(configs.controlDirective));
+}
+
 
 /**
  * 解析属性节点为指令信息
- * @param {Node} node
+ * @param {HTMLElement} node
  * @param {Node} attr
  * @param {Object} scope
  * @param {ViewModel} vm
  */
 exports.attr = function (node, attr, scope, vm) {
     var attrName = attr.nodeName;
+    var category = '';
 
-    if (!directiveAttrRE) {
-        directiveAttrRE = new RegExp('^' + string.escapeRegExp(configs.directiveAttr));
+    if (!attrDirectiveRE) {
+        compileRegExp();
     }
 
-    if (!directiveAttrRE.test(attrName)) {
+    if (eventDirectiveRE.test(attrName)) {
+        category = EVENT_STR;
+    } else if (attrDirectiveRE.test(attrName)) {
+        category = ATTR_STR;
+    } else if (controlDirectiveRE.test(attrName)) {
+        category = CONTROL_STR;
+    } else {
         return;
     }
 
-    var name = attrName.replace(directiveAttrRE, '');
-    var exp = attr.nodeValue;
+    var name = attrName.replace(attrDirectiveRE, '');
+    var attrValue = attr.nodeValue;
     // @click.enter.false
     var nameArr = name.split('.');
     var directiveName = nameArr.shift();
@@ -50,43 +70,45 @@ exports.attr = function (node, attr, scope, vm) {
         return prevVal;
     }, {});
 
-    if (typeof DEBUG === 'undefined' || !DEBUG) {
-        node.removeAttribute(attrName);
-    }
+    node.removeAttribute(attrName);
 
-    var desc = {
-        node: node,
-        attr: attr,
-        name: directiveName,
-        filters: directiveFilters,
-        value: exp
-    };
     var maybeOnDirective = !directiveFn;
     var directive = maybeOnDirective ? directives.on() : directiveFn();
-    desc.exp = exp = directive.parse(desc);
 
-    // 事件指令
-    if (maybeOnDirective) {
-        var exectter = eventParser(exp);
-        directive.exec = function (el, ev) {
-            return exectter.call(scope, el, ev, scope);
-        };
-    }
-    // 普通指令
-    else {
-        var getter = expressionParser(exp);
-        directive.getter = getter;
-        directive.eval = function () {
-            return getter.call(scope, scope);
-        };
-    }
-
+    directive.node = node;
+    directive.attr = attr;
+    directive.name = directiveName;
+    directive.filters = directiveFilters;
+    directive.value = attrValue;
+    directive.category = category;
     directive.name = directiveName;
     directive.scope = scope;
     directive.vm = vm;
-    directive.desc = desc;
+    var exp = directive.exp = directive.parse();
+
+    switch (category) {
+        case EVENT_STR:
+                var exectter = eventParser(exp);
+                directive.exec = function (el, ev) {
+                    return exectter.call(scope, el, ev, scope);
+                };
+            break;
+
+        case ATTR_STR:
+                var getter = expressionParser(exp);
+                directive.getter = getter;
+                directive.eval = function () {
+                    return getter.call(scope, scope);
+                };
+            break;
+
+        case CONTROL_STR:
+            break;
+    }
+
     vm.add(directive);
     monitor.add(directive);
+
     return directive.aborted;
 };
 
