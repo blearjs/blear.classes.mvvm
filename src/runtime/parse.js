@@ -43,7 +43,9 @@ function compileRegExp() {
  */
 exports.attr = function (node, attr, scope, vm) {
     var attrName = attr.nodeName;
+    var attrValue = attr.nodeValue;
     var category = '';
+    var directive;
 
     if (!attrDirectiveRE) {
         compileRegExp();
@@ -51,29 +53,37 @@ exports.attr = function (node, attr, scope, vm) {
 
     if (eventDirectiveRE.test(attrName)) {
         category = EVENT_STR;
+        directive = directives.event();
     } else if (attrDirectiveRE.test(attrName)) {
         category = ATTR_STR;
+        directive = directives.attr();
     } else if (controlDirectiveRE.test(attrName)) {
         category = CONTROL_STR;
     } else {
         return;
     }
 
+    if (!directive) {
+
+        if (typeof DEBUG !== 'undefined' && DEBUG) {
+            console.error('未匹配到', category, '指令：');
+            console.error('attrName: ', attrName);
+            console.error('attrValue: ', attrValue);
+        }
+
+        return;
+    }
+
     var name = attrName.replace(attrDirectiveRE, '');
-    var attrValue = attr.nodeValue;
     // @click.enter.false
     var nameArr = name.split('.');
     var directiveName = nameArr.shift();
-    var directiveFn = directives[directiveName];
     var directiveFilters = array.reduce(nameArr, function (prevVal, nowVal) {
         prevVal[nowVal] = true;
         return prevVal;
     }, {});
 
     node.removeAttribute(attrName);
-
-    var maybeOnDirective = !directiveFn;
-    var directive = maybeOnDirective ? directives.on() : directiveFn();
 
     directive.node = node;
     directive.attr = attr;
@@ -84,22 +94,22 @@ exports.attr = function (node, attr, scope, vm) {
     directive.name = directiveName;
     directive.scope = scope;
     directive.vm = vm;
-    var exp = directive.exp = directive.parse();
+    directive.exp = directive.parse() || attrValue;
 
     switch (category) {
         case EVENT_STR:
-                var exectter = eventParser(exp);
-                directive.exec = function (el, ev) {
-                    return exectter.call(scope, el, ev, scope);
-                };
+            var exectter = eventParser(directive.exp);
+            directive.exec = function (el, ev) {
+                return exectter.call(scope, el, ev, scope);
+            };
             break;
 
         case ATTR_STR:
-                var getter = expressionParser(exp);
-                directive.getter = getter;
-                directive.eval = function () {
-                    return getter.call(scope, scope);
-                };
+            var getter = expressionParser(directive.exp);
+            directive.getter = getter;
+            directive.eval = function () {
+                return getter.call(scope, scope);
+            };
             break;
 
         case CONTROL_STR:

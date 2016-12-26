@@ -11,7 +11,7 @@
 exports.html = require('./html');
 exports.text = require('./text');
 exports.for = require('./for');
-exports.on = require('./on');
+exports.event = require('./event');
 exports.model = require('./model');
 exports.attr = require('./attr');
 
