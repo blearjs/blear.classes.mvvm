@@ -1,5 +1,5 @@
 /**
- * 解析
+ * 解析（属性、文本）
  * @author ydr.me
  * @created 2016-12-20 22:22
  */
@@ -9,6 +9,7 @@
 
 var array = require('blear.utils.array');
 var event = require('blear.core.event');
+var modification = require('blear.core.modification');
 
 var expressionParser = require('../parsers/expression');
 var textParser = require('../parsers/text');
@@ -52,7 +53,6 @@ exports.attr = function (node, attr, scope, vm) {
         exp: exp,
         filters: directiveFilters
     };
-
     var maybeOnDirective = !directiveFn;
     var directive = maybeOnDirective ? directives.on() : directiveFn();
 
@@ -83,6 +83,25 @@ exports.attr = function (node, attr, scope, vm) {
 };
 
 
+var replaceTextNodes = function (node, tokens) {
+    var childNodes = [];
+
+    array.each(tokens, function (index, token) {
+        var childNode = modification.create('#text', token);
+        childNodes.push(childNode);
+        modification.insert(childNode, node, 3);
+    });
+
+    node.textContent = '';
+    return childNodes;
+};
+//
+//
+// var createTextNode = function (node, scope, vm, expression) {
+//
+// };
+
+
 /**
  * 解析文本节点为指令信息
  * @param {Node} node
@@ -91,26 +110,47 @@ exports.attr = function (node, attr, scope, vm) {
  */
 exports.text = function (node, scope, vm) {
     var expression = node.textContent;
-    var getter = textParser(expression);
+    var tokens = textParser(expression);
 
-    if (getter === null) {
+    // 纯文本，直接跳过
+    if (tokens === null) {
         return;
     }
 
-    var directive = directives.text();
-    var desc = {
-        node: node,
-        attr: null,
-        expression: expression
-    };
-    directive.scope = scope;
-    directive.vm = vm;
-    directive.desc = desc;
-    directive.getter = getter;
-    directive.get = function () {
-        return getter.call(scope, scope);
-    };
+    // 替换节点，进行精细化更新
+    var textNodes = [];
 
-    vm.add(directive);
-    monitor.add(directive);
+    array.each(tokens, function (index, token) {
+        var childNode = modification.create('#text', token.value);
+        textNodes.push(childNode);
+        modification.insert(childNode, node, 0);
+    });
+
+    node.textContent = '';
+
+    array.each(textNodes, function (index, node) {
+        var token = tokens[index];
+
+        if(!token.tag) {
+            return;
+        }
+
+        var getter = expressionParser(token.value);
+        var directive = directives.text();
+        var desc = {
+            node: node,
+            attr: null,
+            expression: expression
+        };
+        directive.scope = scope;
+        directive.vm = vm;
+        directive.desc = desc;
+        directive.getter = getter;
+        directive.get = function () {
+            return getter.call(scope, scope);
+        };
+
+        vm.add(directive);
+        monitor.add(directive);
+    });
 };

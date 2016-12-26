@@ -11,7 +11,6 @@ var string = require('blear.utils.string');
 var array = require('blear.utils.array');
 var modification = require('blear.core.modification');
 
-var parseExpression = require('./expression.js');
 var configs = require('../configs');
 
 var tagRE;
@@ -23,7 +22,7 @@ var escapeRegExp = string.escapeRegExp;
  * @type {exports.compileRegex}
  * @type {function}
  */
-var compileRegex = function compileRegex() {
+function compileRegex() {
     var open = escapeRegExp(configs.textOpenTag);
     var close = escapeRegExp(configs.textCloseTag);
 
@@ -31,7 +30,7 @@ var compileRegex = function compileRegex() {
         open + '(.+?)' + close,
         'g'
     );
-};
+}
 
 
 /**
@@ -90,33 +89,35 @@ function parseTextToTokens(text) {
     return tokens
 }
 
+//
+// /**
+//  * 解析文本为表达式执行函数
+//  * @param text
+//  * @returns {Function|null}
+//  */
+// var parseTextToGetter = function parseTextToGetter(text) {
+//     var tokens = parseTextToTokens(text);
+//
+//     if (tokens === null) {
+//         return null;
+//     }
+//
+//     var expressionList = [];
+//
+//     array.each(tokens, function (index, token) {
+//         var expression = '';
+//
+//         if (token.tag) {
+//             expression += '(' + token.value + ')';
+//         } else {
+//             expression += '"' + string.textify(token.value) + '"';
+//         }
+//
+//         expressionList.push(expression);
+//     });
+//
+//     return parseExpression(expressionList.join(' + '));
+// };
 
-/**
- * 解析文本为表达式执行函数
- * @param text
- * @returns {Function|null}
- */
-module.exports = function parseTextToGetter(text) {
-    var tokens = parseTextToTokens(text);
 
-    if (tokens === null) {
-        return null;
-    }
-
-    var expressionList = [];
-
-    array.each(tokens, function (index, token) {
-        var expression = '';
-
-        if (token.tag) {
-            expression += '(' + token.value + ')';
-        } else {
-            expression += '"' + string.textify(token.value) + '"';
-        }
-
-        expressionList.push(expression);
-    });
-
-    return parseExpression(expressionList.join(' + '));
-};
-
+module.exports = parseTextToTokens;
