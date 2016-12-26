@@ -16,7 +16,7 @@ var varible = require('../utils/varible');
 var map = {
     style: require('./attr/style'),
     class: require('./attr/class'),
-    default: ''
+    default: require('./attr/default')
 };
 
 
@@ -28,8 +28,10 @@ var itemRE = /\s*[:=]\s*/;
 var arrRE = /^\[|]$/g;
 var strRE = /^["']/;
 var spaceRE = /\s+/;
-var TRUE_STR = 'true';
 var className = varible();
+var TRUE_STR = 'true';
+var STYLE_STR = 'style';
+var CLASS_STR = 'class';
 
 module.exports = pack({
     // a => list: ["a"]
@@ -43,8 +45,13 @@ module.exports = pack({
     parse: function () {
         var value = this.value;
         var name = this.name;
+
+        if (name !== STYLE_STR && name !== CLASS_STR) {
+            return value;
+        }
+
         // class 会进行布尔值转换，其他的不需要
-        var fun = name === 'class' ? 'Boolean' : '';
+        var fun = name === CLASS_STR ? 'Boolean' : '';
         var map = {};
         var list = [];
 

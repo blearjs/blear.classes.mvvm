@@ -50,7 +50,7 @@ function compileRegExp() {
  * @param {ViewModel} vm
  */
 exports.attr = function (node, attr, scope, vm) {
-    var attrName = attr.nodeName;
+    var attrName = attr.nodeName.toLowerCase();
     var attrValue = attr.nodeValue;
     var category = '';
     var fullname = '';
