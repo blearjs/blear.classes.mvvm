@@ -13,5 +13,6 @@ exports.text = require('./text');
 exports.for = require('./for');
 exports.on = require('./on');
 exports.model = require('./model');
+exports.class = require('./class');
 
 

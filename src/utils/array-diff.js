@@ -3,7 +3,6 @@
  * @link https://github.com/derbyjs/arraydiff
  * @author ydr.me
  * @created 2016-12-22 13:04
- * @updated 已做修改
  */
 
 

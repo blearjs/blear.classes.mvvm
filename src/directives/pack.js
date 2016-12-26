@@ -8,6 +8,7 @@
 'use strict';
 
 var fun = require('blear.utils.function');
+var typeis = require('blear.utils.typeis');
 var random = require('blear.utils.random');
 var array = require('blear.utils.array');
 
@@ -23,6 +24,15 @@ module.exports = function (directive) {
             bound: false,
             updated: false,
             destroyed: false,
+
+            parse: function (exp) {
+                if (typeis.Function(directive.parse)) {
+                    return directive.parse(exp);
+                }
+
+                return exp;
+            },
+
             init: function (node) {
                 var the = this;
                 fun.noop(directive.init).apply(the, arguments);

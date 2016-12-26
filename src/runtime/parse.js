@@ -50,11 +50,11 @@ exports.attr = function (node, attr, scope, vm) {
         node: node,
         attr: attr,
         name: directiveName,
-        exp: exp,
         filters: directiveFilters
     };
     var maybeOnDirective = !directiveFn;
     var directive = maybeOnDirective ? directives.on() : directiveFn();
+    desc.exp = exp = directive.parse(exp);
 
     // 事件指令
     if (maybeOnDirective) {
@@ -98,32 +98,24 @@ exports.text = function (node, scope, vm) {
         return;
     }
 
-    // 替换节点，进行精细化更新
-    var textNodes = [];
-
     array.each(tokens, function (index, token) {
-        var childNode = modification.create('#text', token.value);
-        textNodes.push(childNode);
-        modification.insert(childNode, node, 0);
-    });
-
-    node.textContent = '';
-
-    array.each(textNodes, function (index, node) {
-        var token = tokens[index];
+        // 替换文本节点，进行精细化更新
+        var textNode = modification.create('#text', token.value);
+        modification.insert(textNode, node, 0);
 
         // 普通文本
         if (!token.tag) {
             return;
         }
 
-        var getter = expressionParser(token.value);
         var directive = directives.text();
+        var exp = directive.parse(token.value);
         var desc = {
-            node: node,
+            node: textNode,
             attr: null,
-            expression: expression
+            exp: exp
         };
+        var getter = expressionParser(exp);
         directive.scope = scope;
         directive.vm = vm;
         directive.desc = desc;
@@ -135,4 +127,12 @@ exports.text = function (node, scope, vm) {
         vm.add(directive);
         monitor.add(directive);
     });
+
+    if (typeof DEBUG !== 'undefined' && DEBUG) {
+        var commentNode = modification.create('#comment', node.textContent);
+        modification.replace(commentNode, node);
+    } else {
+        // 移除原始节点
+        modification.remove(node);
+    }
 };
