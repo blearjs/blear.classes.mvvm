@@ -10,6 +10,12 @@
 var array = require('blear.utils.array');
 
 
+/**
+ * 比较两个数组
+ * @param {Array} before
+ * @param {Array} after
+ * @returns {{insert: Array, remove: Array}}
+ */
 module.exports = function (before, after) {
     var beforeMap = array.reduce(before, function (p, n) {
         p[n] = true;

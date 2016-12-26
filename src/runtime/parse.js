@@ -22,15 +22,18 @@ var configs = require('../configs');
 var eventDirectiveRE;
 var attrDirectiveRE;
 var controlDirectiveRE;
+var directiveFilterDelimiterRE;
 var EVENT_STR = 'event';
 var ATTR_STR = 'attr';
 var CONTROL_STR = 'control';
+var TEXT_STR = 'text';
 
 
 function compileRegExp() {
     eventDirectiveRE = new RegExp('^' + string.escapeRegExp(configs.eventDirective));
     attrDirectiveRE = new RegExp('^' + string.escapeRegExp(configs.attrDirective));
     controlDirectiveRE = new RegExp('^' + string.escapeRegExp(configs.controlDirective));
+    directiveFilterDelimiterRE = new RegExp('^' + string.escapeRegExp(configs.directiveFilterDelimiter));
 }
 
 
@@ -74,11 +77,11 @@ exports.attr = function (node, attr, scope, vm) {
         return;
     }
 
-    var name = attrName.replace(attrDirectiveRE, '');
+    var fullname = attrName.replace(attrDirectiveRE, '');
     // @click.enter.false
-    var nameArr = name.split('.');
-    var directiveName = nameArr.shift();
-    var directiveFilters = array.reduce(nameArr, function (prevVal, nowVal) {
+    var delimiters = fullname.split(directiveFilterDelimiterRE);
+    var name = delimiters.shift();
+    var filtes = array.reduce(delimiters, function (prevVal, nowVal) {
         prevVal[nowVal] = true;
         return prevVal;
     }, {});
@@ -87,11 +90,10 @@ exports.attr = function (node, attr, scope, vm) {
 
     directive.node = node;
     directive.attr = attr;
-    directive.name = directiveName;
-    directive.filters = directiveFilters;
+    directive.name = name;
+    directive.filters = filtes;
     directive.value = attrValue;
     directive.category = category;
-    directive.name = directiveName;
     directive.scope = scope;
     directive.vm = vm;
     directive.exp = directive.parse() || attrValue;
@@ -163,17 +165,18 @@ exports.text = function (node, scope, vm) {
         }
 
         var directive = directives.text();
-        var exp = token.value;
-        var desc = {
-            node: textNodes[index],
-            attr: null,
-            value: exp
-        };
-        desc.exp = exp = directive.parse(desc);
-        var getter = expressionParser(exp);
+        var tokenValue = token.value;
+
+        directive.node = textNodes[index];
+        directive.attr = null;
+        directive.value = tokenValue;
+        directive.category = TEXT_STR;
         directive.scope = scope;
         directive.vm = vm;
-        directive.desc = desc;
+        directive.exp = directive.parse() || tokenValue;
+
+        var getter = expressionParser(directive.exp);
+
         directive.getter = getter;
         directive.eval = function () {
             return getter.call(scope, scope);

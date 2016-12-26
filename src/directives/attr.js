@@ -14,10 +14,13 @@ var attribute = require('blear.core.attribute');
 var pack = require('./pack');
 var varible = require('../utils/varible');
 var arrayCompare = require('../utils/array-compare');
+var style = require('./attr/style');
 
 var mapRE = /\{.*?}/g;
-var groupRE = /\s*,\s*/;
-var itemRE = /\s*:\s*/;
+// {class1, class2: varible}
+// {bordr-width: 20px; width: 30px}
+var groupRE = /\s*[,;]\s*/;
+var itemRE = /\s*[:=]\s*/;
 var arrRE = /^\[|]$/g;
 var strRE = /^["']/;
 var spaceRE = /\s+/;
@@ -35,6 +38,9 @@ module.exports = pack({
     // [{a: b, c}, d, "e"] => map: {"a": "b", c: true, e: true}, list: ["d"]
     parse: function () {
         var value = this.value;
+        var name = this.name;
+        // class 会进行布尔值转换，其他的不需要
+        var fun = name === 'class' ? 'Boolean' : '';
         var map = {};
         var list = [];
 
@@ -73,7 +79,7 @@ module.exports = pack({
             }
 
             mapExpList.push(
-                key + ':Boolean(' + val + ')'
+                key + ':' + fun + '(' + val + ')'
             );
         });
         var mapExp = '{' + mapExpList.join(',') + '}';
@@ -89,25 +95,28 @@ module.exports = pack({
         return '{map:' + mapExp + ',list:' + listExp + '}';
     },
     update: function (node, newVal, oldVal) {
-        oldVal = oldVal || {list: []};
+        oldVal = oldVal || {map: {}, list: []};
 
-        object.each(newVal.map, function (key, val) {
-            if (val) {
-                attribute.addClass(node, key);
-            } else {
-                attribute.removeClass(node, key);
-            }
-        });
+        style.update(this, newVal, oldVal);
 
-        var diff = arrayCompare(oldVal.list, newVal.list);
-
-        array.each(diff.insert, function (index, val) {
-            attribute.addClass(node, val);
-        });
-
-        array.each(diff.remove, function (index, val) {
-            attribute.removeClass(node, val);
-        });
+        //
+        // object.each(newVal.map, function (key, val) {
+        //     if (val) {
+        //         attribute.addClass(node, key);
+        //     } else {
+        //         attribute.removeClass(node, key);
+        //     }
+        // });
+        //
+        // var diff = arrayCompare(oldVal.list, newVal.list);
+        //
+        // array.each(diff.insert, function (index, val) {
+        //     attribute.addClass(node, val);
+        // });
+        //
+        // array.each(diff.remove, function (index, val) {
+        //     attribute.removeClass(node, val);
+        // });
     }
 });
 

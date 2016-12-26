@@ -77,7 +77,10 @@
     <pre>{font-size: 20px, borderWidth: 10}</pre>
 
     <h1>示例</h1>
-    <p :style="{font-size: 20px;borderWidth: 10}">这里字体大小为 20px，边框大小为 10px</p>
+    <pre>:style="{font-size: fontSize;borderWidth: 10, border-style: 'solid'}"</pre>
+    <p :style="{font-size: fontSize;borderWidth: 10, border-style: 'solid'}">这里字体大小为 {{fontSize}}px，边框大小为 10px</p>
+    <button @click="fontSize++">+ fontSize</button>
+    <button @click="fontSize--">- fontSize（网页最小可见大小为 12px）</button>
 </div>
 
 
