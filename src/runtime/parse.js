@@ -106,7 +106,7 @@ exports.text = function (node, scope, vm) {
         return;
     }
 
-    // 必须先处理节点
+    // 1、必须先处理节点
     var textNodes = [];
     array.each(tokens, function (index, token) {
         // 替换文本节点，进行精细化更新
@@ -123,7 +123,7 @@ exports.text = function (node, scope, vm) {
         modification.remove(node);
     }
 
-    // 然后再处理指令，否则会重复处理
+    // 2、然后再处理指令，否则会重复处理
     array.each(tokens, function (index, token) {
         // 普通文本
         if (!token.tag) {

@@ -63,16 +63,15 @@ module.exports = pack({
                 return;
             }
 
-            // 判断是否为字符串形式
-            if (strRE.test(match)) {
-                map[match] = TRUE_STR;
-            } else {
-                list.push(match);
-            }
+            list.push(match);
         });
 
         var mapExpList = [];
         object.each(map, function (key, val) {
+            if (!strRE.test(key)) {
+                key = '"' + key + '"';
+            }
+
             mapExpList.push(
                 key + ':Boolean(' + val + ')'
             );
