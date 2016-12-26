@@ -43,14 +43,14 @@ pro[_compile] = function () {
     var the = this;
     var options = the[_options];
     var rootEl = the.view = selector.query(options.el)[0];
-    var fragment = modification.create('#fragment');
-    var anchorNode = anchor(rootEl, 'mvvm');
+    // var fragment = modification.create('#fragment');
+    // var anchorNode = anchor(rootEl, 'mvvm');
     var scope = object.assign(options.data, options.methods);
 
-    fragment.appendChild(rootEl);
+    // fragment.appendChild(rootEl);
     compile(rootEl, scope, null);
     monitor.start();
-    modification.insert(rootEl, anchorNode, 3);
+    // modification.insert(rootEl, anchorNode, 3);
 };
 
 // static

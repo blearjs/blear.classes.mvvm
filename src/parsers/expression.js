@@ -271,11 +271,10 @@ var varible = require('../utils/varible');
 
 
 module.exports = function parseExpressionToGetter(expression) {
-    var keyName = varible();
     var scopeName = varible();
-    var evalStrName = varible();
     var monitorName = varible();
     var directiveName = varible();
+    var resultName = varible();
     var errorName = varible();
 
     var body =
@@ -285,8 +284,15 @@ module.exports = function parseExpressionToGetter(expression) {
         '}' +
 
         'try{' +
+        /****/'var ' + resultName + '="";' +
         /****/'with(' + scopeName + '){' +
-        /****//****/'return ' + expression + ';' +
+        /****//****/resultName + '=' + expression + ';' +
+        /****/'}' +
+
+        /****/'if(' + resultName + '===null||' + resultName + '===undefined){' +
+        /****//****/'return "";' +
+        /****/'}else{' +
+        /****//****/'return String(' + resultName + ');' +
         /****/'}' +
         '}catch(' + errorName + '){' +
         /****/'if(typeof DEBUG!=="undefined"&&DEBUG) {' +
