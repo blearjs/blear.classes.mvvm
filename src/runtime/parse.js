@@ -131,7 +131,8 @@ exports.text = function (node, scope, vm) {
     array.each(textNodes, function (index, node) {
         var token = tokens[index];
 
-        if(!token.tag) {
+        // 普通文本
+        if (!token.tag) {
             return;
         }
 
