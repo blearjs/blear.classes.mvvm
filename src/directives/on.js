@@ -41,7 +41,7 @@ module.exports = pack({
     init: function (node) {
         var the = this;
         var vm = the.vm;
-        var eventType = the.type;
+        var eventType = the.name;
         var filters = the.desc.filters;
         var keyCodeMap = {};
         var shouldEqualKeyCode;

@@ -8,6 +8,7 @@
 'use strict';
 
 var array = require('blear.utils.array');
+var string = require('blear.utils.string');
 var event = require('blear.core.event');
 var modification = require('blear.core.modification');
 
@@ -16,6 +17,9 @@ var textParser = require('../parsers/text');
 var eventParser = require('../parsers/event');
 var directives = require('../directives/index');
 var monitor = require('./monitor');
+var configs = require('../configs');
+
+var directiveAttrRE;
 
 /**
  * 解析属性节点为指令信息
@@ -27,11 +31,15 @@ var monitor = require('./monitor');
 exports.attr = function (node, attr, scope, vm) {
     var attrName = attr.nodeName;
 
-    if (attrName[0] !== '@') {
+    if (!directiveAttrRE) {
+        directiveAttrRE = new RegExp('^' + string.escapeRegExp(configs.directiveAttr));
+    }
+
+    if (!directiveAttrRE.test(attrName)) {
         return;
     }
 
-    var name = attrName.slice(1);
+    var name = attrName.replace(directiveAttrRE, '');
     var exp = attr.nodeValue;
     // @click.enter.false
     var nameArr = name.split('.');
@@ -51,7 +59,7 @@ exports.attr = function (node, attr, scope, vm) {
         attr: attr,
         name: directiveName,
         filters: directiveFilters,
-        value: exp
+        val: exp
     };
     var maybeOnDirective = !directiveFn;
     var directive = maybeOnDirective ? directives.on() : directiveFn();
@@ -59,7 +67,6 @@ exports.attr = function (node, attr, scope, vm) {
 
     // 事件指令
     if (maybeOnDirective) {
-        directive.type = 'on';
         var exectter = eventParser(exp);
         directive.exec = function (el, ev) {
             return exectter.call(scope, el, ev, scope);
@@ -114,7 +121,7 @@ exports.text = function (node, scope, vm) {
         var desc = {
             node: textNode,
             attr: null,
-            value: exp
+            val: exp
         };
         desc.exp = exp = directive.parse(desc);
         var getter = expressionParser(exp);

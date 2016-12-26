@@ -46,6 +46,10 @@
             margin: 10px 0;
         }
 
+        p {
+            margin-bottom: 0.1em;
+        }
+
         .a {
             background: #000;
         }
@@ -53,12 +57,29 @@
         .b {
             color: #fff;
         }
+
+        .c {
+            background: #eee;
+            color: #ff5783;
+        }
+
+        .d {
+            color: #4855ff;
+        }
     </style>
 </head>
 <body ontouchstart="">
 
 <div id="app">
+    <p class="a" @class="'b'">这里应该是黑底白字</p>
+    <p class="a" @class="['b']">这里应该是黑底白字</p>
+    <p class="a" @class="{b}">这里应该是黑底白字</p>
+    <p class="a" @class="[{b}]">这里应该是黑底白字</p>
     <p class="a" @class="{b: true}">这里应该是黑底白字</p>
+    <p class="a" @class="[{b: true}]">这里应该是黑底白字</p>
+    <hr>
+    <p class="c" @class="[d]">灰底{{d ? '红字' : '蓝字'}}</p>
+    <button @click="d=!d">改变 d 变量</button>
 </div>
 
 

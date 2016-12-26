@@ -292,7 +292,7 @@ module.exports = function parseExpressionToGetter(expression) {
         /****/'if(' + resultName + '===null||' + resultName + '===undefined){' +
         /****//****/'return "";' +
         /****/'}else{' +
-        /****//****/'return String(' + resultName + ');' +
+        /****//****/'return ' + resultName + ';' +
         /****/'}' +
         '}catch(' + errorName + '){' +
         /****/'if(typeof DEBUG!=="undefined"&&DEBUG) {' +

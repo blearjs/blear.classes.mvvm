@@ -25,12 +25,12 @@ module.exports = function (directive) {
             updated: false,
             destroyed: false,
 
-            parse: function (exp) {
+            parse: function (desc) {
                 if (typeis.Function(directive.parse)) {
-                    return directive.parse.call(this, exp);
+                    return directive.parse.call(this, desc);
                 }
 
-                return exp;
+                return desc.val;
             },
 
             init: function (node) {
