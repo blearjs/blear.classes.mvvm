@@ -21,7 +21,8 @@ var getOptionVal = function (el) {
     return el.value || el.textContent;
 };
 
-exports.init = function (directive, node, newVal) {
+exports.init = function (directive, newVal) {
+    var node = directive.node;
     var vm = directive.vm;
 
     event.on(vm.el, 'change', node, directive.listener = function (ev) {
@@ -43,7 +44,9 @@ exports.init = function (directive, node, newVal) {
     });
 };
 
-exports.update = function (directive, node, newVal) {
+exports.update = function (directive, newVal) {
+    var node = directive.node;
+
     if (directive.vm[selecting] === node) {
         return;
     }

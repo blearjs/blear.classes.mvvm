@@ -16,7 +16,8 @@ var configs = require('../../configs');
 
 var singling = varible();
 
-exports.init = function (directive, node, newVal) {
+exports.init = function (directive, newVal) {
+    var node = directive.node;
     var modelName = directive.modelName;
     var vm = directive.vm;
 
@@ -29,7 +30,9 @@ exports.init = function (directive, node, newVal) {
     });
 };
 
-exports.update = function (directive, node, newVal) {
+exports.update = function (directive, newVal) {
+    var node = directive.node;
+
     if (directive.vm[singling] === node) {
         return;
     }

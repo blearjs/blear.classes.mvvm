@@ -78,7 +78,7 @@ module.exports = pack({
                 return;
             }
 
-            var ret = the.exec(this, ev);
+            var ret = the.eval(this, ev);
 
             if (filters['false']) {
                 return false;

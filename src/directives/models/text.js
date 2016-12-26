@@ -15,8 +15,9 @@ var varible = require('../../utils/varible');
 
 var inputing = varible();
 
-exports.init = function (directive, node) {
+exports.init = function (directive) {
     var vm = directive.vm;
+    var node = directive.node;
     var el = vm.el;
     var compositionstart = false;
 
@@ -46,7 +47,9 @@ exports.init = function (directive, node) {
     });
 };
 
-exports.update = function (directive, node, newVal) {
+exports.update = function (directive, newVal) {
+    var node = directive.node;
+
     // 避免当前正在输入的输入框重新赋值影响输入体验
     if (directive.vm[inputing] !== node) {
         node.value = newVal;

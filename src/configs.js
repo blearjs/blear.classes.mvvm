@@ -7,17 +7,13 @@
 
 'use strict';
 
-// 事件指令前缀
+// 事件、数据模型、流程控制指令前缀
 // 如：@click="onClick"
-exports.eventDirective = '@';
+exports.ctrlDirective = '@';
 
 // 属性指令前缀
 // 如：:diabled="abc"
 exports.attrDirective = ':';
-
-// 控制指令前缀
-// 如：$if="abc"
-exports.controlDirective = '$';
 
 // 指令过滤器分隔符
 // 如：@click.enter.false="onClick"

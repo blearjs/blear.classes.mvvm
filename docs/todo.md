@@ -8,7 +8,7 @@
 - @event √
 - @model（checkbox、radio、select、text）√
 - @class（注意连字符）√
-- @style（注意连字符）
+- @style（注意连字符）√
 - @attr（注意连字符）
 - @if
 - @else-if

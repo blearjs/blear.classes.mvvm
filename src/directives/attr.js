@@ -13,8 +13,12 @@ var attribute = require('blear.core.attribute');
 
 var pack = require('./pack');
 var varible = require('../utils/varible');
-var arrayCompare = require('../utils/array-compare');
-var style = require('./attr/style');
+var map = {
+    style: require('./attr/style'),
+    class: require('./attr/class'),
+    default: ''
+};
+
 
 var mapRE = /\{.*?}/g;
 // {class1, class2: varible}
@@ -97,26 +101,9 @@ module.exports = pack({
     update: function (node, newVal, oldVal) {
         oldVal = oldVal || {map: {}, list: []};
 
-        style.update(this, newVal, oldVal);
+        var processor = map[this.name] || map.default;
 
-        //
-        // object.each(newVal.map, function (key, val) {
-        //     if (val) {
-        //         attribute.addClass(node, key);
-        //     } else {
-        //         attribute.removeClass(node, key);
-        //     }
-        // });
-        //
-        // var diff = arrayCompare(oldVal.list, newVal.list);
-        //
-        // array.each(diff.insert, function (index, val) {
-        //     attribute.addClass(node, val);
-        // });
-        //
-        // array.each(diff.remove, function (index, val) {
-        //     attribute.removeClass(node, val);
-        // });
+        processor.update(this, newVal, oldVal);
     }
 });
 

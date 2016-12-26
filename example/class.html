@@ -110,38 +110,38 @@
 <div id="app">
     <h1>语法</h1>
     <pre>{静态 class} [动态 class]</pre>
-    <pre>@class="{'static-class'}"</pre>
-    <pre>@class="{'static-class1', 'static-class2': varible}"</pre>
-    <pre>@class="[dynamicClass1, dynamicClass2]"</pre>
-    <pre>@class="[dynamicClass1, dynamicClass2, {'static-class1', 'static-class2': varible}]"</pre>
+    <pre>:class="{'static-class'}"</pre>
+    <pre>:class="{'static-class1', 'static-class2': varible}"</pre>
+    <pre>:class="[dynamicClass1, dynamicClass2]"</pre>
+    <pre>:class="[dynamicClass1, dynamicClass2, {'static-class1', 'static-class2': varible}]"</pre>
 
     <h1>常量</h1>
-    <pre>@class="{color-white}"</pre>
-    <p class="black-bg" @class="{color-white}">这里应该是黑底白字</p>
-    <pre>@class="[{color-white}]"</pre>
-    <p class="black-bg" @class="[{color-white}]">这里应该是黑底白字</p>
-    <pre>@class="{color-white: true}"</pre>
-    <p class="black-bg" @class="{color-white: true}">这里应该是黑底白字</p>
-    <pre>@class="[{color-white: true}]"</pre>
-    <p class="black-bg" @class="[{color-white: true}]">这里应该是黑底白字</p>
+    <pre>:class="{color-white}"</pre>
+    <p class="black-bg" :class="{color-white}">这里应该是黑底白字</p>
+    <pre>:class="[{color-white}]"</pre>
+    <p class="black-bg" :class="[{color-white}]">这里应该是黑底白字</p>
+    <pre>:class="{color-white: true}"</pre>
+    <p class="black-bg" :class="{color-white: true}">这里应该是黑底白字</p>
+    <pre>:class="[{color-white: true}]"</pre>
+    <p class="black-bg" :class="[{color-white: true}]">这里应该是黑底白字</p>
 
     <h1>变量</h1>
-    <pre>@class="[blueOrRed]"</pre>
-    <p class="gray-bg" @class="[blueOrRed]">灰底{{blueOrRed == 'red' ? '红字' : '蓝字'}}</p>
+    <pre>:class="[blueOrRed]"</pre>
+    <p class="gray-bg" :class="[blueOrRed]">灰底{{blueOrRed == 'red' ? '红字' : '蓝字'}}</p>
     <button @click="blueOrRed = blueOrRed === 'red' ? 'blue' : 'red';">blueOrRed is {{blueOrRed}}</button>
     <hr>
-    <pre>@class="[{font-large}, blueOrRed]"</pre>
-    <p class="gray-bg" @class="[{font-large}, blueOrRed]">大字体，灰底{{blueOrRed == 'red' ? '红字' : '蓝字'}}</p>
+    <pre>:class="[{font-large}, blueOrRed]"</pre>
+    <p class="gray-bg" :class="[{font-large}, blueOrRed]">大字体，灰底{{blueOrRed == 'red' ? '红字' : '蓝字'}}</p>
     <hr>
-    <pre>@class="[{font-large, font-italic: true}, blueOrRed]"</pre>
-    <p class="gray-bg" @class="[{font-large, font-italic: true}, blueOrRed]">斜体，大字体，灰底{{blueOrRed == 'red' ? '红字' : '蓝字'}}</p>
+    <pre>:class="[{font-large, font-italic: true}, blueOrRed]"</pre>
+    <p class="gray-bg" :class="[{font-large, font-italic: true}, blueOrRed]">斜体，大字体，灰底{{blueOrRed == 'red' ? '红字' : '蓝字'}}</p>
     <hr>
-    <pre>@class="[{font-large, font-italic: true, align-right: alignRight}, blueOrRed]"</pre>
-    <p class="gray-bg" @class="[{font-large, font-italic: true, align-right: alignRight}, blueOrRed]">{{alignRight ? '右' : '左'}}对齐，斜体，大字体，
+    <pre>:class="[{font-large, font-italic: true, align-right: alignRight}, blueOrRed]"</pre>
+    <p class="gray-bg" :class="[{font-large, font-italic: true, align-right: alignRight}, blueOrRed]">{{alignRight ? '右' : '左'}}对齐，斜体，大字体，
         灰底{{blueOrRed == 'red' ? '红字' : '蓝字'}}</p>
     <button @click="alignRight = !alignRight">改为 {{alignRight ? '左' : '右'}} 对齐</button>
-    <pre>@class="[{font-large, font-italic: true, align-right: alignRight}, blueOrRed, 'h']"</pre>
-    <p class="gray-bg" @class="[{font-large, font-italic: true, align-right: alignRight}, blueOrRed, 'h']">{{alignRight ? '右' : '左'}}对齐，斜体，大字体，
+    <pre>:class="[{font-large, font-italic: true, align-right: alignRight}, blueOrRed, 'h']"</pre>
+    <p class="gray-bg" :class="[{font-large, font-italic: true, align-right: alignRight}, blueOrRed, 'h']">{{alignRight ? '右' : '左'}}对齐，斜体，大字体，
         灰底{{blueOrRed == 'red' ? '红字' : '蓝字'}}，红边框</p>
 </div>
 

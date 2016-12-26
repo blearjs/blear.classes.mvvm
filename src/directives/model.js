@@ -62,11 +62,11 @@ module.exports = pack({
         }
 
         the.modelCate = modelCate;
-        cateMap[modelCate].init(the, node);
+        cateMap[modelCate].init(the);
     },
     update: function (node, newVal, oldVal) {
         var the = this;
-        cateMap[the.modelCate].update(the, node, newVal);
+        cateMap[the.modelCate].update(the, newVal);
     },
     destroy: function () {
         var the = this;

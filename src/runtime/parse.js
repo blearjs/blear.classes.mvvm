@@ -19,20 +19,25 @@ var directives = require('../directives/index');
 var monitor = require('./monitor');
 var configs = require('../configs');
 
-var eventDirectiveRE;
 var attrDirectiveRE;
-var controlDirectiveRE;
+var ctrlDirectiveRE;
 var directiveFilterDelimiterRE;
-var EVENT_STR = 'event';
+var CTRL_STR = 'ctrl';
 var ATTR_STR = 'attr';
-var CONTROL_STR = 'control';
 var TEXT_STR = 'text';
+var EVENT_STR = 'event';
+var CONDITION_STR = 'cond';
+var MODEL_STR = 'model';
+var categoryNameMap = {};
+categoryNameMap['if'] = CONDITION_STR;
+categoryNameMap['else'] = CONDITION_STR;
+categoryNameMap['else-if'] = CONDITION_STR;
+categoryNameMap[MODEL_STR] = MODEL_STR;
 
 
 function compileRegExp() {
-    eventDirectiveRE = new RegExp('^' + string.escapeRegExp(configs.eventDirective));
     attrDirectiveRE = new RegExp('^' + string.escapeRegExp(configs.attrDirective));
-    controlDirectiveRE = new RegExp('^' + string.escapeRegExp(configs.controlDirective));
+    ctrlDirectiveRE = new RegExp('^' + string.escapeRegExp(configs.ctrlDirective));
     directiveFilterDelimiterRE = new RegExp('^' + string.escapeRegExp(configs.directiveFilterDelimiter));
 }
 
@@ -55,20 +60,43 @@ exports.attr = function (node, attr, scope, vm) {
         compileRegExp();
     }
 
-    if (eventDirectiveRE.test(attrName)) {
-        category = EVENT_STR;
-        directive = directives.event();
-        fullname = attrName.replace(eventDirectiveRE, '');
+    if (ctrlDirectiveRE.test(attrName)) {
+        category = CTRL_STR;
+        fullname = attrName.replace(ctrlDirectiveRE, '');
     } else if (attrDirectiveRE.test(attrName)) {
         category = ATTR_STR;
-        directive = directives.attr();
         fullname = attrName.replace(attrDirectiveRE, '');
-    } else if (controlDirectiveRE.test(attrName)) {
-        category = CONTROL_STR;
-        fullname = attrName.replace(controlDirectiveRE, '');
     } else {
         return;
     }
+
+    // @click.enter.false
+    var delimiters = fullname.split(directiveFilterDelimiterRE);
+    var name = delimiters.shift();
+    var filtes = array.reduce(delimiters, function (prevVal, nowVal) {
+        prevVal[nowVal] = true;
+        return prevVal;
+    }, {});
+
+    // 控制分类中再细分，默认为事件
+    if (category === CTRL_STR) {
+        category = categoryNameMap[name] || EVENT_STR;
+    }
+
+    switch (category) {
+        case EVENT_STR:
+            directive = directives.event();
+            break;
+
+        case ATTR_STR:
+            directive = directives.attr();
+            break;
+
+        default:
+            directive = directives[category]();
+            break;
+    }
+
 
     if (!directive) {
 
@@ -81,17 +109,7 @@ exports.attr = function (node, attr, scope, vm) {
         return;
     }
 
-
-    // @click.enter.false
-    var delimiters = fullname.split(directiveFilterDelimiterRE);
-    var name = delimiters.shift();
-    var filtes = array.reduce(delimiters, function (prevVal, nowVal) {
-        prevVal[nowVal] = true;
-        return prevVal;
-    }, {});
-
     node.removeAttribute(attrName);
-
     directive.node = node;
     directive.attr = attr;
     directive.name = name;
@@ -102,26 +120,25 @@ exports.attr = function (node, attr, scope, vm) {
     directive.vm = vm;
     directive.exp = directive.parse() || attrValue;
 
+    var expFn;
+
     switch (category) {
         case EVENT_STR:
-            var exectter = eventParser(directive.exp);
-            directive.exec = function (el, ev) {
-                return exectter.call(scope, el, ev, scope);
+            expFn = eventParser(directive.exp);
+            directive.eval = function (el, ev) {
+                return expFn.call(scope, el, ev, scope);
             };
             break;
 
-        case ATTR_STR:
-            var getter = expressionParser(directive.exp);
-            directive.getter = getter;
+        default:
+            expFn = expressionParser(directive.exp);
             directive.eval = function () {
-                return getter.call(scope, scope);
+                return expFn.call(scope, scope);
             };
-            break;
-
-        case CONTROL_STR:
             break;
     }
 
+    directive.expFn = expFn;
     vm.add(directive);
     monitor.add(directive);
 
@@ -179,11 +196,11 @@ exports.text = function (node, scope, vm) {
         directive.vm = vm;
         directive.exp = directive.parse() || tokenValue;
 
-        var getter = expressionParser(directive.exp);
+        var expFn = expressionParser(directive.exp);
 
-        directive.getter = getter;
+        directive.expFn = expFn;
         directive.eval = function () {
-            return getter.call(scope, scope);
+            return expFn.call(scope, scope);
         };
         vm.add(directive);
         monitor.add(directive);

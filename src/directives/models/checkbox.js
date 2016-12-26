@@ -17,7 +17,8 @@ var arrFlow = require('../../utils/array-flow');
 
 var checking = varible();
 
-exports.init = function (directive, node, newVal) {
+exports.init = function (directive, newVal) {
+    var node = directive.node;
     var vm = directive.vm;
     var el = vm.el;
 
@@ -43,7 +44,9 @@ exports.init = function (directive, node, newVal) {
     });
 };
 
-exports.update = function (directive, node, newVal) {
+exports.update = function (directive, newVal) {
+    var node = directive.node;
+
     if (directive.vm[checking] === node) {
         return;
     }
