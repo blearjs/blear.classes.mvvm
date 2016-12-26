@@ -33,6 +33,9 @@ module.exports = pack({
 
         the.modelName = modelName;
         the.modelType = inputType;
+        the.get = function () {
+            return scope[modelName];
+        };
         the.set = function (val) {
             scope[modelName] = val;
         };

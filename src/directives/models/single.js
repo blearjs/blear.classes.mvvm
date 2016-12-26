@@ -34,10 +34,11 @@ exports.update = function (directive, node, newVal) {
         return;
     }
 
+    var val = directive.get();
     if (node.type === 'radio') {
-        node.checked = Boolean(strFlow.similar(newVal, node.value));
+        node.checked = Boolean(strFlow.similar(val, node.value));
     } else {
-        node.value = newVal;
+        node.value = val;
     }
 };
 

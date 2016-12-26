@@ -22,18 +22,18 @@ exports.init = function (directive, node, newVal) {
     var el = vm.el;
 
     event.on(el, 'change', node, directive.listener = function (ev) {
-        var oldVal = directive.get();
+        var val = directive.get();
         var nodeVal = node.value;
 
         vm[checking] = node;
 
-        if (typeis.Boolean(oldVal)) {
-            directive.set(!oldVal);
+        if (typeis.Boolean(val)) {
+            directive.set(!val);
         } else {
             if (node.checked) {
-                arrFlow.set(oldVal, nodeVal);
+                arrFlow.set(val, nodeVal);
             } else {
-                arrFlow.rm(oldVal, nodeVal);
+                arrFlow.rm(val, nodeVal);
             }
         }
 
@@ -48,12 +48,12 @@ exports.update = function (directive, node, newVal) {
         return;
     }
 
-    var oldVal = directive.get();
+    var val = directive.get();
     var nodeVal = node.value;
 
-    if (typeis.Boolean(oldVal)) {
-        node.checked = oldVal;
+    if (typeis.Boolean(val)) {
+        node.checked = val;
     } else {
-        node.checked = arrFlow.fd(oldVal, nodeVal) > -1;
+        node.checked = arrFlow.fd(val, nodeVal) > -1;
     }
 };

@@ -68,7 +68,7 @@ exports.attr = function (node, attr, scope, vm) {
     else {
         var getter = expressionParser(exp);
         directive.getter = getter;
-        directive.get = function () {
+        directive.eval = function () {
             return getter.call(scope, scope);
         };
     }
@@ -81,25 +81,6 @@ exports.attr = function (node, attr, scope, vm) {
     monitor.add(directive);
     return directive.aborted;
 };
-
-
-var replaceTextNodes = function (node, tokens) {
-    var childNodes = [];
-
-    array.each(tokens, function (index, token) {
-        var childNode = modification.create('#text', token);
-        childNodes.push(childNode);
-        modification.insert(childNode, node, 3);
-    });
-
-    node.textContent = '';
-    return childNodes;
-};
-//
-//
-// var createTextNode = function (node, scope, vm, expression) {
-//
-// };
 
 
 /**
@@ -147,7 +128,7 @@ exports.text = function (node, scope, vm) {
         directive.vm = vm;
         directive.desc = desc;
         directive.getter = getter;
-        directive.get = function () {
+        directive.eval = function () {
             return getter.call(scope, scope);
         };
 

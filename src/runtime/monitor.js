@@ -76,7 +76,7 @@ exports.start = function () {
         var oldVal;
 
         directive.dispath = function () {
-            var newVal = directive.get();
+            var newVal = directive.eval();
 
             directive.update(node, newVal, oldVal);
             oldVal = newVal;

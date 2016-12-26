@@ -28,13 +28,13 @@ exports.init = function (directive, node, newVal) {
         vm[selecting] = node;
         var children = selector.children(node);
         array.each(children, function (index, optionEl) {
-            var oldVal = directive.get();
+            var val = directive.get();
             var optionVal = getOptionVal(optionEl);
 
             if (optionEl.selected) {
-                arrFlow.set(oldVal, optionVal);
+                arrFlow.set(val, optionVal);
             } else {
-                arrFlow.rm(oldVal, optionVal);
+                arrFlow.rm(val, optionVal);
             }
         });
         time.nextTick(function () {
@@ -49,9 +49,11 @@ exports.update = function (directive, node, newVal) {
     }
 
     var children = selector.children(node);
+    var val = directive.get();
+
     array.each(children, function (index, optionEl) {
         var optionVal = getOptionVal(optionEl);
-        optionEl.selected = arrFlow.fd(newVal, optionVal) > -1;
+        optionEl.selected = arrFlow.fd(val, optionVal) > -1;
     });
 };
 
