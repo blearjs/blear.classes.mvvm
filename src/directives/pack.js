@@ -27,7 +27,7 @@ module.exports = function (directive) {
 
             parse: function (exp) {
                 if (typeis.Function(directive.parse)) {
-                    return directive.parse(exp);
+                    return directive.parse.call(this, exp);
                 }
 
                 return exp;

@@ -50,11 +50,12 @@ exports.attr = function (node, attr, scope, vm) {
         node: node,
         attr: attr,
         name: directiveName,
-        filters: directiveFilters
+        filters: directiveFilters,
+        value: exp
     };
     var maybeOnDirective = !directiveFn;
     var directive = maybeOnDirective ? directives.on() : directiveFn();
-    desc.exp = exp = directive.parse(exp);
+    desc.exp = exp = directive.parse(desc);
 
     // 事件指令
     if (maybeOnDirective) {
@@ -109,12 +110,13 @@ exports.text = function (node, scope, vm) {
         }
 
         var directive = directives.text();
-        var exp = directive.parse(token.value);
+        var exp = token.value;
         var desc = {
             node: textNode,
             attr: null,
-            exp: exp
+            value: exp
         };
+        desc.exp = exp = directive.parse(desc);
         var getter = expressionParser(exp);
         directive.scope = scope;
         directive.vm = vm;
@@ -123,12 +125,12 @@ exports.text = function (node, scope, vm) {
         directive.eval = function () {
             return getter.call(scope, scope);
         };
-
         vm.add(directive);
         monitor.add(directive);
     });
 
     if (typeof DEBUG !== 'undefined' && DEBUG) {
+        // debug 模式，使用注释替换
         var commentNode = modification.create('#comment', node.textContent);
         modification.replace(commentNode, node);
     } else {
