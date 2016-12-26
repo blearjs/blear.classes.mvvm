@@ -51,12 +51,11 @@ exports.update = function (directive, newVal) {
         return;
     }
 
-    var val = directive.get();
     var nodeVal = node.value;
 
-    if (typeis.Boolean(val)) {
-        node.checked = val;
+    if (typeis.Boolean(newVal)) {
+        node.checked = newVal;
     } else {
-        node.checked = arrFlow.fd(val, nodeVal) > -1;
+        node.checked = arrFlow.fd(newVal, nodeVal) > -1;
     }
 };
