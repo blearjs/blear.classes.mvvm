@@ -20,7 +20,6 @@ var cateMap = {
 module.exports = pack({
     init: function (node) {
         var the = this;
-        var desc = the.desc;
         var scope = the.scope;
         var tagName = node.tagName.toLowerCase();
         var inputType = node.type;
@@ -29,7 +28,7 @@ module.exports = pack({
             inputType = tagName;
         }
 
-        var modelName =  desc.exp;
+        var modelName =  the.exp;
 
         the.modelName = modelName;
         the.modelType = inputType;

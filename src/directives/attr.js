@@ -33,8 +33,8 @@ module.exports = pack({
     // {a: b, c} => map: {"a": "b", c: true}
     // [{a: b, c}, d] => map: {"a": "b", c: true}, list: ["d"]
     // [{a: b, c}, d, "e"] => map: {"a": "b", c: true, e: true}, list: ["d"]
-    parse: function (desc) {
-        var value = desc.value;
+    parse: function () {
+        var value = this.value;
         var map = {};
         var list = [];
 

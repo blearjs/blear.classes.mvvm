@@ -73,11 +73,10 @@ exports.add = function (directive) {
  */
 exports.start = function () {
     array.each(directives, function (index, directive) {
-        var desc = directive.desc;
         var scope = directive.scope;
         var getter = directive.getter;
         var watcher = directive.watcher;
-        var node = desc.node;
+        var node = directive.node;
         var oldVal;
 
         directive.dispath = function () {

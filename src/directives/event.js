@@ -42,7 +42,7 @@ module.exports = pack({
         var the = this;
         var vm = the.vm;
         var eventType = the.name;
-        var filters = the.desc.filters;
+        var filters = the.filters;
         var keyCodeMap = {};
         var shouldEqualKeyCode;
 
