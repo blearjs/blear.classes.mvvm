@@ -13,6 +13,7 @@ var MVVM = require('../src/index');
 
 var data = window.data = {
     text: 'text',
+    number: 2,
     checkbox: [1],
     checkbox2: true,
     radio: 1,

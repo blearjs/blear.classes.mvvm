@@ -38,7 +38,7 @@ categoryNameMap[MODEL_STR] = MODEL_STR;
 function compileRegExp() {
     attrDirectiveRE = new RegExp('^' + string.escapeRegExp(configs.attrDirective));
     ctrlDirectiveRE = new RegExp('^' + string.escapeRegExp(configs.ctrlDirective));
-    directiveFilterDelimiterRE = new RegExp('^' + string.escapeRegExp(configs.directiveFilterDelimiter));
+    directiveFilterDelimiterRE = new RegExp(string.escapeRegExp(configs.directiveFilterDelimiter));
 }
 
 

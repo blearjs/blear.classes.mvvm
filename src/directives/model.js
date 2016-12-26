@@ -28,7 +28,7 @@ module.exports = pack({
             inputType = tagName;
         }
 
-        var modelName =  the.exp;
+        var modelName = the.exp;
 
         the.modelName = modelName;
         the.modelType = inputType;
@@ -42,12 +42,6 @@ module.exports = pack({
         var modelCate;
 
         switch (inputType) {
-            case 'text':
-            case 'password':
-            case 'textarea':
-                modelCate = 'text';
-                break;
-
             case 'checkbox':
                 modelCate = inputType;
                 break;
@@ -58,6 +52,10 @@ module.exports = pack({
 
             case 'select':
                 modelCate = node.multiple ? 'multiple' : 'single';
+                break;
+
+            default:
+                modelCate = 'text';
                 break;
         }
 

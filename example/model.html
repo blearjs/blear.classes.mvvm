@@ -34,8 +34,7 @@
 
         #app {
             display: block;
-            width: 400px;
-            font-size: 30px;
+            width: 600px;
             padding: 30px;
             border: 1px solid #ccf;
             margin: 30px auto;
@@ -67,6 +66,16 @@
         hr {
             margin: 10px 0;
         }
+
+        pre {
+            background: #f3f3f3;
+            padding: 10px 16px;
+            margin-top: 1em;
+            -webkit-border-radius: 6px;
+            border-radius: 6px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            color: #585858;
+        }
     </style>
 </head>
 <body ontouchstart="">
@@ -75,12 +84,21 @@
     <fieldset>
         <legend>input:text</legend>
         <p>text: {{text}}</p>
+        <pre>@model="text"</pre>
         <p><input type="text" @model="text"></p>
         <p><input type="text" @model="text"></p>
     </fieldset>
     <fieldset>
+        <legend>input:number</legend>
+        <p>number: {{number}}</p>
+        <pre>@model.number="number"</pre>
+        <p><input type="number" @model.number="number"></p>
+        <p><input type="number" @model.number="number"></p>
+    </fieldset>
+    <fieldset>
         <legend>input:checkbox:array</legend>
         <p>checkbox: {{checkbox}}</p>
+        <pre>@model="checkbox"</pre>
         <label><input type="checkbox" @model="checkbox" name="checkbox" value="1">1</label>
         <label><input type="checkbox" @model="checkbox" name="checkbox" value="2">2</label>
         <label><input type="checkbox" @model="checkbox" name="checkbox" value="3">3</label>
@@ -90,46 +108,50 @@
         <label><input type="checkbox" @model="checkbox" name="checkbox" value="3">3</label>
         <label><input type="checkbox" @model="checkbox" name="checkbox" value="4">4</label>
     </fieldset>
-    <!--<fieldset>-->
-        <!--<legend>input:checkbox:boolean</legend>-->
-        <!--<p>checkbox: {{checkbox2 ? '已阅读' : '未阅读'}}</p>-->
-        <!--<label><input type="checkbox" @model="checkbox2" name="checkbox2" value="4">已阅读</label><br>-->
-        <!--<label><input type="checkbox" @model="checkbox2" name="checkbox2" value="4">已阅读</label>-->
-    <!--</fieldset>-->
-    <!--<fieldset>-->
-        <!--<legend>input:radio</legend>-->
-        <!--<p>radio: {{radio}}</p>-->
-        <!--<label><input type="radio" @model="radio" name="radio" value="1">1</label><br>-->
-        <!--<label><input type="radio" @model="radio" name="radio" value="2">2</label>-->
-    <!--</fieldset>-->
-    <!--<fieldset>-->
-        <!--<legend>select:single</legend>-->
-        <!--<p>select: {{select}}</p>-->
-        <!--<select @model="select">-->
-            <!--<option value="111">111</option>-->
-            <!--<option value="222">222</option>-->
-            <!--<option value="333">333</option>-->
-        <!--</select>-->
-        <!--<select @model="select">-->
-            <!--<option value="111">111</option>-->
-            <!--<option value="222">222</option>-->
-            <!--<option value="333">333</option>-->
-        <!--</select>-->
-    <!--</fieldset>-->
-    <!--<fieldset>-->
-        <!--<legend>select:multiple</legend>-->
-        <!--<p>select2: {{select2}}</p>-->
-        <!--<select @model="select2" multiple size="3">-->
-            <!--<option value="111">111</option>-->
-            <!--<option value="222">222</option>-->
-            <!--<option value="333">333</option>-->
-        <!--</select>-->
-        <!--<select @model="select2" multiple size="3">-->
-            <!--<option value="111">111</option>-->
-            <!--<option value="222">222</option>-->
-            <!--<option value="333">333</option>-->
-        <!--</select>-->
-    <!--</fieldset>-->
+    <fieldset>
+        <legend>input:checkbox:boolean</legend>
+        <p>checkbox2: {{checkbox2 ? '已阅读' : '未阅读'}}</p>
+        <pre>@model="checkbox2"</pre>
+        <label><input type="checkbox" @model="checkbox2" name="checkbox2" value="4">已阅读</label><br>
+        <label><input type="checkbox" @model="checkbox2" name="checkbox2" value="4">已阅读</label>
+    </fieldset>
+    <fieldset>
+        <legend>input:radio</legend>
+        <p>radio: {{radio}}</p>
+        <pre>@model="radio"</pre>
+        <label><input type="radio" @model="radio" name="radio" value="1">1</label><br>
+        <label><input type="radio" @model="radio" name="radio" value="2">2</label>
+    </fieldset>
+    <fieldset>
+        <legend>select:single</legend>
+        <p>select: {{select}}</p>
+        <pre>@model="select"</pre>
+        <select @model="select">
+            <option value="111">111</option>
+            <option value="222">222</option>
+            <option value="333">333</option>
+        </select>
+        <select @model="select">
+            <option value="111">111</option>
+            <option value="222">222</option>
+            <option value="333">333</option>
+        </select>
+    </fieldset>
+    <fieldset>
+        <legend>select:multiple</legend>
+        <p>select2: {{select2}}</p>
+        <pre>@model="select2"</pre>
+        <select @model="select2" multiple size="3">
+            <option value="111">111</option>
+            <option value="222">222</option>
+            <option value="333">333</option>
+        </select>
+        <select @model="select2" multiple size="3">
+            <option value="111">111</option>
+            <option value="222">222</option>
+            <option value="333">333</option>
+        </select>
+    </fieldset>
 </div>
 
 

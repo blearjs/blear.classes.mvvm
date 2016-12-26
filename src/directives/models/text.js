@@ -9,6 +9,7 @@
 
 var event = require('blear.core.event');
 var time = require('blear.utils.time');
+var number = require('blear.utils.number');
 
 var configs = require('../../configs');
 var varible = require('../../utils/varible');
@@ -33,7 +34,14 @@ exports.init = function (directive) {
         var el = this;
         var smoothChange = function () {
             vm[inputing] = el;
-            directive.set(node.value);
+
+            var setVal = node.value;
+
+            if (directive.filters.number) {
+                setVal = number.parseFloat(setVal);
+            }
+
+            directive.set(setVal);
             time.nextTick(function () {
                 vm[inputing] = null;
             });
