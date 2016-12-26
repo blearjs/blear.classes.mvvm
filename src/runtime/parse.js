@@ -48,6 +48,7 @@ exports.attr = function (node, attr, scope, vm) {
     var attrName = attr.nodeName;
     var attrValue = attr.nodeValue;
     var category = '';
+    var fullname = '';
     var directive;
 
     if (!attrDirectiveRE) {
@@ -57,11 +58,14 @@ exports.attr = function (node, attr, scope, vm) {
     if (eventDirectiveRE.test(attrName)) {
         category = EVENT_STR;
         directive = directives.event();
+        fullname = attrName.replace(eventDirectiveRE, '');
     } else if (attrDirectiveRE.test(attrName)) {
         category = ATTR_STR;
         directive = directives.attr();
+        fullname = attrName.replace(attrDirectiveRE, '');
     } else if (controlDirectiveRE.test(attrName)) {
         category = CONTROL_STR;
+        fullname = attrName.replace(controlDirectiveRE, '');
     } else {
         return;
     }
@@ -77,7 +81,7 @@ exports.attr = function (node, attr, scope, vm) {
         return;
     }
 
-    var fullname = attrName.replace(attrDirectiveRE, '');
+
     // @click.enter.false
     var delimiters = fullname.split(directiveFilterDelimiterRE);
     var name = delimiters.shift();

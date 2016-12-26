@@ -9,6 +9,7 @@
 
 var attribute = require('blear.core.attribute');
 var array = require('blear.utils.array');
+var object = require('blear.utils.object');
 
 var objectCompare = require('../../utils/object-compare');
 
@@ -18,12 +19,12 @@ exports.update = function (directive, newVal, oldVal) {
     var newMap = newVal.map;
     var diff = objectCompare(oldVal.map, newMap);
 
-    array.each(diff.insert, function (index, key) {
-        attribute.style(node, key, newMap[key]);
-    });
-
     array.each(diff.remove, function (index, key) {
         attribute.style(node, key, '');
+    });
+
+    object.each(newMap, function (key, val) {
+        attribute.style(node, key, val);
     });
 };
 
