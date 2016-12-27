@@ -25,13 +25,7 @@ module.exports = function (directive) {
             updated: false,
             destroyed: false,
 
-            parse: function () {
-                if (typeis.Function(directive.parse)) {
-                    return directive.parse.call(this, arguments);
-                }
-            },
-
-            init: function (node) {
+            init: function () {
                 var the = this;
                 fun.noop(directive.init).apply(the, arguments);
                 the.inited = true;

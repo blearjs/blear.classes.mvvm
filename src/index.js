@@ -13,10 +13,9 @@ var object = require('blear.utils.object');
 var array = require('blear.utils.array');
 var access = require('blear.utils.access');
 
-var compile = require('./runtime/compile');
-var monitor = require('./runtime/monitor');
 var anchor = require('./utils/anchor');
 var directives = require('./directives/index');
+var ViewModel = require('./classes/view-model');
 
 var defaults = {
     el: 'body',
@@ -34,8 +33,8 @@ var MVVM = Events.extend({
     }
 });
 var _options = MVVM.sole();
-var _rootVM = MVVM.sole();
 var _compile = MVVM.sole();
+var _vm = MVVM.sole();
 var pro = MVVM.prototype;
 
 // 编译
@@ -48,22 +47,22 @@ pro[_compile] = function () {
     var scope = object.assign(options.data, options.methods);
 
     // fragment.appendChild(rootEl);
-    compile(rootEl, scope, null);
-    monitor.start();
+    the[_vm] = new ViewModel(rootEl, scope, null);
     // modification.insert(rootEl, anchorNode, 3);
 };
 
 // static
 
-MVVM.directive = function (name, directive) {
-    var args = access.args(arguments);
-
-    if (args.length === 1) {
-        return directives[name];
-    }
-
-    directives[name] = directive;
-};
+MVVM.directives = directives;
+// MVVM.directive = function (name, directive) {
+//     var args = access.args(arguments);
+//
+//     if (args.length === 1) {
+//         return directives[name];
+//     }
+//
+//     directives[name] = directive;
+// };
 
 
 module.exports = MVVM;

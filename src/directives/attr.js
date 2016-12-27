@@ -42,9 +42,10 @@ module.exports = pack({
     // {a: b, c} => map: {"a": "b", c: true}
     // [{a: b, c}, d] => map: {"a": "b", c: true}, list: ["d"]
     // [{a: b, c}, d, "e"] => map: {"a": "b", c: true, e: true}, list: ["d"]
-    parse: function () {
-        var value = this.value;
-        var name = this.name;
+    init: function () {
+        var the = this;
+        var value = the.value;
+        var name = the.name;
 
         if (name !== STYLE_STR && name !== CLASS_STR) {
             return value;
@@ -103,7 +104,7 @@ module.exports = pack({
         });
         var listExp = '[' + listExpList.join(',') + ']';
 
-        return '{map:' + mapExp + ',list:' + listExp + '}';
+        the.exp = '{map:' + mapExp + ',list:' + listExp + '}';
     },
     update: function (node, newVal, oldVal) {
         oldVal = oldVal || {map: {}, list: []};

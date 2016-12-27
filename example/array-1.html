@@ -109,8 +109,8 @@
         <ul id="app">
             <li>开始占位</li>
             <li @for="index,item in list">
-                <span @html="index"></span>
-                <span @html="item"></span>
+                <span>index: {{index}}</span>
+                <span>item: {{item}}</span>
             </li>
             <li>结束占位</li>
         </ul>
@@ -118,7 +118,7 @@
 </div>
 
 
-<script src="/node_modules/coolie.js/coolie.js"
+<script src="/node_modules/coolie.js/coolie.min.js"
         data-config="/example/coolie-config.js"
         data-main="array-1.js"></script>
 

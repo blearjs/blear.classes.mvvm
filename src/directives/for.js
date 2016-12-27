@@ -12,9 +12,8 @@ var array = require('blear.utils.array');
 var random = require('blear.utils.random');
 
 var pack = require('./pack');
-var compile = require('../runtime/compile');
 var anchor = require('../utils/anchor');
-var arrayDiff = window.arrayDiff = require('../utils/array-diff');
+var arrayDiff = require('../utils/array-diff');
 
 var ARRAY_POP = 'pop';
 var ARRAY_PUSH = 'push';
@@ -59,7 +58,13 @@ var buildChildMVVM = function (directive, index, data, operation) {
     childScope[indexName] = index;
     childScope[aliasName] = data;
     modification.insert(childNode, insertTarget, insertPosition);
-    compile(childNode, childScope, directive.vm);
+
+    debugger;
+    // // ！！必须写这里，否则会出现循环依赖的错误
+    // var compile = require('../runtime/compile');
+    // var monitor = require('../runtime/monitor');
+    // compile(childNode, childScope, directive.vm);
+    // monitor.start();
 
     switch (operator) {
         case ARRAY_PUSH:
@@ -90,16 +95,15 @@ var moveList = function (list, from, to, howMany) {
 
 module.exports = pack({
     aborted: true,
-    init: function (node) {
+    init: function () {
         var the = this;
-        var director = the.director;
-        var arr1 = director.value.split(' in ');
+        var arr1 = the.value.split(' in ');
         var arr2 = arr1[0].split(',');
+        var node = the.node;
 
         the.aliasName = arr2.pop().trim();
         the.indexName = (arr2[0] || '$index').trim();
-        director.expression = the.expression = arr1[1].trim();
-        the.scope = director.scope;
+        the.exp = arr1[1].trim();
         the.childScopeList = [];
         the.childNodeList = [];
         the.anchorStart = anchor(node, '@for-start');
@@ -109,11 +113,9 @@ module.exports = pack({
     },
     update: function (node, newVal, oldVal, operation) {
         var the = this;
-        var director = the.director;
-        var expression = the.expression;
         var childScopeList = the.childScopeList;
         var childNodeList = the.childNodeList;
-        var data = director.get(expression);
+        var data = the.eval();
 
         if (the.bound) {
             var spliceIndex = operation.spliceIndex;

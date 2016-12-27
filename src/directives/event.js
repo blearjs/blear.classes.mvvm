@@ -38,8 +38,9 @@ var keyCodes = {
 };
 
 module.exports = pack({
-    init: function (node) {
+    init: function () {
         var the = this;
+        var node = the.node;
         var vm = the.vm;
         var eventType = the.name;
         var filters = the.filters;

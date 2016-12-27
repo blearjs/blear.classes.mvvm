@@ -9,16 +9,14 @@
 
 var array = require('blear.utils.array');
 var random = require('blear.utils.random');
-var Class = require('blear.classes.class');
-
-var parse = require('./parse');
 
 var compileAttrs = function (node, scope, vm) {
     var attrs = array.from(node.attributes);
     var aborted = false;
+    var parser = vm.parser;
 
     array.each(attrs, function (index, attr) {
-        aborted = parse.attr(node, attr, scope, vm);
+        aborted = parser.attr(node, attr, scope, vm);
     });
 
     return aborted;
@@ -38,7 +36,8 @@ var compileElement = function (node, scope, vm) {
 };
 
 var compileText = function (node, scope, vm) {
-    parse.text(node, scope, vm);
+    var parser = vm.parser;
+    parser.text(node, scope, vm);
 };
 
 var compileNode = function (node, scope, vm) {
@@ -53,25 +52,6 @@ var compileNode = function (node, scope, vm) {
     }
 };
 
-var ViewModel = Class.extend({
-    className: 'ViewModel',
-    constructor: function (el, scope, parent) {
-        var the = this;
 
-        the.guid = random.guid();
-        the.el = el;
-        the.scope = scope;
-        the.parent = parent;
-        the.children = [];
-        the.directives = [];
-    },
-    add: function (directive) {
-        this.directives.push(directive);
-    }
-});
-
-module.exports = function (rootEl, scope, parentVM) {
-    var vm = new ViewModel(rootEl, scope, parentVM);
-    compileNode(rootEl, scope, vm);
-};
+module.exports = compileNode;
 

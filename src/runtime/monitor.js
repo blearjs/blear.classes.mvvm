@@ -87,8 +87,6 @@ exports.start = function () {
         };
         directive.dispath.directive = directive;
 
-        directive.init(node);
-
         if (expFn) {
             // 不能省略
             exports.target = null;
@@ -106,6 +104,7 @@ exports.start = function () {
             node.directives.push(directive);
         }
     });
+    directives = [];
 };
 
 

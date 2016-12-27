@@ -28,7 +28,10 @@ var TEXT_STR = 'text';
 var EVENT_STR = 'event';
 var CONDITION_STR = 'cond';
 var MODEL_STR = 'model';
+var FOR_STR = 'for';
 var categoryNameMap = {};
+
+categoryNameMap['for'] = FOR_STR;
 categoryNameMap['if'] = CONDITION_STR;
 categoryNameMap['else'] = CONDITION_STR;
 categoryNameMap['else-if'] = CONDITION_STR;
@@ -114,11 +117,11 @@ exports.attr = function (node, attr, scope, vm) {
     directive.attr = attr;
     directive.name = name;
     directive.filters = filtes;
-    directive.value = attrValue;
+    directive.exp =directive.value = attrValue;
     directive.category = category;
     directive.scope = scope;
     directive.vm = vm;
-    directive.exp = directive.parse() || attrValue;
+    directive.init();
 
     var expFn;
 
@@ -190,11 +193,11 @@ exports.text = function (node, scope, vm) {
 
         directive.node = textNodes[index];
         directive.attr = null;
-        directive.value = tokenValue;
+        directive.exp = directive.value = tokenValue;
         directive.category = TEXT_STR;
         directive.scope = scope;
         directive.vm = vm;
-        directive.exp = directive.parse() || tokenValue;
+        directive.init();
 
         var expFn = expressionParser(directive.exp);
 

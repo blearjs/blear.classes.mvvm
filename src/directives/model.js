@@ -18,8 +18,9 @@ var cateMap = {
 };
 
 module.exports = pack({
-    init: function (node) {
+    init: function () {
         var the = this;
+        var node = the.node;
         var scope = the.scope;
         var tagName = node.tagName.toLowerCase();
         var inputType = node.type;
