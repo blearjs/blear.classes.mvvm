@@ -38,8 +38,6 @@ exports.target = null;
 // });
 
 
-var directives = [];
-
 /**
  * 添加数据监视
  * @param directive
@@ -63,15 +61,13 @@ exports.add = function (directive) {
 
         return bindingDirective.dispath;
     });
-
-    directives.push(directive);
 };
 
 
 /**
  * 启动监视
  */
-exports.start = function () {
+exports.start = function (directives) {
     array.each(directives, function (index, directive) {
         var scope = directive.scope;
         var expFn = directive.expFn;
@@ -79,10 +75,10 @@ exports.start = function () {
         var node = directive.node;
         var oldVal;
 
-        directive.dispath = function () {
+        directive.dispath = function (_newVal, _oldVal, operation) {
+            // 新值使用表达式计算
             var newVal = directive.eval();
-
-            directive.update(node, newVal, oldVal);
+            directive.update(node, newVal, oldVal, operation);
             oldVal = newVal;
         };
         directive.dispath.directive = directive;
@@ -104,7 +100,6 @@ exports.start = function () {
             node.directives.push(directive);
         }
     });
-    directives = [];
 };
 
 

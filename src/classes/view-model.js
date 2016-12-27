@@ -16,21 +16,45 @@ var parser = require('../runtime/parser');
 
 var ViewModel = Class.extend({
     className: 'ViewModel',
-    constructor: function (el, scope, parent) {
+    constructor: function (el, scope) {
         var the = this;
 
         the.guid = random.guid();
         the.el = el;
         the.scope = scope;
-        the.parent = parent;
-        the.monitor = monitor;
+        the.parent = null;
         the.parser = parser;
         the.children = [];
         the.directives = [];
         compile(el, scope, the);
+        monitor.start(this.directives);
     },
+
+
+    /**
+     * 在当前 VM 上添加指令
+     * @param directive
+     */
     add: function (directive) {
         this.directives.push(directive);
+        monitor.add(directive);
+    },
+
+
+    /**
+     * 创建子 VM
+     * @param el
+     * @param scope
+     * @returns {*}
+     */
+    child: function (el, scope) {
+        var parentVM = this;
+        var childVM = new ViewModel(el, scope);
+
+        parentVM.children.push(childVM);
+        childVM.parent = parentVM;
+
+        return childVM;
     }
 });
 

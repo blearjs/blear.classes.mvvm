@@ -47,7 +47,7 @@ pro[_compile] = function () {
     var scope = object.assign(options.data, options.methods);
 
     // fragment.appendChild(rootEl);
-    the[_vm] = new ViewModel(rootEl, scope, null);
+    the[_vm] = new ViewModel(rootEl, scope);
     // modification.insert(rootEl, anchorNode, 3);
 };
 

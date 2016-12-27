@@ -36,9 +36,9 @@ var buildChildMVVM = function (directive, index, data, operation) {
     var aliasName = directive.aliasName;
     var insertTarget;
     var insertPosition;
-    var operator = operation.operator;
+    var method = operation.method;
 
-    switch (operator) {
+    switch (method) {
         case ARRAY_PUSH:
             insertTarget = anchorEnd;
             insertPosition = 0;
@@ -58,19 +58,13 @@ var buildChildMVVM = function (directive, index, data, operation) {
     childScope[indexName] = index;
     childScope[aliasName] = data;
     modification.insert(childNode, insertTarget, insertPosition);
+    directive.vm.child(childNode, childScope);
 
-    debugger;
-    // // ！！必须写这里，否则会出现循环依赖的错误
-    // var compile = require('../runtime/compile');
-    // var monitor = require('../runtime/monitor');
-    // compile(childNode, childScope, directive.vm);
-    // monitor.start();
-
-    switch (operator) {
+    switch (method) {
         case ARRAY_PUSH:
         case ARRAY_UNSHIFT:
-            childScopeList[operator](childScope);
-            childNodeList[operator](childNode);
+            childScopeList[method](childScope);
+            childNodeList[method](childNode);
             break;
 
         case ARRAY_SPLICE:
@@ -111,18 +105,18 @@ module.exports = pack({
         the.tplNode = node;
         modification.remove(node);
     },
-    update: function (node, newVal, oldVal, operation) {
+    update: function (node, newVal, _oldVal, operation) {
         var the = this;
         var childScopeList = the.childScopeList;
         var childNodeList = the.childNodeList;
-        var data = the.eval();
 
         if (the.bound) {
             var spliceIndex = operation.spliceIndex;
             var spliceCount = operation.spliceCount;
             var insertValue = operation.insertValue;
+            var oldVal = operation.oldVal;
 
-            switch (operation.operator) {
+            switch (operation.method) {
                 case ARRAY_SORT:
                     var diffs = arrayDiff(oldVal, newVal);
                     array.each(diffs, function (index, diff) {
@@ -191,7 +185,7 @@ module.exports = pack({
 
                     array.each(insertValue, function (index, data) {
                         buildChildMVVM(the, spliceIndex + index, data, {
-                            operator: ARRAY_SPLICE
+                            method: ARRAY_SPLICE
                         });
                     });
 
@@ -199,9 +193,9 @@ module.exports = pack({
                     break;
             }
         } else {
-            array.each(data, function (index, data) {
+            array.each(newVal, function (index, data) {
                 buildChildMVVM(the, index, data, {
-                    operator: ARRAY_PUSH
+                    method: ARRAY_PUSH
                 });
             });
         }

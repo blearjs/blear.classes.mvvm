@@ -16,7 +16,6 @@ var expressionParser = require('../parsers/expression');
 var textParser = require('../parsers/text');
 var eventParser = require('../parsers/event');
 var directives = require('../directives/index');
-var monitor = require('./monitor');
 var configs = require('../configs');
 
 var attrDirectiveRE;
@@ -117,7 +116,7 @@ exports.attr = function (node, attr, scope, vm) {
     directive.attr = attr;
     directive.name = name;
     directive.filters = filtes;
-    directive.exp =directive.value = attrValue;
+    directive.exp = directive.value = attrValue;
     directive.category = category;
     directive.scope = scope;
     directive.vm = vm;
@@ -143,7 +142,6 @@ exports.attr = function (node, attr, scope, vm) {
 
     directive.expFn = expFn;
     vm.add(directive);
-    monitor.add(directive);
 
     return directive.aborted;
 };
@@ -206,6 +204,5 @@ exports.text = function (node, scope, vm) {
             return expFn.call(scope, scope);
         };
         vm.add(directive);
-        monitor.add(directive);
     });
 };
