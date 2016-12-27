@@ -11,7 +11,6 @@ var modification = require('blear.core.modification');
 var array = require('blear.utils.array');
 var random = require('blear.utils.random');
 
-var pack = require('./pack');
 var anchor = require('../utils/anchor');
 var arrayDiff = require('../utils/array-diff');
 
@@ -87,7 +86,7 @@ var moveList = function (list, from, to, howMany) {
     list.splice.apply(list, moveList);
 };
 
-module.exports = pack({
+module.exports = {
     aborted: true,
     init: function () {
         var the = this;
@@ -200,5 +199,5 @@ module.exports = pack({
             });
         }
     }
-});
+};
 

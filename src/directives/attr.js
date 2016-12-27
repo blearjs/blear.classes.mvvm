@@ -11,7 +11,6 @@ var object = require('blear.utils.object');
 var array = require('blear.utils.array');
 var attribute = require('blear.core.attribute');
 
-var pack = require('./pack');
 var varible = require('../utils/varible');
 var map = {
     style: require('./attr/style'),
@@ -33,7 +32,7 @@ var TRUE_STR = 'true';
 var STYLE_STR = 'style';
 var CLASS_STR = 'class';
 
-module.exports = pack({
+module.exports = {
     // a => list: ["a"]
     // {a} => map: {"a": true}
     // [a] => list: ["a"]
@@ -113,5 +112,5 @@ module.exports = pack({
 
         processor.update(this, newVal, oldVal);
     }
-});
+};
 

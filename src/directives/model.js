@@ -9,7 +9,6 @@
 
 var event = require('blear.core.event');
 
-var pack = require('./pack');
 var cateMap = {
     text: require('./models/text'),
     checkbox: require('./models/checkbox'),
@@ -17,7 +16,7 @@ var cateMap = {
     multiple: require('./models/multiple')
 };
 
-module.exports = pack({
+module.exports = {
     init: function () {
         var the = this;
         var node = the.node;
@@ -69,10 +68,11 @@ module.exports = pack({
     },
     destroy: function () {
         var the = this;
+        var node = the.node;
 
-        event.on(el, 'input', the.listener);
-        event.on(el, 'compositionstart', the.compositionstart);
-        event.on(el, 'compositionend', the.compositionend);
+        event.on(node, 'input', the.listener);
+        event.on(node, 'compositionstart', the.compositionstart);
+        event.on(node, 'compositionend', the.compositionend);
     }
-});
+};
 

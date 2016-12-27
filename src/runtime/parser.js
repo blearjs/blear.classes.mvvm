@@ -17,6 +17,7 @@ var textParser = require('../parsers/text');
 var eventParser = require('../parsers/event');
 var directives = require('../directives/index');
 var configs = require('../configs');
+var Directive = require('../classes/directive');
 
 var attrDirectiveRE;
 var ctrlDirectiveRE;
@@ -87,15 +88,15 @@ exports.attr = function (node, attr, scope, vm) {
 
     switch (category) {
         case EVENT_STR:
-            directive = directives.event();
+            directive = new Directive(directives.event);
             break;
 
         case ATTR_STR:
-            directive = directives.attr();
+            directive = new Directive(directives);
             break;
 
         default:
-            directive = directives[category]();
+            directive = new Directive(directives[category]);
             break;
     }
 
@@ -186,7 +187,7 @@ exports.text = function (node, scope, vm) {
             return;
         }
 
-        var directive = directives.text();
+        var directive = new Directive(directives.text);
         var tokenValue = token.value;
 
         directive.node = textNodes[index];

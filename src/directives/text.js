@@ -9,12 +9,11 @@
 
 var attribute = require('blear.core.attribute');
 
-var pack = require('./pack');
 var stringFlow = require('../utils/string-flow');
 
-module.exports = pack({
+module.exports = {
     update: function (node, newVal, oldVal) {
         attribute.text(node, stringFlow.to(newVal));
     }
-});
+};
 

@@ -22,8 +22,6 @@ var event = require('blear.core.event');
 var object = require('blear.utils.object');
 var array = require('blear.utils.array');
 
-var pack = require('./pack');
-
 // keyCode aliases
 var keyCodes = {
     esc: [27],
@@ -37,7 +35,7 @@ var keyCodes = {
     down: [40]
 };
 
-module.exports = pack({
+module.exports = {
     init: function () {
         var the = this;
         var node = the.node;
@@ -102,5 +100,5 @@ module.exports = pack({
 
         event.un(the.vm, the.type, the.listener);
     }
-});
+};
 
