@@ -38,6 +38,12 @@ var ViewModel = Class.extend({
     add: function (directive) {
         this.directives.push(directive);
         monitor.add(directive);
+
+        if (typeof DEBUG !== 'undefined' && DEBUG) {
+            directive.node.directives = directive.node.directives || [];
+            directive.node.directives.push(directive);
+            this.el.vm = this;
+        }
     },
 
 

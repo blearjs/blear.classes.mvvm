@@ -94,11 +94,6 @@ exports.start = function (directives) {
         watcher._linkEnd();
 
         directive.bind(node, oldVal);
-
-        if (typeof DEBUG !== 'undefined' && DEBUG) {
-            node.directives = node.directives || [];
-            node.directives.push(directive);
-        }
     });
 };
 

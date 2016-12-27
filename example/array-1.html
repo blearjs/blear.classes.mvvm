@@ -108,10 +108,7 @@
     <div class="content">
         <ul id="app">
             <li>开始占位</li>
-            <li @for="index,item in list">
-                <span>index: {{index}}</span>
-                <span>item: {{item}}</span>
-            </li>
+            <li @for="index,item in list">{{index}} as {{item}}</li>
             <li>结束占位</li>
         </ul>
     </div>
