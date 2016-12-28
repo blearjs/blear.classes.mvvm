@@ -13,6 +13,7 @@ var random = require('blear.utils.random');
 
 var anchor = require('../utils/anchor');
 var arrayDiff = window.arrayDiff = require('../utils/array-diff');
+var configs = require('../configs');
 
 var ARRAY_POP = 'pop';
 var ARRAY_PUSH = 'push';
@@ -108,7 +109,7 @@ module.exports = {
         console.log(the);
 
         the.aliasName = arr2.pop().trim();
-        the.indexName = (arr2[0] || '$index').trim();
+        the.indexName = (arr2[0] || configs.forIndexName).trim();
         the.exp = arr1[1].trim();
         the.childScopeList = [];
         the.childNodeList = [];
@@ -174,16 +175,17 @@ module.exports = {
                                     }
                                 });
 
-                                // 移动节点
+                                // 移动子节点
                                 var nodes = childNodeList.slice(from1, from1 + howMany);
                                 var targetNode = childNodeList[to1];
                                 array.each(nodes, function (index, node) {
                                     modification.insert(node, targetNode, 0);
                                 });
 
-                                // 移动 node、scope、watcher
+                                // 移动子 node、scope、vm
                                 moveList(childNodeList, from1, to1, howMany);
                                 moveList(childScopeList, from1, to1, howMany);
+                                moveList(childVMList, from1, to1, howMany);
                                 break;
                         }
                     });

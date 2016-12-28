@@ -39,8 +39,8 @@ new MVVM({
     data: data
 });
 
-var buildArray = function () {
-    var length = random.number(1, 5);
+var buildArray = function (length) {
+    length = length || random.number(1, 5);
     var arr = [];
 
     while (length--) {
@@ -52,7 +52,7 @@ var buildArray = function () {
 
 document.getElementById('pushArray').onclick = function () {
     var index = random.number(0, data.list.length - 1);
-    data.list[index].push.apply(data.list[index], buildArray());
+    data.list[index].push.apply(data.list[index], buildArray(1));
     setData();
 };
 

@@ -26,7 +26,6 @@ var ARRAY_SPLICE = 'splice';
 var ARRAY_SET = 'set';
 var ARRAY_REMOVE = 'remove';
 var ARRAY_DELETE = 'delete';
-var ARRAY_SIZE = 'size';
 var OVERRIDE_ARRAY_METHODS = [
     ARRAY_POP, ARRAY_PUSH, ARRAY_REVERSE, ARRAY_SHIFT,
     ARRAY_SORT, ARRAY_UNSHIFT, ARRAY_SPLICE
@@ -361,8 +360,6 @@ pro[_onWatchArr] = function (arr) {
                     var spliceCount = 0;
                     var insertValue = [];
 
-                    arr.size = arr.length;
-
                     switch (method) {
                         // [1, 2, 3].push(4, 5, 6);
                         case ARRAY_PUSH:
@@ -450,16 +447,6 @@ pro[_onWatchArr] = function (arr) {
         odf(arr, ARRAY_REMOVE, {
             value: function (index) {
                 arr.splice(index, 1);
-            }
-        });
-
-        odf(arr, ARRAY_SIZE, {
-            enumerable: true,
-            get: function () {
-                return arr.length;
-            },
-            set: function () {
-                // empty
             }
         });
     }

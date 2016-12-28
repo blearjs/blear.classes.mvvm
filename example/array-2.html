@@ -75,6 +75,16 @@
             line-height: 1.6;
             margin-left: 2em;
         }
+
+        .l1 {
+            background: #413114;
+            color: #fff;
+        }
+
+        .l2 {
+            background: #fff7bf;
+            color: #f0a600;
+        }
     </style>
 </head>
 <body ontouchstart="">
@@ -112,7 +122,10 @@
                 <ul>
                     <li>2层开始占位</li>
                     <li @for="el in item">
-                        <span @html="index"></span>.<span @html="$index"></span>=<span @html="el"></span>
+                        <p class="l1">1层 index: {{index}}</p>
+                        <p class="l1">1层 item: {{item}}</p>
+                        <p class="l2">2层 $index: {{$index}}</p>
+                        <p class="l2">2层 el: {{el}}</p>
                     </li>
                     <li>2层结束占位</li>
                 </ul>

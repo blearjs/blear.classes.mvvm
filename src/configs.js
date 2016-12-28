@@ -34,3 +34,7 @@ exports.elementName = '$el';
 // 事件名称
 // 如："onChange($ev)"
 exports.eventName = '$ev';
+
+// for 指令的 index 名称
+// 如：@for="item in list" $index 会隐式创建
+exports.forIndexName = '$index';
