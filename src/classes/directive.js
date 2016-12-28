@@ -14,22 +14,22 @@ var typeis = require('blear.utils.typeis');
 
 module.exports = Class.extend({
     className: 'Directive',
-    constructor: function (config) {
+    constructor: function (definition) {
         var the = this;
 
-        if (typeis.Function(config)) {
-            config = {
-                update: config
+        if (typeis.Function(definition)) {
+            definition = {
+                update: definition
             };
         }
 
         the.guid = random.guid();
-        the.aborted = config.aborted || false;
+        the.aborted = definition.aborted || false;
         the.inited = false;
         the.bound = false;
         the.updated = false;
         the.destroyed = false;
-        the.config = config;
+        the.definition = definition;
     },
 
     /**
@@ -37,9 +37,9 @@ module.exports = Class.extend({
      */
     init: function () {
         var the = this;
-        var config = the.config;
+        var definition = the.definition;
 
-        fun.noop(config.init).apply(the, arguments);
+        fun.noop(definition.init).apply(the, arguments);
         the.inited = true;
     },
 
@@ -50,9 +50,9 @@ module.exports = Class.extend({
      */
     bind: function (node, newVal) {
         var the = this;
-        var config = the.config;
+        var definition = the.definition;
 
-        fun.noop(config.bind || config.update).apply(the, arguments);
+        fun.noop(definition.bind || definition.update).apply(the, arguments);
         the.bound = true;
     },
 
@@ -65,9 +65,9 @@ module.exports = Class.extend({
      */
     update: function (node, newVal, oldVal, operation) {
         var the = this;
-        var config = the.config;
+        var definition = the.definition;
 
-        fun.noop(config.update).apply(the, arguments);
+        fun.noop(definition.update).apply(the, arguments);
         the.updated = true;
     },
 
@@ -76,11 +76,11 @@ module.exports = Class.extend({
      */
     destroy: function () {
         var the = this;
-        var config = the.config;
+        var definition = the.definition;
 
         the.watcher.destroy();
-        fun.noop(config.destroy).apply(the, arguments);
-        the.watcher = the.config = null;
+        fun.noop(definition.destroy).apply(the, arguments);
+        the.watcher = the.definition = null;
         the.destroyed = true;
     }
 });
