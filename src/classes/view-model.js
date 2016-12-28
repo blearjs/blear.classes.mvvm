@@ -49,7 +49,6 @@ var ViewModel = Class.extend({
         }
     },
 
-
     /**
      * 创建子 VM
      * @param el
@@ -60,12 +59,13 @@ var ViewModel = Class.extend({
         var parentVM = this;
         var childVM = new ViewModel(el, scope);
 
+        // 不保证顺序关系，如果需要维护顺序，
+        // 请指令自行完成，如 for 指令
         parentVM.children.push(childVM);
         childVM.parent = parentVM;
 
         return childVM;
     },
-
 
     /**
      * 销毁当前 VM
@@ -84,7 +84,7 @@ var ViewModel = Class.extend({
         });
 
         // 3、删除 DOM 节点
-        modification.remove(vm.el);
+        modification.remove(the.el);
 
         // 4、删除父级对当前的引用
         var foundIndex = -1;

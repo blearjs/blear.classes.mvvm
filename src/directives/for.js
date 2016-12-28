@@ -12,7 +12,7 @@ var array = require('blear.utils.array');
 var random = require('blear.utils.random');
 
 var anchor = require('../utils/anchor');
-var arrayDiff = require('../utils/array-diff');
+var arrayDiff = window.arrayDiff = require('../utils/array-diff');
 
 var ARRAY_POP = 'pop';
 var ARRAY_PUSH = 'push';
@@ -29,10 +29,12 @@ var buildChildMVVM = function (directive, index, data, operation) {
     var childNode = directive.tplNode.cloneNode(true);
     var childScopeList = directive.childScopeList;
     var childNodeList = directive.childNodeList;
+    var childVMList = directive.childVMList;
     var anchorStart = directive.anchorStart;
     var anchorEnd = directive.anchorEnd;
     var indexName = directive.indexName;
     var aliasName = directive.aliasName;
+    var vm = directive.vm;
     var insertTarget;
     var insertPosition;
     var method = operation.method;
@@ -56,19 +58,26 @@ var buildChildMVVM = function (directive, index, data, operation) {
 
     childScope[indexName] = index;
     childScope[aliasName] = data;
+
+    if (typeof DEBUG !== 'undefined' && DEBUG) {
+        childScope.__childNode__ = childNode;
+    }
+
     modification.insert(childNode, insertTarget, insertPosition);
-    directive.vm.child(childNode, childScope);
+    var childVM = vm.child(childNode, childScope);
 
     switch (method) {
         case ARRAY_PUSH:
         case ARRAY_UNSHIFT:
             childScopeList[method](childScope);
             childNodeList[method](childNode);
+            childVMList[method](childVM);
             break;
 
         case ARRAY_SPLICE:
             childScopeList[ARRAY_SPLICE](index, 0, childScope);
             childNodeList[ARRAY_SPLICE](index, 0, childNode);
+            childVMList[ARRAY_SPLICE](index, 0, childVM);
             break;
     }
 };
@@ -80,25 +89,30 @@ var sortChildScopeListOrder = function (directive) {
 };
 
 var moveList = function (list, from, to, howMany) {
-    var moveList = list.splice(from, howMany);
-    moveList.unshift(0);
-    moveList.unshift(to);
-    list.splice.apply(list, moveList);
+    var args = list.splice(from, howMany);
+    // 删除个数
+    args.unshift(0);
+    // 目标位置
+    args.unshift(to);
+    list.splice.apply(list, args);
 };
 
 module.exports = {
     aborted: true,
     init: function () {
         var the = this;
+        var node = the.node;
         var arr1 = the.value.split(' in ');
         var arr2 = arr1[0].split(',');
-        var node = the.node;
+
+        console.log(the);
 
         the.aliasName = arr2.pop().trim();
         the.indexName = (arr2[0] || '$index').trim();
         the.exp = arr1[1].trim();
         the.childScopeList = [];
         the.childNodeList = [];
+        the.childVMList = [];
         the.anchorStart = anchor(node, '@for-start');
         the.anchorEnd = anchor(node, '@for-end');
         the.tplNode = node;
@@ -108,6 +122,8 @@ module.exports = {
         var the = this;
         var childScopeList = the.childScopeList;
         var childNodeList = the.childNodeList;
+        var childVMList = the.childVMList;
+        var data = the.eval();
 
         if (the.bound) {
             var spliceIndex = operation.spliceIndex;
@@ -163,7 +179,7 @@ module.exports = {
                                 var targetNode = childNodeList[to1];
                                 array.each(nodes, function (index, node) {
                                     modification.insert(node, targetNode, 0);
-                                }, true);
+                                });
 
                                 // 移动 node、scope、watcher
                                 moveList(childNodeList, from1, to1, howMany);
@@ -171,15 +187,16 @@ module.exports = {
                                 break;
                         }
                     });
-                    sortChildScopeListOrder(the);
                     break;
 
                 default:
-                    var removeNodeList = childNodeList.splice(spliceIndex, spliceCount);
                     childScopeList.splice(spliceIndex, spliceCount);
+                    childNodeList.splice(spliceIndex, spliceCount);
 
-                    while (removeNodeList.length) {
-                        modification.remove(removeNodeList.pop());
+                    var removeVMList = childVMList.splice(spliceIndex, spliceCount);
+
+                    while (removeVMList.length) {
+                        removeVMList.pop().destroy();
                     }
 
                     array.each(insertValue, function (index, data) {
@@ -187,12 +204,12 @@ module.exports = {
                             method: ARRAY_SPLICE
                         });
                     });
-
-                    sortChildScopeListOrder(the);
                     break;
             }
+
+            sortChildScopeListOrder(the);
         } else {
-            array.each(newVal, function (index, data) {
+            array.each(data, function (index, data) {
                 buildChildMVVM(the, index, data, {
                     method: ARRAY_PUSH
                 });

@@ -78,8 +78,8 @@ module.exports = Class.extend({
         var the = this;
         var config = the.config;
 
-        fun.noop(config.destroy).apply(the, arguments);
         the.watcher.destroy();
+        fun.noop(config.destroy).apply(the, arguments);
         the.watcher = the.config = null;
         the.destroyed = true;
     }

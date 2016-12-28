@@ -40,10 +40,11 @@ var Watcher = Events.extend({
         var the = this;
 
         Watcher.parent(the);
+        the.data = data;
         the[_options] = object.assign({}, defaults, options);
         the[_linking] = false;
         the[_linker] = null;
-        the[_linkage] = null;
+        the[_linkageList] = [];
         the[_guid] = random.guid();
         the[_watchStart](data);
     },
@@ -81,22 +82,41 @@ var Watcher = Events.extend({
      */
     _linkEnd: function () {
         this[_linkend] = true;
+    },
+
+
+    /**
+     * 销毁观察
+     */
+    destroy: function () {
+        var the = this;
+
+        the[_watchEnd](the.data);
+        the[_dropLinkage]();
+        the[_linkageList] = the[_linker] = the.data = null;
+        Watcher.invoke('destroy', the);
     }
 });
 var _options = Watcher.sole();
 var _guid = Watcher.sole();
 var _linking = Watcher.sole();
-var _linkage = Watcher.sole();
 var _linker = Watcher.sole();
 var _linkend = Watcher.sole();
+var _linkageList = Watcher.sole();
 var _watchStart = Watcher.sole();
-var _watchRegist = Watcher.sole();
-var _watchObj = Watcher.sole();
-var _watchArr = Watcher.sole();
-var _watchObjWithKeyVal = Watcher.sole();
+var _watchEnd = Watcher.sole();
+var _onWatch = Watcher.sole();
+var _unWatch = Watcher.sole();
+var _onWatchObj = Watcher.sole();
+var _unWatchObj = Watcher.sole();
+var _onWatchArr = Watcher.sole();
+var _unWatchArr = Watcher.sole();
+var _onWatchObjWithKeyVal = Watcher.sole();
+var _unWatchObjWithKeyVal = Watcher.sole();
 var _broadcast = Watcher.sole();
 var _linkWatcher = Watcher.sole();
 var _linkageReact = Watcher.sole();
+var _dropLinkage = Watcher.sole();
 var WATCHER_LIST = Watcher.sole();
 var WATCHER_MAP = Watcher.sole();
 var WATCHED_FLAG = Watcher.sole();
@@ -116,19 +136,50 @@ var hasWatched = function (data) {
 };
 
 /**
- * 监听开始
+ * 观察开始
  * @param data
  */
 pro[_watchStart] = function (data) {
     var the = this;
 
     if (typeis.Array(data)) {
-        the[_watchRegist](data);
-        the[_watchArr](data);
+        the[_onWatch](data);
+        the[_onWatchArr](data);
     } else if (typeis.Object(data)) {
-        the[_watchRegist](data);
-        the[_watchObj](data);
+        the[_onWatch](data);
+        the[_onWatchObj](data);
     }
+};
+
+/**
+ * 取消观察
+ * @param data
+ */
+pro[_watchEnd] = function (data) {
+    var the = this;
+
+    if (typeis.Array(data)) {
+        the[_unWatch](data);
+        the[_onWatchArr](data);
+    } else if (typeis.Object(data)) {
+        the[_unWatch](data);
+        the[_unWatchObj](data);
+    }
+};
+
+/**
+ * 删除关联函数
+ */
+pro[_dropLinkage] = function () {
+    var the = this;
+
+    array.each(the[_linkageList], function (index, config) {
+        var linkage = config.l;
+        var obj = config.o;
+        var key = config.k;
+        var list = obj[LINKAGE_MAP][key];
+        array.delete(list, linkage, true);
+    });
 };
 
 
@@ -136,7 +187,7 @@ pro[_watchStart] = function (data) {
  * 监听注册
  * @param data
  */
-pro[_watchRegist] = function (data) {
+pro[_onWatch] = function (data) {
     var the = this;
     var list = data[WATCHER_LIST];
     var map = data[WATCHER_MAP];
@@ -172,22 +223,127 @@ pro[_watchRegist] = function (data) {
 
 
 /**
+ * 监听取消
+ * @param data
+ */
+pro[_unWatch] = function (data) {
+    var the = this;
+    var list = data[WATCHER_LIST];
+    var map = data[WATCHER_MAP];
+
+    if (!list) {
+        return;
+    }
+
+    var guid = the[_guid];
+    var found = map[guid];
+
+    if (!found) {
+        return;
+    }
+
+    map[guid] = null;
+    array.delete(list, the);
+};
+
+
+/**
  * watch 对象
  * @param obj
  */
-pro[_watchObj] = function (obj) {
+pro[_onWatchObj] = function (obj) {
     var the = this;
 
     object.each(obj, function (key, val) {
-        the[_watchObjWithKeyVal](obj, key, val);
+        the[_onWatchObjWithKeyVal](obj, key, val);
     });
 };
+
+/**
+ * unwatch 对象
+ * @param obj
+ */
+pro[_unWatchObj] = function (obj) {
+    var the = this;
+
+    object.each(obj, function (key, val) {
+        the[_unWatchObjWithKeyVal](obj, key, val);
+    });
+};
+
+
+/**
+ * 按键值对监听对象
+ * @param obj
+ * @param key
+ * @param val
+ */
+pro[_onWatchObjWithKeyVal] = function (obj, key, val) {
+    var the = this;
+    var oldVal = val;
+
+    if (typeis.Function(val)) {
+        return;
+    }
+
+    if (!hasWatched[obj]) {
+        odf(obj, WATCHED_FLAG, {
+            value: true
+        });
+        odf(obj, key, {
+            enumerable: true,
+            get: function () {
+                the[_linkWatcher](obj, key, val);
+                return oldVal;
+            },
+            set: function (newVal) {
+                if (newVal === oldVal) {
+                    return;
+                }
+
+                var operation = {
+                    type: 'object',
+                    parent: obj,
+                    method: 'set',
+                    oldVal: oldVal,
+                    newVal: newVal
+                };
+                var args1 = [newVal, oldVal, operation];
+                var args2 = [newVal, oldVal, operation];
+
+                oldVal = newVal;
+                the[_linkageReact](obj, key, args1);
+                the[_broadcast](obj, key, args2);
+            }
+        });
+    }
+
+    the[_watchStart](val);
+};
+
+
+/**
+ * 按键值对取消监听
+ * @param obj
+ * @param key
+ * @param val
+ */
+pro[_unWatchObjWithKeyVal] = function (obj, key, val) {
+    var the = this;
+
+    if (typeis.Function(val)) {
+        return;
+    }
+
+    the[_watchEnd](val);
+};
+
 
 /**
  * watch 数组
  * @param arr
  */
-pro[_watchArr] = function (arr) {
+pro[_onWatchArr] = function (arr) {
     var the = this;
 
     if (!hasWatched[arr]) {
@@ -279,8 +435,8 @@ pro[_watchArr] = function (arr) {
             }
         });
 
-        // remove item
-        odf(arr, ARRAY_REMOVE, {
+        // delete index
+        odf(arr, ARRAY_DELETE, {
             value: function (item) {
                 var index = array.indexOf(arr, item);
 
@@ -290,8 +446,8 @@ pro[_watchArr] = function (arr) {
             }
         });
 
-        // delete index
-        odf(arr, ARRAY_DELETE, {
+        // remove index
+        odf(arr, ARRAY_REMOVE, {
             value: function (index) {
                 arr.splice(index, 1);
             }
@@ -310,6 +466,19 @@ pro[_watchArr] = function (arr) {
 
     array.each(arr, function (index, val) {
         the[_watchStart](val);
+    });
+};
+
+
+/**
+ * unwatch 数组
+ * @param arr
+ */
+pro[_unWatchArr] = function (arr) {
+    var the = this;
+
+    array.each(arr, function (index, val) {
+        the[_watchEnd](val);
     });
 };
 
@@ -337,6 +506,12 @@ pro[_linkWatcher] = function (obj, key, val) {
 
             if (typeis.Function(linkage)) {
                 linkageList.push(linkage);
+                // 将 linkage 添加到 watcher 里便于销毁
+                watcher[_linkageList].push({
+                    l: linkage,
+                    o: obj,
+                    k: key
+                });
             }
         }
     });
@@ -370,55 +545,6 @@ pro[_broadcast] = function (any, key, args) {
         args.unshift(key);
         watcher.emit.apply(watcher, args);
     });
-};
-
-/**
- * 按键值对监听对象
- * @param obj
- * @param key
- * @param val
- */
-pro[_watchObjWithKeyVal] = function (obj, key, val) {
-    var the = this;
-    var oldVal = val;
-
-    if (typeis.Function(val)) {
-        return;
-    }
-
-    if (!hasWatched[obj]) {
-        odf(obj, WATCHED_FLAG, {
-            value: true
-        });
-        odf(obj, key, {
-            enumerable: true,
-            get: function () {
-                the[_linkWatcher](obj, key, val);
-                return oldVal;
-            },
-            set: function (newVal) {
-                if (newVal === oldVal) {
-                    return;
-                }
-
-                var operation = {
-                    type: 'object',
-                    parent: obj,
-                    method: 'set',
-                    oldVal: oldVal,
-                    newVal: newVal
-                };
-                var args1 = [newVal, oldVal, operation];
-                var args2 = [newVal, oldVal, operation];
-
-                oldVal = newVal;
-                the[_linkageReact](obj, key, args1);
-                the[_broadcast](obj, key, args2);
-            }
-        });
-    }
-
-    the[_watchStart](val);
 };
 
 
