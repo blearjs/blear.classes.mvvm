@@ -32,7 +32,11 @@ var OVERRIDE_ARRAY_METHODS = [
 ];
 var arrayPrototype = Array.prototype;
 
-var defaults = {};
+var defaults = {
+    Reactor: function () {
+        //
+    }
+};
 var Watcher = Events.extend({
     className: 'Watcher',
     constructor: function (data, options) {
@@ -41,46 +45,11 @@ var Watcher = Events.extend({
         Watcher.parent(the);
         the.data = data;
         the[_options] = object.assign({}, defaults, options);
-        the[_linking] = false;
-        the[_linker] = null;
-        the[_linkageList] = [];
         the[_guid] = random.guid();
         the[_watchStart](data);
     },
     watch: function (callback) {
 
-    },
-
-    /**
-     * 私有方法，仅限制 blear 模块之间调用，
-     * 除非你知道如何使用，
-     * link 方法将数据获取与源头字段一一关联，
-     * 需要使用者自己处理监听的 watcher 是否一致。
-     *
-     * @param callback
-     * @returns {Watcher}
-     */
-    link: function (callback) {
-        var the = this;
-
-        if (the[_linking]) {
-            return the;
-        }
-
-        the[_linking] = true;
-        the[_linker] = fun.noop(callback);
-        return the;
-    },
-
-
-    /**
-     * 私有方法，仅限制 blear 模块之间调用，
-     * 在处理完成精确数据变化监听关系之后断开连接。
-     * @returns {Watcher}
-     */
-    linkEnd: function () {
-        this[_linkend] = true;
-        return this;
     },
 
 
@@ -91,17 +60,11 @@ var Watcher = Events.extend({
         var the = this;
 
         the[_watchEnd](the.data);
-        the[_dropLinkage]();
-        the[_linkageList] = the[_linker] = the.data = null;
         Watcher.invoke('destroy', the);
     }
 });
 var _options = Watcher.sole();
 var _guid = Watcher.sole();
-var _linking = Watcher.sole();
-var _linker = Watcher.sole();
-var _linkend = Watcher.sole();
-var _linkageList = Watcher.sole();
 var _watchStart = Watcher.sole();
 var _watchEnd = Watcher.sole();
 var _onWatch = Watcher.sole();
@@ -113,9 +76,6 @@ var _unWatchArr = Watcher.sole();
 var _onWatchObjWithKeyVal = Watcher.sole();
 var _unWatchObjWithKeyVal = Watcher.sole();
 var _broadcast = Watcher.sole();
-var _linkWatcher = Watcher.sole();
-var _linkageReact = Watcher.sole();
-var _dropLinkage = Watcher.sole();
 var WATCHER_LIST = Watcher.sole();
 var WATCHER_MAP = Watcher.sole();
 var WATCHED_FLAG = Watcher.sole();
@@ -164,21 +124,6 @@ pro[_watchEnd] = function (data) {
         the[_unWatch](data);
         the[_unWatchObj](data);
     }
-};
-
-/**
- * 删除关联函数
- */
-pro[_dropLinkage] = function () {
-    var the = this;
-
-    array.each(the[_linkageList], function (index, config) {
-        var linkage = config.l;
-        var obj = config.o;
-        var key = config.k;
-        var list = obj[LINKAGE_MAP][key];
-        array.delete(list, linkage, true);
-    });
 };
 
 
@@ -280,6 +225,8 @@ pro[_unWatchObj] = function (obj) {
 pro[_onWatchObjWithKeyVal] = function (obj, key, val) {
     var the = this;
     var oldVal = val;
+    var Reactor = the[_options].Reactor;
+    var reactor = new Reactor();
 
     if (typeis.Function(val)) {
         return;
@@ -292,7 +239,10 @@ pro[_onWatchObjWithKeyVal] = function (obj, key, val) {
         odf(obj, key, {
             enumerable: true,
             get: function () {
-                the[_linkWatcher](obj, key, val);
+                if(Reactor.target) {
+                    reactor.add();
+                }
+
                 return oldVal;
             },
             set: function (newVal) {
@@ -307,12 +257,11 @@ pro[_onWatchObjWithKeyVal] = function (obj, key, val) {
                     oldVal: oldVal,
                     newVal: newVal
                 };
-                var args1 = [newVal, oldVal, operation];
-                var args2 = [newVal, oldVal, operation];
+                var args = [newVal, oldVal, operation];
 
                 oldVal = newVal;
-                the[_linkageReact](obj, key, args1);
-                the[_broadcast](obj, key, args2);
+                reactor.notify(operation);
+                the[_broadcast](obj, key, args);
             }
         });
     }
@@ -409,7 +358,6 @@ pro[_onWatchArr] = function (arr) {
                     var args1 = [newVal, oldVal, operation];
                     var args2 = [newVal, oldVal, operation];
 
-                    the[_linkageReact](arr, MOUNT_ARRAY_KEY, args1);
                     the[_broadcast](arr, MOUNT_ARRAY_KEY, args2);
                 }
             });
@@ -469,54 +417,6 @@ pro[_unWatchArr] = function (arr) {
     });
 };
 
-
-/**
- * 精确关联一对一的 get、set，给实例去操作
- * @param obj
- * @param key
- * @param val
- */
-pro[_linkWatcher] = function (obj, key, val) {
-    // 如果是数组，则挂载在数组上
-    var isArray = typeis.Array(val);
-    var mountTarget = isArray ? val : obj;
-    var mountKey = isArray ? MOUNT_ARRAY_KEY : key;
-    var watcherList = mountTarget[WATCHER_LIST];
-    var linkageList = mountTarget[LINKAGE_MAP][mountKey] || [];
-
-    mountTarget[LINKAGE_MAP][mountKey] = linkageList;
-    array.each(watcherList, function (index, watcher) {
-        var link = watcher[_linker];
-
-        if (watcher[_linking] && !watcher[_linkend]) {
-            var linkage = link();
-
-            if (typeis.Function(linkage)) {
-                linkageList.push(linkage);
-                // 将 linkage 添加到 watcher 里便于销毁
-                watcher[_linkageList].push({
-                    l: linkage,
-                    o: obj,
-                    k: key
-                });
-            }
-        }
-    });
-};
-
-/**
- * 关联响应
- * @param any
- * @param key
- * @param args
- */
-pro[_linkageReact] = function (any, key, args) {
-    var linkaegList = any[LINKAGE_MAP][key] || [];
-
-    array.each(linkaegList, function (index, linkage) {
-        linkage.apply(any, args);
-    });
-};
 
 /**
  * 对应变化广播

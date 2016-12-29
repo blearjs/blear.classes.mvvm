@@ -2,7 +2,7 @@
 <!--
  - 文件描述
  - @author ydr.me
- - @create 2016-06-27 17:26
+ - @created 2016-12-29 22:00
  -->
 <html lang="zh-Hans">
 <head>
@@ -17,48 +17,28 @@
     <meta name="keywords" content="关键词1,关键词2">
     <meta name="description" content="描述语句">
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
-    <title>index.html</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            -webkit-content-sizing: border-content;
-            -moz-content-sizing: border-content;
-            content-sizing: border-content;
-        }
-
-        button {
-            padding: 5px 10px;
-            font-size: 20px;
-        }
-
-        #app {
-            display: block;
-            width: 400px;
-            font-size: 30px;
-            padding: 30px;
-            border: 1px solid #ccf;
-            margin: 30px auto;
-            line-height: 2;
-        }
-
-        hr {
-            margin: 10px 0;
-        }
-    </style>
+    <title>watch-object.html.html</title>
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body ontouchstart="">
 
 <div id="app">
-    <p>{{'text1 + text2: ' + text1 + text2}}</p>
-    <button id="change1">change text1</button>
-    <button id="change2">change text2</button>
+    <div>
+        <button id="change1">change a</button>
+        <button id="change2">change b.c.d.e</button>
+        <button id="change3">change x</button>
+    </div>
+    <p>a = {{a}}</p>
+    <p>b.c.d.e = {{b.c.d.e}}</p>
+    <p>x = {{JSON.stringify(x)}}</p>
+    <p>1 + x.y.z = {{'1' + x.y.z}}</p>
+    <p>2 + x.y.z = {{'2' + x.y.z}}</p>
 </div>
-
 
 <script src="/node_modules/coolie.js/coolie.js"
         data-config="/example/coolie-config.js"
-        data-main="text.js"></script>
+        data-main="watch-object.js"></script>
+
 
 </body>
 </html>

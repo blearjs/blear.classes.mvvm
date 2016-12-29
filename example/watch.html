@@ -50,11 +50,11 @@
 <body ontouchstart="">
 
 <div id="app" >
-    <p @html="'data.html: ' + html"></p>
-    <p @html="'data.text: ' + text"></p>
-    <p @html="'data.list[0]: ' + list[0]"></p>
-    <p @html="'data.list.size: ' + list.size"></p>
-    <p @html="'window.outerWidth: '+outerWidth"></p>
+    <p>html: {{html}}</p>
+    <p>text: {{text}}</p>
+    <p>list[0]: {{list[0]}}</p>
+    <p>list.length: {{list.length}}</p>
+    <p>window.outerWidth: {{window.outerWidth}}</p>
     <hr>
     <button id="set1">set data.html</button>
     <button id="set4">set data.text</button>

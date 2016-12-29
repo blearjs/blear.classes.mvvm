@@ -7,6 +7,7 @@
 
 'use strict';
 
+var Watcher= require('../watcher');
 var array = require('blear.utils.array');
 var string = require('blear.utils.string');
 var event = require('blear.core.event');
@@ -18,6 +19,7 @@ var eventParser = require('../parsers/event');
 var directives = require('../directives/index');
 var configs = require('../configs');
 var Directive = require('../classes/directive');
+var Reactor = require('../classes/reactor');
 
 var attrDirectiveRE;
 var ctrlDirectiveRE;
@@ -120,6 +122,9 @@ exports.attr = function (node, attr, scope, vm) {
     directive.exp = directive.value = attrValue;
     directive.category = category;
     directive.scope = scope;
+    directive.watcher = new Watcher(scope, {
+        Reactor: Reactor
+    });
     directive.vm = vm;
     directive.init();
 
@@ -196,13 +201,16 @@ exports.text = function (node, scope, vm) {
         directive.category = TEXT_STR;
         directive.scope = scope;
         directive.vm = vm;
+        directive.watcher = new Watcher(scope, {
+            Reactor: Reactor
+        });
         directive.init();
 
-        var expFn = expressionParser(directive.exp);
+        var getter = expressionParser(directive.exp);
 
-        directive.expFn = expFn;
+        directive.getter = getter;
         directive.eval = function () {
-            return expFn.call(scope, scope);
+            return getter.call(scope, scope);
         };
         vm.add(directive);
     });

@@ -12,8 +12,19 @@ var random = require('blear.utils.random');
 var MVVM = require('../src/index');
 
 var data = window.data = {
-    text1: '<b>1</b>',
-    text2: 'heh'
+    a: '1',
+    b: {
+        c: {
+            d: {
+                e: '2'
+            }
+        }
+    },
+    x: {
+        y: {
+            z: 3
+        }
+    }
 };
 
 new MVVM({
@@ -22,9 +33,17 @@ new MVVM({
 });
 
 document.getElementById('change1').onclick = function () {
-    data.text1 = random.string();
+    data.a = random.string();
 };
 
 document.getElementById('change2').onclick = function () {
-    data.text2 = random.string();
+    data.b.c.d.e = random.string();
+};
+
+document.getElementById('change3').onclick = function () {
+    data.x = {
+        y: {
+            z: random.string()
+        }
+    };
 };

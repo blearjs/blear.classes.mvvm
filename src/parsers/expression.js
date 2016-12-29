@@ -282,13 +282,6 @@ module.exports = function parseExpressionToGetter(expression) {
     var errorName = varible();
 
     var body =
-        // 设置监听指向
-        'if(' + monitorName + '&&' + directiveName + '){' +
-        /****/monitorName + '.target=' + directiveName + ';' +
-        '}' +
-
-        // 'debugger;' +
-
         'try{' +
         /****/'with(' + scopeName + '){' +
         /****//****/ 'return ' + expression + ';' +
@@ -302,7 +295,7 @@ module.exports = function parseExpressionToGetter(expression) {
         '}';
 
     try {
-        return new Function(scopeName, monitorName, directiveName, body);
+        return new Function(scopeName, body);
     } catch (err) {
         if (typeof DEBUG !== 'undefined' && DEBUG) {
             console.error('表达式书写有误：');

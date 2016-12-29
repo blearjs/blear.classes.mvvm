@@ -15,6 +15,7 @@ var modification = require('blear.core.modification');
 var compile = require('../bootstrap/compile');
 var monitor = require('../bootstrap/monitor');
 var parser = require('../bootstrap/parser');
+var Reactor = require('./reactor');
 
 var vmList = [];
 var ViewModel = Class.extend({
@@ -32,8 +33,34 @@ var ViewModel = Class.extend({
         the.monitor = monitor;
         the.children = [];
         the.directives = [];
+
         compile(el, scope, the);
-        monitor.start(the.directives);
+
+        array.each(the.directives, function (index, directive) {
+            var scope = directive.scope;
+            var getter = directive.getter;
+            var node = directive.node;
+            var oldVal;
+
+            directive.dispath = function (operation) {
+                // 新值使用表达式计算
+                var newVal = directive.eval();
+                directive.update(node, newVal, oldVal, operation);
+                oldVal = newVal;
+            };
+            directive.dispath.directive = directive;
+
+            if (getter) {
+                // 不能省略
+                Reactor.target = directive;
+                // 第一次取值时传递 directive
+                oldVal = getter(scope);
+                Reactor.target = null;
+            }
+
+            directive.bind(node, oldVal);
+        });
+
         vmList.push(the);
     },
 
@@ -46,7 +73,6 @@ var ViewModel = Class.extend({
         var the = this;
 
         the.directives.push(directive);
-        monitor.add(directive, the.scope);
 
         if (typeof DEBUG !== 'undefined' && DEBUG) {
             directive.node.directives = directive.node.directives || [];
