@@ -117,20 +117,18 @@
 
     <div class="content">
         <ul id="app">
-            <li>1层开始占位</li>
+            <li>`@for="index,item in list"`</li>
             <li @for="index,item in list">
                 <ul>
-                    <li>2层开始占位</li>
+                    <li>`@for="el in item"`</li>
                     <li @for="el in item">
                         <!--<p class="l1">1层 index: {{index}}</p>-->
-                        <p class="l1">1层 {{'item: ' + item}}</p>
+                        <p class="l1">{{'item = ' + item}}</p>
                         <!--<p class="l2">2层 $index: {{$index}}</p>-->
                         <!--<p class="l2">2层 el: {{el}}</p>-->
                     </li>
-                    <li>2层结束占位</li>
                 </ul>
             </li>
-            <li>1层结束占位</li>
         </ul>
     </div>
 </div>

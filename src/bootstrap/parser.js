@@ -123,25 +123,25 @@ exports.attr = function (node, attr, scope, vm) {
     directive.vm = vm;
     directive.init();
 
-    var expFn;
+    var getter;
 
     switch (category) {
         case EVENT_STR:
-            expFn = eventParser(directive.exp);
+            getter = eventParser(directive.exp);
             directive.eval = function (el, ev) {
-                return expFn.call(scope, el, ev, scope);
+                return getter.call(scope, el, ev, scope);
             };
             break;
 
         default:
-            expFn = expressionParser(directive.exp);
+            getter = expressionParser(directive.exp);
             directive.eval = function () {
-                return expFn.call(scope, scope);
+                return getter.call(scope, scope);
             };
             break;
     }
 
-    directive.expFn = expFn;
+    directive.getter = getter;
     vm.add(directive);
 
     return directive.aborted;

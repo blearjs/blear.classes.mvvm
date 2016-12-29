@@ -71,7 +71,7 @@ exports.add = function (directive, scope) {
 exports.start = function (directives) {
     array.each(directives, function (index, directive) {
         var scope = directive.scope;
-        var expFn = directive.expFn;
+        var getter = directive.getter;
         var node = directive.node;
         var oldVal;
 
@@ -83,15 +83,15 @@ exports.start = function (directives) {
         };
         directive.dispath.directive = directive;
 
-        if (expFn) {
+        if (getter) {
             // 不能省略
             exports.target = null;
             // 第一次取值时传递 directive
-            oldVal = expFn(scope, monitor, directive);
-            directive.expFn = null;
+            oldVal = getter(scope, monitor, directive);
+            // directive.expFn = null;
         }
 
-        // directive.watcher.linkEnd();
+        directive.watcher.linkEnd();
         directive.bind(node, oldVal);
     });
 };

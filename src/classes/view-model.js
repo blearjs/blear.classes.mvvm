@@ -113,11 +113,11 @@ var ViewModel = Class.extend({
 });
 
 ViewModel.end = function () {
-    array.each(vmList, function (_, vm) {
-        array.each(vm.directives, function (__, directive) {
-            directive.watcher.linkEnd();
-        });
-    });
+    // array.each(vmList, function (_, vm) {
+    //     array.each(vm.directives, function (__, directive) {
+    //         directive.watcher.linkEnd();
+    //     });
+    // });
 };
 
 module.exports = ViewModel;
