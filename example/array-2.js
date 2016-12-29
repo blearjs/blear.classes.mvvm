@@ -52,6 +52,8 @@ var buildArray = function (length) {
 
 document.getElementById('pushArray').onclick = function () {
     var index = random.number(0, data.list.length - 1);
+
+    index = 0;
     data.list[index].push.apply(data.list[index], buildArray(1));
     setData();
 };

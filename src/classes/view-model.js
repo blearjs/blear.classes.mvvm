@@ -12,9 +12,9 @@ var random = require('blear.utils.random');
 var array = require('blear.utils.array');
 var modification = require('blear.core.modification');
 
-var compile = require('../runtime/compile');
-var monitor = require('../runtime/monitor');
-var parser = require('../runtime/parser');
+var compile = require('../bootstrap/compile');
+var monitor = require('../bootstrap/monitor');
+var parser = require('../bootstrap/parser');
 
 var ViewModel = Class.extend({
     className: 'ViewModel',
@@ -24,6 +24,8 @@ var ViewModel = Class.extend({
         the.guid = random.guid();
         the.el = el;
         the.scope = scope;
+        the.data = scope;
+        the.root = the;
         the.parent = null;
         the.parser = parser;
         the.monitor = monitor;
@@ -39,13 +41,15 @@ var ViewModel = Class.extend({
      * @param directive
      */
     add: function (directive) {
-        this.directives.push(directive);
-        monitor.add(directive);
+        var the = this;
+
+        the.directives.push(directive);
+        monitor.add(directive, the.data);
 
         if (typeof DEBUG !== 'undefined' && DEBUG) {
             directive.node.directives = directive.node.directives || [];
             directive.node.directives.push(directive);
-            this.el.vm = this;
+            the.el.vm = the;
         }
     },
 
@@ -63,6 +67,8 @@ var ViewModel = Class.extend({
         // 请指令自行完成，如 for 指令
         parentVM.children.push(childVM);
         childVM.parent = parentVM;
+        childVM.root = parentVM.root;
+        childVM.data = parentVM.root.data;
 
         return childVM;
     },

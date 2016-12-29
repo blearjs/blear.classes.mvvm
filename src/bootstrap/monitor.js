@@ -41,12 +41,12 @@ exports.target = null;
 /**
  * 添加数据监视
  * @param directive
+ * @param data
  */
-exports.add = function (directive) {
-    var scope = directive.scope;
-    var watcher = directive.watcher = new Watcher(scope);
+exports.add = function (directive, data) {
+    var watcher = directive.watcher = new Watcher(data);
 
-    watcher._link(function () {
+    watcher.link(function () {
         // 当前没有绑定阶段的监听
         if (!exports.target) {
             return;
@@ -91,7 +91,7 @@ exports.start = function (directives) {
             directive.expFn = null;
         }
 
-        watcher._linkEnd();
+        watcher.linkEnd();
 
         directive.bind(node, oldVal);
     });

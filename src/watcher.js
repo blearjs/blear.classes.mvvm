@@ -59,9 +59,8 @@ var Watcher = Events.extend({
      *
      * @param callback
      * @returns {*}
-     * @private
      */
-    _link: function (callback) {
+    link: function (callback) {
         var the = this;
 
         if (the[_linking]) {
@@ -76,10 +75,8 @@ var Watcher = Events.extend({
     /**
      * 私有方法，仅限制 blear 模块之间调用，
      * 在处理完成精确数据变化监听关系之后断开连接。
-     *
-     * @private
      */
-    _linkEnd: function () {
+    linkEnd: function () {
         this[_linkend] = true;
     },
 
