@@ -41,12 +41,13 @@ exports.target = null;
 /**
  * 添加数据监视
  * @param directive
- * @param data
+ * @param scope
+ * @returns {Watcher}
  */
-exports.add = function (directive, data) {
-    var watcher = directive.watcher = new Watcher(data);
+exports.add = function (directive, scope) {
+    var watcher = directive.watcher = new Watcher(scope);
 
-    watcher.link(function () {
+    return watcher.link(function () {
         // 当前没有绑定阶段的监听
         if (!exports.target) {
             return;
@@ -71,7 +72,6 @@ exports.start = function (directives) {
     array.each(directives, function (index, directive) {
         var scope = directive.scope;
         var expFn = directive.expFn;
-        var watcher = directive.watcher;
         var node = directive.node;
         var oldVal;
 
@@ -91,8 +91,7 @@ exports.start = function (directives) {
             directive.expFn = null;
         }
 
-        watcher.linkEnd();
-
+        // directive.watcher.linkEnd();
         directive.bind(node, oldVal);
     });
 };

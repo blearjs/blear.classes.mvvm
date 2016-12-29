@@ -18,11 +18,7 @@ var appEl = document.getElementById('app');
 var data = window.data = {
     list: [
         [
-            random.string(),
-            random.string()
-        ],
-        [
-            random.string(),
+            // random.string(),
             random.string()
         ]
     ]

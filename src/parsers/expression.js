@@ -287,6 +287,7 @@ module.exports = function parseExpressionToGetter(expression) {
         /****/monitorName + '.target=' + directiveName + ';' +
         '}' +
 
+        // 'debugger;' +
 
         'try{' +
         /****/'with(' + scopeName + '){' +

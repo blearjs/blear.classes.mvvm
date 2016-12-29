@@ -16,6 +16,7 @@ var compile = require('../bootstrap/compile');
 var monitor = require('../bootstrap/monitor');
 var parser = require('../bootstrap/parser');
 
+var vmList = [];
 var ViewModel = Class.extend({
     className: 'ViewModel',
     constructor: function (el, scope) {
@@ -33,6 +34,7 @@ var ViewModel = Class.extend({
         the.directives = [];
         compile(el, scope, the);
         monitor.start(the.directives);
+        vmList.push(the);
     },
 
 
@@ -44,7 +46,7 @@ var ViewModel = Class.extend({
         var the = this;
 
         the.directives.push(directive);
-        monitor.add(directive, the.data);
+        monitor.add(directive, the.scope);
 
         if (typeof DEBUG !== 'undefined' && DEBUG) {
             directive.node.directives = directive.node.directives || [];
@@ -68,7 +70,6 @@ var ViewModel = Class.extend({
         parentVM.children.push(childVM);
         childVM.parent = parentVM;
         childVM.root = parentVM.root;
-        childVM.data = parentVM.root.data;
 
         return childVM;
     },
@@ -107,7 +108,16 @@ var ViewModel = Class.extend({
             = the.monitor = the.directives
             = the.el = the.scope
             = null;
+        array.delete(vmList, the);
     }
 });
+
+ViewModel.end = function () {
+    array.each(vmList, function (_, vm) {
+        array.each(vm.directives, function (__, directive) {
+            directive.watcher.linkEnd();
+        });
+    });
+};
 
 module.exports = ViewModel;

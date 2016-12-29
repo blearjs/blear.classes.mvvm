@@ -17,14 +17,14 @@
     <meta name="keywords" content="关键词1,关键词2">
     <meta name="description" content="描述语句">
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
-    <title>index.html</title>
+    <title>blear</title>
     <style>
         * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            -webkit-content-sizing: border-content;
-            -moz-content-sizing: border-content;
-            content-sizing: border-content;
         }
 
         button {
@@ -122,10 +122,10 @@
                 <ul>
                     <li>2层开始占位</li>
                     <li @for="el in item">
-                        <p class="l1">1层 index: {{index}}</p>
-                        <p class="l1">1层 item: {{item}}</p>
-                        <p class="l2">2层 $index: {{$index}}</p>
-                        <p class="l2">2层 el: {{el}}</p>
+                        <!--<p class="l1">1层 index: {{index}}</p>-->
+                        <p class="l1">1层 {{'item: ' + item}}</p>
+                        <!--<p class="l2">2层 $index: {{$index}}</p>-->
+                        <!--<p class="l2">2层 el: {{el}}</p>-->
                     </li>
                     <li>2层结束占位</li>
                 </ul>

@@ -48,6 +48,8 @@ pro[_compile] = function () {
 
     // fragment.appendChild(rootEl);
     the[_vm] = new ViewModel(rootEl, scope);
+    ViewModel.end();
+
     // modification.insert(rootEl, anchorNode, 3);
 };
 

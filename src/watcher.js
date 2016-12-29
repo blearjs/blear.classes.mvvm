@@ -58,26 +58,29 @@ var Watcher = Events.extend({
      * 需要使用者自己处理监听的 watcher 是否一致。
      *
      * @param callback
-     * @returns {*}
+     * @returns {Watcher}
      */
     link: function (callback) {
         var the = this;
 
         if (the[_linking]) {
-            return;
+            return the;
         }
 
         the[_linking] = true;
         the[_linker] = fun.noop(callback);
+        return the;
     },
 
 
     /**
      * 私有方法，仅限制 blear 模块之间调用，
      * 在处理完成精确数据变化监听关系之后断开连接。
+     * @returns {Watcher}
      */
     linkEnd: function () {
         this[_linkend] = true;
+        return this;
     },
 
 
