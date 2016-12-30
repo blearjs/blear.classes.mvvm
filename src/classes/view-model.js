@@ -15,7 +15,7 @@ var modification = require('blear.core.modification');
 var compile = require('../bootstrap/compile');
 var monitor = require('../bootstrap/monitor');
 var parser = require('../bootstrap/parser');
-var Reactor = require('./reactor');
+var Pivot = require('../pivot');
 
 var vmList = [];
 var ViewModel = Class.extend({
@@ -42,20 +42,17 @@ var ViewModel = Class.extend({
             var node = directive.node;
             var oldVal;
 
-            directive.dispath = function (operation) {
-                // 新值使用表达式计算
-                var newVal = directive.eval();
-                directive.update(node, newVal, oldVal, operation);
-                oldVal = newVal;
-            };
-            directive.dispath.directive = directive;
-
             if (getter) {
                 // 不能省略
-                Reactor.target = directive;
+                Pivot.target = function (operation) {
+                    // 新值使用表达式计算
+                    var newVal = directive.eval();
+                    directive.update(node, newVal, oldVal, operation);
+                    oldVal = newVal;
+                };
                 // 第一次取值时传递 directive
                 oldVal = getter(scope);
-                Reactor.target = null;
+                Pivot.target = null;
             }
 
             directive.bind(node, oldVal);

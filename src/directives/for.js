@@ -59,12 +59,8 @@ var buildChildMVVM = function (directive, index, data, operation) {
 
     childScope[indexName] = index;
     childScope[aliasName] = data;
-
-    if (typeof DEBUG !== 'undefined' && DEBUG) {
-        childScope.__childNode__ = childNode;
-    }
-
     modification.insert(childNode, insertTarget, insertPosition);
+
     var childVM = vm.child(childNode, childScope);
 
     switch (method) {

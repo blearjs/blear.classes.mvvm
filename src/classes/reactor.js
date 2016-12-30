@@ -20,7 +20,6 @@ var Reactor = Events.extend({
     },
 
     add: function () {
-
         if (Reactor.target) {
             var directive = Reactor.target;
             var directiveGuid = directive.guid;
@@ -32,7 +31,11 @@ var Reactor = Events.extend({
         }
     },
 
-    notify: function () {
+    before: function () {
+
+    },
+
+    after: function () {
         array.each(this.directiveList, function (index, directive) {
             directive.dispath();
         });
