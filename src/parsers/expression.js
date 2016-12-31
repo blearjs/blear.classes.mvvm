@@ -294,6 +294,7 @@ module.exports = function parseExpressionToGetter(expression) {
         /****/'}' +
         '}catch(' + errorName + '){' +
         /****/'if(typeof DEBUG!=="undefined"&&DEBUG) {' +
+        /****//****/'debugger;' +
         /****//****/'return ' + errorName + '.message;' +
         /****/'}' +
         /****/

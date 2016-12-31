@@ -52,6 +52,7 @@ module.exports = function (expression, utilsName) {
         /****/ '}' +
         '}catch(' + errorName + '){' +
         /****/'if(typeof DEBUG!=="undefined"&&DEBUG){' +
+        /****//****/'debugger;' +
         /****//****/'console.error(' + errorName + ');' +
         /****/'}' +
         '}';

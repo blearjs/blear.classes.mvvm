@@ -44,7 +44,6 @@ var Agent = Events.extend({
 
         map[gid] = true;
         list.push(target);
-        console.log(target);
     },
 
     /**

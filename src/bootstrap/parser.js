@@ -125,25 +125,22 @@ exports.attr = function (node, attr, vm) {
     directive.vm = vm;
     directive.init();
 
-    var getter;
-
     switch (category) {
         case EVENT_STR:
-            getter = eventParser(directive.exp);
-            directive.eval = function (el, ev) {
-                return getter(scope, el, ev);
+            var executer = directive.executer = eventParser(directive.exp);
+            directive.exec = function (el, ev) {
+                return executer(scope, el, ev);
             };
             break;
 
         default:
-            getter = expressionParser(directive.exp);
+            var getter = directive.getter = expressionParser(directive.exp);
             directive.eval = function () {
                 return getter(scope);
             };
             break;
     }
 
-    directive.getter = getter;
     vm.add(directive);
 
     return directive.aborted;
