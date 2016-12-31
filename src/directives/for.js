@@ -12,7 +12,7 @@ var array = require('blear.utils.array');
 var random = require('blear.utils.random');
 
 var anchor = require('../utils/anchor');
-var arrayDiff = window.arrayDiff = require('../utils/array-diff');
+var arrayDiff = require('../utils/array-diff');
 var configs = require('../configs');
 
 var ARRAY_POP = 'pop';

@@ -13,7 +13,7 @@ var random = require('blear.utils.random');
 var typeis = require('blear.utils.typeis');
 var access = require('blear.utils.access');
 
-var Pivot = require('./pivot');
+var Agent = require('./agent');
 
 var WATCH_FLAG = random.guid();
 var ARRAY_POP = 'pop';
@@ -45,27 +45,28 @@ function defineValue(obj, key, val) {
     });
 }
 
-function watch(any, pivot) {
+function observe(watcher, any, agent) {
     if (isObject(any)) {
-        watchObject(any);
+        observeObject(watcher, any);
     } else if (isArray(any)) {
-        watchArray(any, pivot);
+        observeArray(any, agent);
     }
 }
 
-function watchObject(obj) {
+function observeObject(watcher, obj) {
     object.each(obj, function (key, val) {
         var descriptor = Object.getOwnPropertyDescriptor(object, key);
         var getter = descriptor && descriptor.get;
         var setter = descriptor && descriptor.set;
         var oldVal = val;
-        var pivot = new Pivot();
+        var agent = new Agent();
 
+        watcher.add(agent);
         object.define(obj, key, {
             enumerable: true,
             get: function () {
                 oldVal = getter ? getter.call(obj) : oldVal;
-                pivot.link();
+                agent.link();
                 return oldVal;
             },
             set: function (val) {
@@ -76,16 +77,16 @@ function watchObject(obj) {
                 }
 
                 oldVal = newVal;
-                pivot.react();
-                watch(oldVal, pivot);
+                agent.react();
+                observe(oldVal, agent);
             }
         });
 
-        watch(val, pivot);
+        observe(val, agent);
     });
 }
 
-function watchArray(arr, pivot) {
+function observeArray(arr, agent) {
     array.each(OVERRIDE_ARRAY_METHODS, function (index, method) {
         var original = Array.prototype[method];
         defineValue(arr, method, function () {
@@ -136,7 +137,7 @@ function watchArray(arr, pivot) {
 
             if (insertValue) {
                 array.each(insertValue, function (index, insertValue) {
-                    watch(insertValue, pivot);
+                    observe(insertValue, agent);
                 });
             }
 
@@ -151,12 +152,12 @@ function watchArray(arr, pivot) {
                 newVal: newVal
             };
 
-            pivot.react(operation);
+            agent.react(operation);
         });
     });
 
     array.each(arr, function (index, val) {
-        watch(val, pivot);
+        observe(val, agent);
     });
 
     defineValue(arr, 'set', function (index, val) {
@@ -176,4 +177,4 @@ function watchArray(arr, pivot) {
     });
 }
 
-module.exports = watch;
+module.exports = observe;

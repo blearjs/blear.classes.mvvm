@@ -121,7 +121,7 @@ exports.attr = function (node, attr, vm) {
     directive.exp = directive.value = attrValue;
     directive.category = category;
     directive.scope = scope;
-    directive.watcher = Watcher(scope);
+    directive.watcher = new Watcher(scope);
     directive.vm = vm;
     directive.init();
 
@@ -198,7 +198,7 @@ exports.text = function (node, vm) {
         directive.category = TEXT_STR;
         directive.scope = scope;
         directive.vm = vm;
-        directive.watcher = Watcher(scope);
+        directive.watcher = new Watcher(scope);
         directive.init();
 
         var getter = expressionParser(directive.exp);
