@@ -57,21 +57,9 @@ module.exports = function (expression, utilsName) {
         /****/'}' +
         '}';
 
-    try {
-        return function (scope, el, ev) {
-            return (new Function(scopeName, elName, eventName, utilsName, body)).call(scope, scope, el, ev, utils);
-        };
-    } catch (err) {
-        if (typeof DEBUG !== 'undefined' && DEBUG) {
-            console.error('表达式书写有误：');
-            console.error(body);
-            console.error(err);
-        }
-
-        return function () {
-            // ignore
-        };
-    }
+    return function (scope, el, ev) {
+        return (new Function(scopeName, elName, eventName, utilsName, body)).call(scope, scope, el, ev, utils);
+    };
 };
 
 

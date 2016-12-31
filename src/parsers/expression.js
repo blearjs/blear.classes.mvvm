@@ -282,8 +282,6 @@ var utils = {
  */
 module.exports = function parseExpressionToGetter(expression) {
     var scopeName = varible();
-    var monitorName = varible();
-    var directiveName = varible();
     var errorName = varible();
     var utilsName = varible();
 
@@ -301,23 +299,7 @@ module.exports = function parseExpressionToGetter(expression) {
         /****/'return "";' +
         '}';
 
-    try {
-        return function (scope) {
-            return (new Function(scopeName, utilsName, body)).call(scope, scope, utils);
-        };
-    } catch (err) {
-        if (typeof DEBUG !== 'undefined' && DEBUG) {
-            console.error('表达式书写有误：');
-            console.error(expression);
-            console.error(err.stack);
-
-            return function () {
-                return err.message;
-            };
-        }
-
-        return function () {
-            return '';
-        };
-    }
+    return function (scope) {
+        return (new Function(scopeName, utilsName, body)).call(scope, scope, utils);
+    };
 };
