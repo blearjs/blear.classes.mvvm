@@ -13,7 +13,7 @@ var data = window.data = {
     list0: [
         // list1
         [
-            '习近平'
+            // '习近平'
         ]
     ]
 };

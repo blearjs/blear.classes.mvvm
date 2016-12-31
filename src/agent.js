@@ -24,6 +24,7 @@ var Agent = Events.extend({
         the[_watcherMap] = {};
         the[_parent] = null;
         the[_child] = null;
+        console.log(new Date(), 'create agent', the);
     },
 
     // /**

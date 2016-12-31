@@ -18,6 +18,9 @@ var Agent = require('./agent');
 var WATCH_FLAG = random.guid();
 var AGENT_KEY = random.guid();
 var AGENT_GUID = random.guid();
+var AGENT_ARRAY = random.guid();
+var AGENT_LIST = random.guid();
+var AGENT_MAP = random.guid();
 var ARRAY_POP = 'pop';
 var ARRAY_PUSH = 'push';
 var ARRAY_REVERSE = 'reverse';
@@ -35,6 +38,9 @@ var OVERRIDE_ARRAY_METHODS = [
 
 if (typeof DEBUG !== 'undefined' && DEBUG) {
     AGENT_KEY = '__AGENT_KEY__';
+    AGENT_ARRAY = '__AGENT_ARRAY__';
+    AGENT_LIST = '__AGENT_LIST__';
+    AGENT_MAP = '__AGENT_MAP__';
 }
 
 function isObject(any) {
@@ -68,15 +74,6 @@ function observe(watcher, any, agent) {
 }
 
 function observeObject(watcher, obj) {
-    // var agent = obj[AGENT_FLAG];
-    //
-    // if (!agent) {
-    //     agent = new Agent();
-    //     watcher.add(agent);
-    //     console.log('new Agent', obj, agent, new Date());
-    //     defineValue(obj, AGENT_FLAG, agent);
-    // }
-
     object.each(obj, function (key, val) {
         if (typeis.Function(val)) {
             return;
@@ -86,28 +83,21 @@ function observeObject(watcher, obj) {
         var getter = descriptor && descriptor.get;
         var setter = descriptor && descriptor.set;
         var oldVal = val;
-        var agentKey = AGENT_KEY + key;
-        var agent;
+        // var agent;
+        //
+        // // 如果值是数组，则从数组上取 agent
+        // if (isArray(val)) {
+        //     agent = val[AGENT_ARRAY];
+        //
+        //     if (!agent) {
+        //         agent = new Agent();
+        //         defineValue(val, AGENT_ARRAY, agent);
+        //     }
+        // } else {
+        //     agent = new Agent();
+        // }
 
-        // 如果值是数组，则从数组上取 agent
-        if (isArray(val)) {
-            agent = obj[agentKey];
-        }
-
-        // 没有 agent，则新建一个
-        if (!agent) {
-            agent = new Agent();
-        }
-
-        defineValue(obj, agentKey, agent);
-
-        var date = new Date();
-        console.group('[create agent]', date);
-        console.log('agent.guid', agent.guid);
-        console.log('agent.key', key);
-        console.groupEnd('[create agent]', date);
-
-        agent.key = key;
+        var agent = new Agent();
         object.define(obj, key, {
             enumerable: true,
             get: function () {
@@ -132,13 +122,22 @@ function observeObject(watcher, obj) {
 }
 
 function observeArray(watcher, arr, agent) {
-    // var list = arr['__list__'];
-    //
-    // if (!list) {
-    //     defineValue(arr, '__list__', list = []);
+    // if (!arr[AGENT_ARRAY]) {
+    //     defineValue(arr, AGENT_ARRAY, agent);
     // }
-    //
-    // list.push(agent);
+
+    var list = arr[AGENT_LIST];
+    var map = arr[AGENT_MAP];
+
+    if (!list) {
+        defineValue(arr, AGENT_LIST, list = []);
+        defineValue(arr, AGENT_MAP, map = {});
+    }
+
+    if (!map[agent.guid]) {
+        map[agent.guid] = true;
+        list.push(agent);
+    }
 
     array.each(OVERRIDE_ARRAY_METHODS, function (index, method) {
         var original = Array.prototype[method];
@@ -204,7 +203,9 @@ function observeArray(watcher, arr, agent) {
                 newVal: arr
             };
 
-            agent.react(operation);
+            array.each(list, function (index, agent) {
+                agent.react(operation);
+            });
         });
     });
     defineValue(arr, AGENT_GUID, agent);
