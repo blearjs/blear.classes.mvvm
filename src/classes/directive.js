@@ -78,7 +78,8 @@ module.exports = Class.extend({
         var the = this;
         var definition = the.definition;
 
-        the.watcher.destroy();
+        // @todo 取消数据监听
+        // the.watcher.destroy();
         fun.noop(definition.destroy).apply(the, arguments);
         the.watcher = the.definition = null;
         the.destroyed = true;

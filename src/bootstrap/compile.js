@@ -10,44 +10,44 @@
 var array = require('blear.utils.array');
 var random = require('blear.utils.random');
 
-var compileAttrs = function (node, scope, vm) {
+var compileAttrs = function (node, vm) {
     var attrs = array.from(node.attributes);
     var aborted = false;
     var parser = vm.parser;
 
     array.each(attrs, function (index, attr) {
-        aborted = parser.attr(node, attr, scope, vm);
+        aborted = parser.attr(node, attr, vm);
     });
 
     return aborted;
 };
 
-var compileElement = function (node, scope, vm) {
+var compileElement = function (node, vm) {
     // 属性指令中止遍历
-    if (compileAttrs(node, scope, vm) === true) {
+    if (compileAttrs(node, vm) === true) {
         return;
     }
 
     var childNodes = array.from(node.childNodes);
 
     array.each(childNodes, function (index, childNode) {
-        compileNode(childNode, scope, vm);
+        compileNode(childNode, vm);
     });
 };
 
-var compileText = function (node, scope, vm) {
+var compileText = function (node, vm) {
     var parser = vm.parser;
-    parser.text(node, scope, vm);
+    parser.text(node, vm);
 };
 
-var compileNode = function (node, scope, vm) {
+var compileNode = function (node, vm) {
     switch (node.nodeType) {
         case 1:
-            compileElement(node, scope, vm);
+            compileElement(node, vm);
             break;
 
         case 3:
-            compileText(node, scope, vm);
+            compileText(node, vm);
             break;
     }
 };

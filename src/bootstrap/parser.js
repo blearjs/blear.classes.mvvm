@@ -7,7 +7,7 @@
 
 'use strict';
 
-var Watcher= require('../watcher');
+var Watcher = require('../watcher');
 var array = require('blear.utils.array');
 var string = require('blear.utils.string');
 var event = require('blear.core.event');
@@ -50,10 +50,10 @@ function compileRegExp() {
  * 解析属性节点为指令信息
  * @param {HTMLElement} node
  * @param {Node} attr
- * @param {Object} scope
  * @param {ViewModel} vm
  */
-exports.attr = function (node, attr, scope, vm) {
+exports.attr = function (node, attr, vm) {
+    var scope = vm.scope;
     var attrName = attr.nodeName.toLowerCase();
     var attrValue = attr.nodeValue;
     var category = '';
@@ -153,10 +153,10 @@ exports.attr = function (node, attr, scope, vm) {
 /**
  * 解析文本节点为指令信息
  * @param {Node} node
- * @param {Object} scope
  * @param {ViewModel} vm
  */
-exports.text = function (node, scope, vm) {
+exports.text = function (node, vm) {
+    var scope = vm.scope;
     var expression = node.textContent;
     var tokens = textParser(expression);
 

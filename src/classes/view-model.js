@@ -20,22 +20,34 @@ var Pivot = require('../pivot');
 var vmList = [];
 var ViewModel = Class.extend({
     className: 'ViewModel',
-    constructor: function (el, scope) {
+    constructor: function (el, scope, parent) {
         var the = this;
 
         the.guid = random.guid();
         the.el = el;
         the.scope = scope;
-        the.data = scope;
-        the.root = the;
-        the.parent = null;
-        the.parser = parser;
         the.monitor = monitor;
+        the.parser = parser;
         the.children = [];
         the.directives = [];
 
-        compile(el, scope, the);
+        if (parent) {
+            // 不保证顺序关系，如果需要维护顺序，
+            // 请指令自行完成，如 for 指令
+            parent.children.push(the);
+            the.parent = parent;
+            the.root = parent.root;
+            the.data = parent.root.data;
+        } else {
+            the.parent = null;
+            the.root = the;
+            the.data = scope;
+        }
 
+        // 1、编译 + 解析
+        compile(el, the);
+
+        // 2、绑定指令、确定指令更新
         array.each(the.directives, function (index, directive) {
             var scope = directive.scope;
             var getter = directive.getter;
@@ -57,10 +69,8 @@ var ViewModel = Class.extend({
 
             directive.bind(node, oldVal);
         });
-
         vmList.push(the);
     },
-
 
     /**
      * 在当前 VM 上添加指令
@@ -85,16 +95,7 @@ var ViewModel = Class.extend({
      * @returns {*}
      */
     child: function (el, scope) {
-        var parentVM = this;
-        var childVM = new ViewModel(el, scope);
-
-        // 不保证顺序关系，如果需要维护顺序，
-        // 请指令自行完成，如 for 指令
-        parentVM.children.push(childVM);
-        childVM.parent = parentVM;
-        childVM.root = parentVM.root;
-
-        return childVM;
+        return new ViewModel(el, scope, this);
     },
 
     /**
