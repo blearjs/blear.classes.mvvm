@@ -203,9 +203,7 @@ function observeArray(watcher, arr, agent) {
                 newVal: arr
             };
 
-            array.each(list, function (index, agent) {
-                agent.react(operation);
-            });
+            agent.react(operation);
         });
     });
     defineValue(arr, AGENT_GUID, agent);
