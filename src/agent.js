@@ -15,16 +15,17 @@ var typeis = require('blear.utils.typeis');
 
 var Agent = Events.extend({
     className: 'Agent',
-    constructor: function () {
+    constructor: function (key) {
         var the = this;
 
         Agent.parent(the);
         the.guid = random.guid();
         the[_watcherList] = [];
+        the[_siblings] = [];
         the[_watcherMap] = {};
         the[_parent] = null;
         the[_child] = null;
-        console.log(new Date(), 'create agent', the);
+        console.log(new Date(), 'create agent.guid', the.guid, 'key', key);
     },
 
     // /**
@@ -56,10 +57,16 @@ var Agent = Events.extend({
                 return;
             }
 
+            debugger;
             map[guid] = true;
             list.push(watcher);
             watcher.link(the);
         }
+    },
+
+
+    concat: function (agent) {
+        this[_siblings].push(agent);
     },
 
     /**
@@ -94,6 +101,7 @@ var _watcherMap = Agent.sole();
 var _parent = Agent.sole();
 var _child = Agent.sole();
 var _guid = Agent.sole();
+var _siblings = Agent.sole();
 
 _parent = '_parent';
 _child = '_child';
