@@ -9,6 +9,7 @@
 
 var Events = require('blear.classes.events');
 var array = require('blear.utils.array');
+var object = require('blear.utils.object');
 
 var observe = require('./observe');
 var Agent = require('./agent');
@@ -20,8 +21,8 @@ var Watcher = Events.extend({
     constructor: function (data, options) {
         var the = this;
 
-        observe(the, data);
         the[_agents] = [];
+        observe(the, data);
     },
 
     add: function (agent) {
@@ -35,11 +36,20 @@ var Watcher = Events.extend({
         array.each(the[_agents], function (index, agent) {
             agent.unlink();
         });
+        the[_agents] = null;
 
         Watcher.invoke('destroy', the);
     }
 });
 var _agents = Watcher.sole();
 
-Watcher.Pivot = Agent;
+object.define(Watcher, 'target', {
+    get: function () {
+        return Agent.target;
+    },
+    set: function (target) {
+        Agent.target = target;
+    }
+});
+
 module.exports = Watcher;

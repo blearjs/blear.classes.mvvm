@@ -11,11 +11,11 @@ var Class = require('blear.classes.class');
 var random = require('blear.utils.random');
 var array = require('blear.utils.array');
 var modification = require('blear.core.modification');
+var Watcher = require('../watcher');
 
 var compile = require('../bootstrap/compile');
 var monitor = require('../bootstrap/monitor');
 var parser = require('../bootstrap/parser');
-var Pivot = require('../pivot');
 
 var vmList = [];
 var ViewModel = Class.extend({
@@ -56,7 +56,7 @@ var ViewModel = Class.extend({
 
             if (getter) {
                 // 不能省略
-                Pivot.target = function (operation) {
+                Watcher.target = function (operation) {
                     // 新值使用表达式计算
                     var newVal = directive.eval();
                     directive.update(node, newVal, oldVal, operation);
@@ -64,7 +64,7 @@ var ViewModel = Class.extend({
                 };
                 // 第一次取值时传递 directive
                 oldVal = getter(scope);
-                Pivot.target = null;
+                Watcher.target = null;
             }
 
             directive.bind(node, oldVal);

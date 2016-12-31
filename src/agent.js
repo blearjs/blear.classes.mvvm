@@ -62,14 +62,7 @@ var Agent = Events.extend({
         var args = access.args(arguments);
 
         array.each(the[_list], function (index, executor) {
-            try {
-                executor.apply(executor, args);
-            } catch (err) {
-                if (typeof DEBUG !== 'undefined' && DEBUG) {
-                    console.error('监听反馈执行失败');
-                    console.error(err);
-                }
-            }
+            executor.apply(executor, args);
         });
     }
 });

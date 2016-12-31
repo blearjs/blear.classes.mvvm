@@ -67,6 +67,11 @@ module.exports = Class.extend({
         var the = this;
         var definition = the.definition;
 
+        // 如果指令被销毁了，则取消后续操作
+        if (!definition) {
+            return;
+        }
+
         fun.noop(definition.update).apply(the, arguments);
         the.updated = true;
     },
@@ -78,8 +83,7 @@ module.exports = Class.extend({
         var the = this;
         var definition = the.definition;
 
-        // @todo 取消数据监听
-        // the.watcher.destroy();
+        the.watcher.destroy();
         fun.noop(definition.destroy).apply(the, arguments);
         the.watcher = the.definition = null;
         the.destroyed = true;

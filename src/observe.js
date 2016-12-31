@@ -49,7 +49,7 @@ function observe(watcher, any, agent) {
     if (isObject(any)) {
         observeObject(watcher, any);
     } else if (isArray(any)) {
-        observeArray(any, agent);
+        observeArray(watcher, any, agent);
     }
 }
 
@@ -78,15 +78,15 @@ function observeObject(watcher, obj) {
 
                 oldVal = newVal;
                 agent.react();
-                observe(oldVal, agent);
+                observe(watcher, oldVal, agent);
             }
         });
 
-        observe(val, agent);
+        observe(watcher, val, agent);
     });
 }
 
-function observeArray(arr, agent) {
+function observeArray(watcher, arr, agent) {
     array.each(OVERRIDE_ARRAY_METHODS, function (index, method) {
         var original = Array.prototype[method];
         defineValue(arr, method, function () {
@@ -95,9 +95,8 @@ function observeArray(arr, agent) {
             var spliceIndex = 0;
             var spliceCount = 0;
             var oldVal = [].concat(arr);
-            var newVal = original.apply(arr, args);
-            var insertValue = null;
-
+            original.apply(arr, args);
+            var insertValue = [];
 
             switch (method) {
                 // [1, 2, 3].push(4, 5, 6);
@@ -137,7 +136,7 @@ function observeArray(arr, agent) {
 
             if (insertValue) {
                 array.each(insertValue, function (index, insertValue) {
-                    observe(insertValue, agent);
+                    observe(watcher, insertValue, agent);
                 });
             }
 
@@ -149,7 +148,7 @@ function observeArray(arr, agent) {
                 spliceCount: spliceCount,
                 insertValue: insertValue,
                 oldVal: oldVal,
-                newVal: newVal
+                newVal: arr
             };
 
             agent.react(operation);
@@ -157,7 +156,7 @@ function observeArray(arr, agent) {
     });
 
     array.each(arr, function (index, val) {
-        observe(val, agent);
+        observe(watcher, val, agent);
     });
 
     defineValue(arr, 'set', function (index, val) {

@@ -11,8 +11,6 @@ var random = require('blear.utils.random');
 
 var MVVM = require('../src/index');
 
-var dataEl = document.getElementById('data');
-var templateEl = document.getElementById('template');
 var appEl = document.getElementById('app');
 
 var data = window.data = {
@@ -25,10 +23,7 @@ var data = window.data = {
 };
 
 var setData = function () {
-    dataEl.textContent = JSON.stringify(data, null, 4);
 };
-
-templateEl.textContent = appEl.outerHTML.replace(/^\s{4,8}/mg, '');
 
 new MVVM({
     el: '#app',
