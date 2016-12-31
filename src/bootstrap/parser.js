@@ -54,6 +54,7 @@ function compileRegExp() {
  */
 exports.attr = function (node, attr, vm) {
     var scope = vm.scope;
+    var data = vm.data;
     var attrName = attr.nodeName.toLowerCase();
     var attrValue = attr.nodeValue;
     var category = '';
@@ -121,12 +122,14 @@ exports.attr = function (node, attr, vm) {
     directive.exp = directive.value = attrValue;
     directive.category = category;
     directive.scope = scope;
+    directive.data = data;
     directive.watcher = new Watcher(scope);
     directive.vm = vm;
     directive.init();
 
     switch (category) {
         case EVENT_STR:
+            // 表达式解析需要在指令 init 之后
             var executer = directive.executer = eventParser(directive.exp);
             directive.exec = function (el, ev) {
                 return executer(scope, el, ev);
@@ -134,6 +137,7 @@ exports.attr = function (node, attr, vm) {
             break;
 
         default:
+            // 表达式解析需要在指令 init 之后
             var getter = directive.getter = expressionParser(directive.exp);
             directive.eval = function () {
                 return getter(scope);
@@ -154,6 +158,7 @@ exports.attr = function (node, attr, vm) {
  */
 exports.text = function (node, vm) {
     var scope = vm.scope;
+    var data = vm.data;
     var expression = node.textContent;
     var tokens = textParser(expression);
 
@@ -198,11 +203,12 @@ exports.text = function (node, vm) {
         directive.watcher = new Watcher(scope);
         directive.init();
 
+        // 表达式解析需要在指令 init 之后
         var getter = expressionParser(directive.exp);
 
         directive.getter = getter;
         directive.eval = function () {
-            return getter.call(scope, scope);
+            return getter(scope);
         };
         vm.add(directive);
     });

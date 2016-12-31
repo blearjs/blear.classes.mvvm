@@ -62,6 +62,11 @@ var ViewModel = Class.extend({
                     directive.update(node, newVal, oldVal, operation);
                     oldVal = newVal;
                 };
+
+                if (typeof DEBUG !== 'undefined' && DEBUG) {
+                    Watcher.target.directive = directive;
+                }
+
                 // 第一次取值时传递 directive
                 oldVal = getter(scope);
                 Watcher.target = null;

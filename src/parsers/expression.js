@@ -286,18 +286,19 @@ module.exports = function parseExpressionToGetter(expression) {
     var utilsName = varible();
 
     var body =
-        'try{' +
+        // 'try{' +
         /****/'with(' + scopeName + '){' +
         /****//****/ 'return ' + expression + ';' +
         /****/'}' +
-        '}catch(' + errorName + '){' +
-        /****/'if(typeof DEBUG!=="undefined"&&DEBUG) {' +
-        /****//****/'debugger;' +
-        /****//****/'return ' + errorName + '.message;' +
-        /****/'}' +
-        /****/
-        /****/'return "";' +
-        '}';
+        // '}catch(' + errorName + '){' +
+        // /****/'if(typeof DEBUG!=="undefined"&&DEBUG) {' +
+        // /****//****/'debugger;' +
+        // /****//****/'return ' + errorName + '.message;' +
+        // /****/'}' +
+        // /****/
+        // /****/'return "";' +
+        // '}' +
+        '';
 
     return function (scope) {
         return (new Function(scopeName, utilsName, body)).call(scope, scope, utils);

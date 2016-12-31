@@ -16,6 +16,7 @@ var access = require('blear.utils.access');
 var Agent = require('./agent');
 
 var WATCH_FLAG = random.guid();
+var AGENT_FLAG = random.guid();
 var ARRAY_POP = 'pop';
 var ARRAY_PUSH = 'push';
 var ARRAY_REVERSE = 'reverse';
@@ -31,12 +32,20 @@ var OVERRIDE_ARRAY_METHODS = [
     ARRAY_SORT, ARRAY_UNSHIFT, ARRAY_SPLICE
 ];
 
+if (typeof DEBUG !== 'undefined' && DEBUG) {
+    AGENT_FLAG = '__AGENT_FLAG__';
+}
+
 function isObject(any) {
     return typeis.Object(any);
 }
 
 function isArray(any) {
     return typeis.Array(any);
+}
+
+function isData(any) {
+    return isObject(any) || isArray(any);
 }
 
 function defineValue(obj, key, val) {
@@ -55,13 +64,18 @@ function observe(watcher, any, agent) {
 
 function observeObject(watcher, obj) {
     object.each(obj, function (key, val) {
+        if (!isData(val)) {
+            return;
+        }
+
+        var agent = new Agent();
+        watcher.add(agent);
+        console.log('new Agent', obj, key, new Date());
         var descriptor = Object.getOwnPropertyDescriptor(object, key);
         var getter = descriptor && descriptor.get;
         var setter = descriptor && descriptor.set;
         var oldVal = val;
-        var agent = new Agent();
 
-        watcher.add(agent);
         object.define(obj, key, {
             enumerable: true,
             get: function () {
@@ -81,7 +95,6 @@ function observeObject(watcher, obj) {
                 observe(watcher, oldVal, agent);
             }
         });
-
         observe(watcher, val, agent);
     });
 }

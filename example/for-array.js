@@ -10,15 +10,13 @@
 var MVVM = require('../src/index');
 
 var data = window.data = {
-    list1: [
+    list0: [
         // list2
         [
             // list3
             [
                 // list4
-                [
-                    '4-1', '4-2'
-                ]
+                []
             ]
         ]
     ]
@@ -26,15 +24,13 @@ var data = window.data = {
 
 var random = require('blear.utils.random');
 
-var buildArray = function (length) {
-    random.number(1, length || 3);
-    var arr = [];
-
-    while (length--) {
-        arr.push(random.string(3, '习近平致信祝贺中国国际电视台开播李克强主持召开国务院常务会议茶话会上强调两大精神强调一个词'));
-    }
-
-    return arr;
+var buildString = function () {
+    return random.string(5,
+        '习近平致信祝贺中国国际电视台开播李克强主持召开国务' +
+        '院常务会议茶话会上强调两大精神强调一个词' +
+        '环保部发布年度十大雾霾谣言：雾霾能堵死肺泡？' +
+        '调查称今年近4成白领未休年假 工作生活满意度不高' +
+        '央行下调大额现金交易人民币报告标准至5万元');
 };
 
 new MVVM({
@@ -42,7 +38,7 @@ new MVVM({
     data: data,
     methods: {
         pushArray: function () {
-            data.list1.push([[buildArray()]]);
+            data.list0[0][0][0].push(buildString());
         }
     }
 });

@@ -13,6 +13,8 @@ var array = require('blear.utils.array');
 var access = require('blear.utils.access');
 var typeis = require('blear.utils.typeis');
 
+var LIST = window.LIST = [];
+
 var Agent = Events.extend({
     className: 'Agent',
     constructor: function () {
@@ -44,6 +46,11 @@ var Agent = Events.extend({
 
         map[gid] = true;
         list.push(target);
+        LIST.push({
+            gid: gid,
+            directive: target.directive,
+            target: target
+        });
     },
 
     /**
