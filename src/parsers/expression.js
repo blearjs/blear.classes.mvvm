@@ -7,7 +7,7 @@
 
 'use strict';
 
-// var typeis = require('blear.utils.typeis');
+var collection = require('blear.utils.collection');
 
 var varible = require('../utils/varible');
 
@@ -270,6 +270,11 @@ var varible = require('../utils/varible');
 // };
 
 
+var utils = {
+    each: collection.each
+};
+
+
 /**
  * 解析字符串表达式为函数表达式
  * @param expression
@@ -280,6 +285,7 @@ module.exports = function parseExpressionToGetter(expression) {
     var monitorName = varible();
     var directiveName = varible();
     var errorName = varible();
+    var utilsName = varible();
 
     var body =
         'try{' +
@@ -295,7 +301,9 @@ module.exports = function parseExpressionToGetter(expression) {
         '}';
 
     try {
-        return new Function(scopeName, body);
+        return function (scope) {
+            new Function(scopeName, utilsName, body).call(scope, scope, utils);
+        };
     } catch (err) {
         if (typeof DEBUG !== 'undefined' && DEBUG) {
             console.error('表达式书写有误：');

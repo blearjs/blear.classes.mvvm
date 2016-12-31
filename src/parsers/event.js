@@ -12,7 +12,7 @@ var configs = require('../configs');
 
 var excuteRE = /\(.*?\)\s*?$/;
 var operatorRE = /[!+-=*/]/;
-
+var utils = {};
 
 /**
  * 解析事件字符串为函数表达式
@@ -57,7 +57,9 @@ module.exports = function (expression, utilsName) {
         '}';
 
     try {
-        return new Function(elName, eventName, scopeName, utilsName, body);
+        return function (scope, el, ev) {
+            new Function(scopeName, elName, eventName, utilsName, body).call(scope, scope, el, ev, utils);
+        };
     } catch (err) {
         if (typeof DEBUG !== 'undefined' && DEBUG) {
             console.error('表达式书写有误：');

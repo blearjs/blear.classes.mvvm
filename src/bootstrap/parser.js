@@ -131,14 +131,14 @@ exports.attr = function (node, attr, vm) {
         case EVENT_STR:
             getter = eventParser(directive.exp);
             directive.eval = function (el, ev) {
-                return getter.call(scope, el, ev, scope);
+                return getter(scope, el, ev);
             };
             break;
 
         default:
             getter = expressionParser(directive.exp);
             directive.eval = function () {
-                return getter.call(scope, scope);
+                return getter(scope);
             };
             break;
     }
