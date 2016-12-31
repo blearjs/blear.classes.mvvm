@@ -12,6 +12,7 @@ var modification = require('blear.core.modification');
 var object = require('blear.utils.object');
 var array = require('blear.utils.array');
 var access = require('blear.utils.access');
+var Watcher = require('./watcher');
 
 var anchor = require('./utils/anchor');
 var directives = require('./directives/index');
@@ -35,6 +36,7 @@ var MVVM = Events.extend({
 var _options = MVVM.sole();
 var _compile = MVVM.sole();
 var _vm = MVVM.sole();
+var _watcher = MVVM.sole();
 var pro = MVVM.prototype;
 
 // 编译
@@ -47,6 +49,7 @@ pro[_compile] = function () {
     var scope = object.assign(options.data, options.methods);
 
     // fragment.appendChild(rootEl);
+    the[_watcher] = new Watcher(scope);
     the[_vm] = new ViewModel(rootEl, scope);
     ViewModel.end();
 

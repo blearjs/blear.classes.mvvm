@@ -16,7 +16,8 @@ var access = require('blear.utils.access');
 var Agent = require('./agent');
 
 var WATCH_FLAG = random.guid();
-var AGENT_FLAG = random.guid();
+var AGENT_KEY = random.guid();
+var AGENT_GUID = random.guid();
 var ARRAY_POP = 'pop';
 var ARRAY_PUSH = 'push';
 var ARRAY_REVERSE = 'reverse';
@@ -33,7 +34,7 @@ var OVERRIDE_ARRAY_METHODS = [
 ];
 
 if (typeof DEBUG !== 'undefined' && DEBUG) {
-    AGENT_FLAG = '__AGENT_FLAG__';
+    AGENT_KEY = '__AGENT_KEY__';
 }
 
 function isObject(any) {
@@ -55,6 +56,10 @@ function defineValue(obj, key, val) {
 }
 
 function observe(watcher, any, agent) {
+    if (!isData(any)) {
+        return;
+    }
+
     if (isObject(any)) {
         observeObject(watcher, any);
     } else if (isArray(any)) {
@@ -63,19 +68,46 @@ function observe(watcher, any, agent) {
 }
 
 function observeObject(watcher, obj) {
+    // var agent = obj[AGENT_FLAG];
+    //
+    // if (!agent) {
+    //     agent = new Agent();
+    //     watcher.add(agent);
+    //     console.log('new Agent', obj, agent, new Date());
+    //     defineValue(obj, AGENT_FLAG, agent);
+    // }
+
     object.each(obj, function (key, val) {
-        if (!isData(val)) {
+        if (typeis.Function(val)) {
             return;
         }
 
-        var agent = new Agent();
-        watcher.add(agent);
-        console.log('new Agent', obj, key, new Date());
         var descriptor = Object.getOwnPropertyDescriptor(object, key);
         var getter = descriptor && descriptor.get;
         var setter = descriptor && descriptor.set;
         var oldVal = val;
+        var agentKey = AGENT_KEY + key;
+        var agent;
 
+        // 如果值是数组，则从数组上取 agent
+        if (isArray(val)) {
+            agent = obj[agentKey];
+        }
+
+        // 没有 agent，则新建一个
+        if (!agent) {
+            agent = new Agent();
+        }
+
+        defineValue(obj, agentKey, agent);
+
+        var date = new Date();
+        console.group('[create agent]', date);
+        console.log('agent.guid', agent.guid);
+        console.log('agent.key', key);
+        console.groupEnd('[create agent]', date);
+
+        agent.key = key;
         object.define(obj, key, {
             enumerable: true,
             get: function () {
@@ -100,6 +132,14 @@ function observeObject(watcher, obj) {
 }
 
 function observeArray(watcher, arr, agent) {
+    // var list = arr['__list__'];
+    //
+    // if (!list) {
+    //     defineValue(arr, '__list__', list = []);
+    // }
+    //
+    // list.push(agent);
+
     array.each(OVERRIDE_ARRAY_METHODS, function (index, method) {
         var original = Array.prototype[method];
         defineValue(arr, method, function () {
@@ -167,7 +207,7 @@ function observeArray(watcher, arr, agent) {
             agent.react(operation);
         });
     });
-
+    defineValue(arr, AGENT_GUID, agent);
     array.each(arr, function (index, val) {
         observe(watcher, val, agent);
     });

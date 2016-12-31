@@ -31,13 +31,17 @@ document.getElementById('change0').onclick = function () {
 };
 
 document.getElementById('change1').onclick = function () {
-    data.arr.set(0, [[[random.string()]]]);
+    data.arr.set(0, [[random.string()]]);
 };
 
 document.getElementById('change2').onclick = function () {
-    data.arr[0].set(0, [[random.string()]]);
+    data.arr[0].set(0, [random.string()]);
 };
 
 document.getElementById('change3').onclick = function () {
-    data.arr[0][0].set(0, [random.string()]);
+    data.arr[0][0].set(0, random.string());
+};
+
+document.getElementById('change4').onclick = function () {
+    data.arr[0][0].set(1, random.string());
 };

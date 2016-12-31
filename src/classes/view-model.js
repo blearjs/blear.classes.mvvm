@@ -55,8 +55,10 @@ var ViewModel = Class.extend({
             var oldVal;
 
             if (getter) {
+                var watcher = directive.watcher;
                 // 不能省略
-                Watcher.target = function (operation) {
+                Watcher.active = watcher;
+                watcher.dispath = function (operation) {
                     // 新值使用表达式计算
                     var newVal = directive.eval();
                     directive.update(node, newVal, oldVal, operation);
@@ -64,12 +66,12 @@ var ViewModel = Class.extend({
                 };
 
                 if (typeof DEBUG !== 'undefined' && DEBUG) {
-                    Watcher.target.directive = directive;
+                    Watcher.active.directive = directive;
                 }
 
                 // 第一次取值时传递 directive
                 oldVal = getter(scope);
-                Watcher.target = null;
+                Watcher.active = null;
             }
 
             directive.bind(node, oldVal);

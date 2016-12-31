@@ -13,51 +13,59 @@ var array = require('blear.utils.array');
 var access = require('blear.utils.access');
 var typeis = require('blear.utils.typeis');
 
-var LIST = window.LIST = [];
-
 var Agent = Events.extend({
     className: 'Agent',
     constructor: function () {
         var the = this;
 
         Agent.parent(the);
-        the[_list] = [];
-        the[_map] = {};
+        the.guid = random.guid();
+        the[_watcherList] = [];
+        the[_watcherMap] = {};
+        the[_parent] = null;
+        the[_child] = null;
     },
+
+    // /**
+    //  * 上级代理
+    //  * @param parent
+    //  */
+    // parent: function (parent) {
+    //     if (!parent || parent === this) {
+    //         return;
+    //     }
+    //
+    //     this[_parent] = parent;
+    //     parent[_child] = this;
+    // },
 
     /**
      * 与响应者关联
      */
     link: function () {
         var the = this;
-        var target = Agent.target;
+        var watcher = Agent.watcher;
 
-        if (!typeis.Function(target)) {
-            return;
+        if (watcher && watcher instanceof Agent.Watcher) {
+            var guid = watcher.guid;
+            var map = the[_watcherMap];
+            var list = the[_watcherList];
+
+            if (map[guid]) {
+                return;
+            }
+
+            map[guid] = true;
+            list.push(watcher);
+            watcher.link(the);
         }
-
-        var gid = target[_gid] = target[_gid] || random.guid();
-        var map = the[_map];
-        var list = the[_list];
-
-        if (map[gid]) {
-            return;
-        }
-
-        map[gid] = true;
-        list.push(target);
-        LIST.push({
-            gid: gid,
-            directive: target.directive,
-            target: target
-        });
     },
 
     /**
      * 销毁：取消与响应者的管理
      */
     unlink: function () {
-        this[_list] = this[_map] = null;
+        this[_watcherList] = this[_watcherMap] = null;
     },
 
     /**
@@ -67,14 +75,27 @@ var Agent = Events.extend({
         var the = this;
         var args = access.args(arguments);
 
-        array.each(the[_list], function (index, executor) {
-            executor.apply(executor, args);
+        // if (the[_parent]) {
+        //     the[_parent].react.apply(the[_parent], args);
+        // }
+        //
+        // if (the[_child]) {
+        //     the[_child].react.apply(the[_child], args);
+        // }
+
+        array.each(the[_watcherList], function (index, watcher) {
+            watcher.dispath.apply(watcher, args);
         });
     }
 });
-var _list = Agent.sole();
-var _map = Agent.sole();
-var _gid = Agent.sole();
+var _watcherList = Agent.sole();
+var _watcherMap = Agent.sole();
+var _parent = Agent.sole();
+var _child = Agent.sole();
+var _guid = Agent.sole();
 
-Agent.target = null;
+_parent = '_parent';
+_child = '_child';
+
+Agent.watcher = null;
 module.exports = Agent;

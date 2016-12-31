@@ -11,13 +11,9 @@ var MVVM = require('../src/index');
 
 var data = window.data = {
     list0: [
-        // list2
+        // list1
         [
-            // list3
-            [
-                // list4
-                []
-            ]
+            '习近平'
         ]
     ]
 };
@@ -38,7 +34,7 @@ new MVVM({
     data: data,
     methods: {
         pushArray: function () {
-            data.list0[0][0][0].push(buildString());
+            data.list0[0].push(buildString());
         }
     }
 });
