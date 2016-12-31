@@ -302,7 +302,7 @@ module.exports = function parseExpressionToGetter(expression) {
 
     try {
         return function (scope) {
-            new Function(scopeName, utilsName, body).call(scope, scope, utils);
+            return (new Function(scopeName, utilsName, body)).call(scope, scope, utils);
         };
     } catch (err) {
         if (typeof DEBUG !== 'undefined' && DEBUG) {

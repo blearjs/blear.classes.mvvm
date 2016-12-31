@@ -58,7 +58,7 @@ module.exports = function (expression, utilsName) {
 
     try {
         return function (scope, el, ev) {
-            new Function(scopeName, elName, eventName, utilsName, body).call(scope, scope, el, ev, utils);
+            return (new Function(scopeName, elName, eventName, utilsName, body)).call(scope, scope, el, ev, utils);
         };
     } catch (err) {
         if (typeof DEBUG !== 'undefined' && DEBUG) {
