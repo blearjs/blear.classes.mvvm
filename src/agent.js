@@ -65,9 +65,7 @@ var Agent = Events.extend({
         // 2、删除在数据对象上的引用
         var refList = the.refList;
 
-        // 数组新建而来
         if(refList) {
-            the[_responseList] = null;
             array.delete(refList, the);
             delete the.refMap[the.guid];
         }
@@ -75,6 +73,8 @@ var Agent = Events.extend({
         else {
             array.delete(the[_responseList], response);
         }
+
+        the.unlinked = true;
     },
 
     /**

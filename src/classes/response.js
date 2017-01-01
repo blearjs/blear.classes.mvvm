@@ -51,6 +51,7 @@ var Response = Events.extend({
 
         the.respond = null;
         the.destroy();
+        the.unlinked = true;
     }
 });
 var _agentList = Response.sole();
