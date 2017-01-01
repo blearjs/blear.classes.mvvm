@@ -10,6 +10,9 @@
 
 var Events = require('blear.classes.events');
 var random = require('blear.utils.random');
+var array = require('blear.utils.array');
+
+window.ResponseList = [];
 
 var Response = Events.extend({
     className: 'Response',
@@ -19,8 +22,10 @@ var Response = Events.extend({
         Response.parent(the);
         the.directive = directive;
         the.guid = random.guid();
+        the.respond = null;
         the[_agentList] = [];
         the[_agentMap] = {};
+        ResponseList.push(the);
     },
 
     link: function (agent) {
@@ -35,6 +40,17 @@ var Response = Events.extend({
 
         map[guid] = true;
         list.push(agent);
+    },
+
+    unlink: function () {
+        var the = this;
+
+        array.each(the[_agentList], function (index, agent) {
+            agent.unlink(the);
+        });
+
+        the.respond = null;
+        the.destroy();
     }
 });
 var _agentList = Response.sole();

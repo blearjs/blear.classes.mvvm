@@ -88,25 +88,10 @@ function observeObjectWithKeyAndVal(obj, key) {
     var oldVal = val;
     var agent = new Agent();
 
-    // if (isArray(val)) {
-    //     if (hasOwn(val, AGENT_ARRAY)) {
-    //         agent = val[AGENT_ARRAY];
-    //     } else {
-    //         agent = new Agent();
-    //         defineValue(val, AGENT_ARRAY, agent);
-    //     }
-    // } else {
-    //     agent = new Agent();
-    // }
-
     // 1、先深度遍历
     object.define(obj, key, {
         enumerable: true,
         get: function () {
-            obj;
-            key;
-            val;
-
             oldVal = getter ? getter.call(obj) : oldVal;
             agent.link();
             return oldVal;
@@ -139,19 +124,6 @@ function observeObject(obj) {
 }
 
 function observeArray(arr, agent) {
-    // if (!arr[AGENT_ARRAY]) {
-    //     defineValue(arr, AGENT_ARRAY, agent);
-    // }
-
-    // // 如果值是数组，则从数组上取 agent
-    // if (hasOwn(arr, AGENT_ARRAY)) {
-    //     var preAgent = arr[AGENT_ARRAY];
-    //     agent.concat(preAgent);
-    // }
-    defineValue(arr, AGENT_ARRAY, agent);
-
-    console.log(new Date(), 'observeArray agent.guid', agent.guid);
-
     var list;
     var map;
     var guid = agent.guid;
@@ -163,6 +135,8 @@ function observeArray(arr, agent) {
         if (!map[guid]) {
             map[guid] = true;
             list.push(agent);
+            agent.refMap = map;
+            agent.refList = list;
         }
     } else {
         map = {};

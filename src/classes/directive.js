@@ -14,7 +14,7 @@ var typeis = require('blear.utils.typeis');
 
 var Response = require('./response');
 
-module.exports = Class.extend({
+var Directive = Class.extend({
     className: 'Directive',
     constructor: function (definition) {
         var the = this;
@@ -33,6 +33,7 @@ module.exports = Class.extend({
         the.destroyed = false;
         the.definition = definition;
         the.response = new Response(the);
+        the.weight = Directive.DEFAULT_WEIGHT;
     },
 
     /**
@@ -86,10 +87,14 @@ module.exports = Class.extend({
         var the = this;
         var definition = the.definition;
 
-        the.watcher.destroy();
+        the.response.unlink();
         fun.noop(definition.destroy).apply(the, arguments);
-        the.watcher = the.definition = null;
+        the.response = the.definition = null;
         the.destroyed = true;
     }
 });
 
+Directive.DEFAULT_WEIGHT = 1;
+Directive.LOOP_WEIGHT = 10;
+Directive.CONDITION_WEIGHT = 100;
+module.exports = Directive;

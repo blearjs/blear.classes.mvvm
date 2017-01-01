@@ -14,6 +14,7 @@ var random = require('blear.utils.random');
 var anchor = require('../utils/anchor');
 var arrayDiff = require('../utils/array-diff');
 var configs = require('../configs');
+var Directive = require('../classes/directive');
 
 var ARRAY_POP = 'pop';
 var ARRAY_PUSH = 'push';
@@ -111,6 +112,7 @@ module.exports = {
         the.anchorStart = anchor(node, '@for-start');
         the.anchorEnd = anchor(node, '@for-end');
         the.tplNode = node;
+        the.weight = Directive.LOOP_WEIGHT;
         modification.remove(node);
     },
     update: function (node, newVal, _oldVal, operation) {

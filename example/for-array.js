@@ -43,6 +43,9 @@ new MVVM({
     methods: {
         pushArray: function () {
             data.list0[0][0][0].push(buildString());
+        },
+        popArray: function () {
+            data.list0[0][0][0].pop();
         }
     }
 });

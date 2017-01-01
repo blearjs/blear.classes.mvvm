@@ -52,6 +52,9 @@ var ViewModel = Class.extend({
         compile(el, the);
 
         // 2、绑定指令、确定指令更新
+        the.directives.sort(function (a, b) {
+            return a.weight - b.weight;
+        });
         array.each(the.directives, function (index, directive) {
             var scope = directive.scope;
             var getter = directive.getter;
@@ -112,14 +115,14 @@ var ViewModel = Class.extend({
     destroy: function () {
         var the = this;
 
-        // 1、销毁所有子 VM
-        array.each(the.children, function (index, child) {
-            child.destroy();
-        });
-
-        // 2、销毁管理的指令
+        // 1、销毁管理的指令
         array.each(the.directives, function (index, directive) {
             directive.destroy();
+        });
+
+        // 2、销毁所有子 VM
+        array.each(the.children, function (index, child) {
+            child.destroy();
         });
 
         // 3、删除 DOM 节点

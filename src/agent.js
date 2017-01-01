@@ -13,6 +13,8 @@ var array = require('blear.utils.array');
 var access = require('blear.utils.access');
 var typeis = require('blear.utils.typeis');
 
+window.AgentList = [];
+
 var Agent = Events.extend({
     className: 'Agent',
     constructor: function () {
@@ -25,21 +27,8 @@ var Agent = Events.extend({
         the[_responseMap] = {};
         the[_parent] = null;
         the[_child] = null;
-        console.log(new Date(), 'create agent', the.guid);
+        AgentList.push(the);
     },
-
-    // /**
-    //  * 上级代理
-    //  * @param parent
-    //  */
-    // parent: function (parent) {
-    //     if (!parent || parent === this) {
-    //         return;
-    //     }
-    //
-    //     this[_parent] = parent;
-    //     parent[_child] = this;
-    // },
 
     /**
      * 与响应者关联
@@ -67,22 +56,25 @@ var Agent = Events.extend({
         }
     },
 
-
-    concat: function (agent) {
-        if (agent === this) {
-            return;
-        }
-
-        console.log(new Date(), 'agent concat', agent.guid, this.guid);
-        this[_siblings].push(agent);
-    },
-
     /**
      * 销毁：取消与响应者的管理
      */
-    unlink: function () {
-        debugger;
-        // this[_responseList] = this[_responseMap] = null;
+    unlink: function (response) {
+        var the = this;
+
+        // 2、删除在数据对象上的引用
+        var refList = the.refList;
+
+        // 数组新建而来
+        if(refList) {
+            the[_responseList] = null;
+            array.delete(refList, the);
+            delete the.refMap[the.guid];
+        }
+        // 普通
+        else {
+            array.delete(the[_responseList], response);
+        }
     },
 
     /**
@@ -105,6 +97,11 @@ var Agent = Events.extend({
         // });
 
         array.each(the[_responseList], function (index, response) {
+            // 如果已经被销毁的 response
+            if (!response || !response.respond) {
+                return;
+            }
+
             response.respond.apply(response, args);
         });
     }
