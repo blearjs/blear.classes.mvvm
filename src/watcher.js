@@ -32,12 +32,12 @@ var Watcher = Events.extend({
 
         var keys = options.keys;
 
-        if (keys && typeis.Array(keys) && keys.length > 0) {
+        if (keys && typeis.Array(keys)) {
             array.each(keys, function (index, key) {
-                observe.key(the, data, key);
+                observe.key(data, key);
             });
         } else {
-            observe.data(the, data);
+            observe.data(data);
         }
     },
 

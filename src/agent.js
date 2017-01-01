@@ -20,9 +20,9 @@ var Agent = Events.extend({
 
         Agent.parent(the);
         the.guid = random.guid();
-        the[_watcherList] = [];
+        the[_responseList] = [];
         the[_siblings] = [];
-        the[_watcherMap] = {};
+        the[_responseMap] = {};
         the[_parent] = null;
         the[_child] = null;
         console.log(new Date(), 'create agent', the.guid);
@@ -46,21 +46,24 @@ var Agent = Events.extend({
      */
     link: function () {
         var the = this;
-        var watcher = Agent.watcher;
+        var response = Agent.response;
 
-        if (watcher && watcher instanceof Agent.Watcher) {
-            var guid = watcher.guid;
-            var map = the[_watcherMap];
-            var list = the[_watcherList];
+        if (response &&
+            // 用来执行变化
+            isFunction(response.respond) &&
+            // 用来关联代理
+            isFunction(response.link)) {
+            var guid = response.guid;
+            var map = the[_responseMap];
+            var list = the[_responseList];
 
             if (map[guid]) {
                 return;
             }
 
-            debugger;
             map[guid] = true;
-            list.push(watcher);
-            watcher.link(the);
+            list.push(response);
+            response.link(the);
         }
     },
 
@@ -78,7 +81,8 @@ var Agent = Events.extend({
      * 销毁：取消与响应者的管理
      */
     unlink: function () {
-        this[_watcherList] = this[_watcherMap] = null;
+        debugger;
+        // this[_responseList] = this[_responseMap] = null;
     },
 
     /**
@@ -100,20 +104,20 @@ var Agent = Events.extend({
         //     agent.react.apply(agent, args);
         // });
 
-        array.each(the[_watcherList], function (index, watcher) {
-            watcher.dispath.apply(watcher, args);
+        array.each(the[_responseList], function (index, response) {
+            response.respond.apply(response, args);
         });
     }
 });
-var _watcherList = Agent.sole();
-var _watcherMap = Agent.sole();
+var _responseList = Agent.sole();
+var _responseMap = Agent.sole();
 var _parent = Agent.sole();
 var _child = Agent.sole();
 var _siblings = Agent.sole();
 
 if (typeof DEBUG !== 'undefined' && DEBUG) {
-    _watcherList = '_watcherList';
-    _watcherMap = '_watcherMap';
+    _responseList = '_responseList';
+    _responseMap = '_responseMap';
     _parent = '_parent';
     _child = '_child';
     _siblings = '_siblings';
@@ -121,3 +125,8 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
 
 Agent.response = null;
 module.exports = Agent;
+
+
+function isFunction(any) {
+    return typeis.Function(any);
+}

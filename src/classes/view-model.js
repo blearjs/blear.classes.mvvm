@@ -38,12 +38,14 @@ var ViewModel = Class.extend({
             the.parent = parent;
             the.root = parent.root;
             the.data = parent.root.data;
-            the.watcher = new Watcher(the.data, keys);
+            the.watcher = new Watcher(scope, {
+                keys: keys
+            });
         } else {
             the.parent = null;
             the.root = the;
             the.data = scope;
-            the.watcher = new Watcher(the.data);
+            the.watcher = new Watcher(scope);
         }
 
         // 1、编译 + 解析
@@ -57,19 +59,19 @@ var ViewModel = Class.extend({
             var oldVal;
 
             if (getter) {
-                var response = directive.watcher;
-                // 不能省略
-                Watcher.response = response;
-                response.dispath = function (operation) {
+                var response = directive.response;
+                response.respond = function (operation) {
                     // 新值使用表达式计算
                     var newVal = directive.eval();
                     directive.update(node, newVal, oldVal, operation);
                     oldVal = newVal;
                 };
+                // 不能省略
+                Watcher.response = response;
 
-                // 第一次取值时传递 directive
+                // 第一次取值时传递 response
                 oldVal = getter(scope);
-                Watcher.active = null;
+                Watcher.response = null;
             }
 
             directive.bind(node, oldVal);

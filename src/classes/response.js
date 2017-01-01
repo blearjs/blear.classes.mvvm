@@ -9,6 +9,7 @@
 
 
 var Events = require('blear.classes.events');
+var random = require('blear.utils.random');
 
 var Response = Events.extend({
     className: 'Response',
@@ -17,11 +18,12 @@ var Response = Events.extend({
 
         Response.parent(the);
         the.directive = directive;
+        the.guid = random.guid();
         the[_agentList] = [];
         the[_agentMap] = {};
     },
 
-    add: function (agent) {
+    link: function (agent) {
         var the = this;
         var guid = agent.guid;
         var map = the[_agentMap];

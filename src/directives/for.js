@@ -61,7 +61,7 @@ var buildChildMVVM = function (directive, index, data, operation) {
     childScope[aliasName] = data;
     modification.insert(childNode, insertTarget, insertPosition);
 
-    var childVM = vm.child(childNode, childScope);
+    var childVM = vm.child(childNode, childScope, [indexName, aliasName]);
 
     switch (method) {
         case ARRAY_PUSH:
@@ -121,6 +121,11 @@ module.exports = {
         var data = the.eval();
 
         if (the.bound) {
+            // 不是同一个数据源，取消后续操作
+            if (operation.newVal !== newVal) {
+                return;
+            }
+
             var spliceIndex = operation.spliceIndex;
             var spliceCount = operation.spliceCount;
             var insertValue = operation.insertValue;
