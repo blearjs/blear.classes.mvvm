@@ -20,7 +20,7 @@ var parser = require('../bootstrap/parser');
 var vmList = [];
 var ViewModel = Class.extend({
     className: 'ViewModel',
-    constructor: function (el, scope, parent) {
+    constructor: function (el, scope, keys, parent) {
         var the = this;
 
         the.guid = random.guid();
@@ -38,10 +38,12 @@ var ViewModel = Class.extend({
             the.parent = parent;
             the.root = parent.root;
             the.data = parent.root.data;
+            the.watcher = new Watcher(the.data, keys);
         } else {
             the.parent = null;
             the.root = the;
             the.data = scope;
+            the.watcher = new Watcher(the.data);
         }
 
         // 1、编译 + 解析
@@ -55,19 +57,15 @@ var ViewModel = Class.extend({
             var oldVal;
 
             if (getter) {
-                var watcher = directive.watcher;
+                var response = directive.watcher;
                 // 不能省略
-                Watcher.active = watcher;
-                watcher.dispath = function (operation) {
+                Watcher.response = response;
+                response.dispath = function (operation) {
                     // 新值使用表达式计算
                     var newVal = directive.eval();
                     directive.update(node, newVal, oldVal, operation);
                     oldVal = newVal;
                 };
-
-                if (typeof DEBUG !== 'undefined' && DEBUG) {
-                    Watcher.active.directive = directive;
-                }
 
                 // 第一次取值时传递 directive
                 oldVal = getter(scope);
@@ -99,10 +97,11 @@ var ViewModel = Class.extend({
      * 创建子 VM
      * @param el
      * @param scope
+     * @param keys
      * @returns {*}
      */
-    child: function (el, scope) {
-        return new ViewModel(el, scope, this);
+    child: function (el, scope, keys) {
+        return new ViewModel(el, scope, keys, this);
     },
 
     /**

@@ -11,11 +11,14 @@ var Events = require('blear.classes.events');
 var array = require('blear.utils.array');
 var object = require('blear.utils.object');
 var random = require('blear.utils.random');
+var typeis = require('blear.utils.typeis');
 
 var observe = require('./observe');
 var Agent = require('./agent');
 
-var defaults = {};
+var defaults = {
+    keys: null
+};
 var Watcher = Events.extend({
     className: 'Watcher',
 
@@ -25,7 +28,17 @@ var Watcher = Events.extend({
         the.guid = random.guid();
         the[_agentMap] = {};
         the[_agentList] = [];
-        observe(the, data);
+        options = the[_options] = object.assign({}, defaults, options);
+
+        var keys = options.keys;
+
+        if (keys && typeis.Array(keys) && keys.length > 0) {
+            array.each(keys, function (index, key) {
+                observe.key(the, data, key);
+            });
+        } else {
+            observe.data(the, data);
+        }
     },
 
     link: function (agent) {
@@ -52,23 +65,24 @@ var Watcher = Events.extend({
     destroy: function () {
         var the = this;
 
-        // 取消所有代理与响应者的关联关系
-        array.each(the[_agentList], function (index, agent) {
-            agent.unlink();
-        });
-        the[_agentList] = null;
+        // // 取消所有代理与响应者的关联关系
+        // array.each(the[_agentList], function (index, agent) {
+        //     agent.unlink();
+        // });
+        // the[_agentList] = null;
         Watcher.invoke('destroy', the);
     }
 });
+var _options = Watcher.sole();
 var _agentMap = Watcher.sole();
 var _agentList = Watcher.sole();
 
-object.define(Watcher, 'active', {
+object.define(Watcher, 'response', {
     get: function () {
-        return Agent.watcher;
+        return Agent.response;
     },
-    set: function (watcher) {
-        Agent.watcher = watcher;
+    set: function (response) {
+        Agent.response = response;
     }
 });
 

@@ -73,11 +73,11 @@ function observe(watcher, any, agent) {
         return;
     }
 
-    // if (hasOwn(any, DATA_GUID)) {
-    //     return;
-    // } else {
-    //     defineValue(any, DATA_GUID, random.guid());
-    // }
+    if (hasOwn(any, DATA_GUID)) {
+        return;
+    }
+
+    defineValue(any, DATA_GUID, random.guid());
 
     if (isObject(any)) {
         observeObject(watcher, any);
@@ -86,52 +86,60 @@ function observe(watcher, any, agent) {
     }
 }
 
+function observeObjectWithKeyAndVal(watcher, obj, key) {
+    var descriptor = Object.getOwnPropertyDescriptor(object, key);
+    var getter = descriptor && descriptor.get;
+    var setter = descriptor && descriptor.set;
+    var val = obj[key];
+    var oldVal = val;
+    var agent = new Agent();
+
+    // if (isArray(val)) {
+    //     if (hasOwn(val, AGENT_ARRAY)) {
+    //         agent = val[AGENT_ARRAY];
+    //     } else {
+    //         agent = new Agent();
+    //         defineValue(val, AGENT_ARRAY, agent);
+    //     }
+    // } else {
+    //     agent = new Agent();
+    // }
+
+    // 1、先深度遍历
+    object.define(obj, key, {
+        enumerable: true,
+        get: function () {
+            obj;
+            key;
+            val;
+            oldVal = getter ? getter.call(obj) : oldVal;
+            agent.link();
+            return oldVal;
+        },
+        set: function (val) {
+            var newVal = setter ? setter.call(obj, val) : val;
+
+            if (newVal === oldVal) {
+                return;
+            }
+
+            oldVal = newVal;
+            agent.react();
+            observe(watcher, oldVal, agent);
+        }
+    });
+
+    // 2、再广度遍历
+    observe(watcher, val, agent);
+}
+
 function observeObject(watcher, obj) {
     object.each(obj, function (key, val) {
         if (typeis.Function(val)) {
             return;
         }
 
-        var descriptor = Object.getOwnPropertyDescriptor(object, key);
-        var getter = descriptor && descriptor.get;
-        var setter = descriptor && descriptor.set;
-        var oldVal = val;
-        var agent;
-
-        // 如果值是数组，则从数组上取 agent
-        if (isArray(val)) {
-            if (hasOwn(val, AGENT_ARRAY)) {
-                agent = val[AGENT_ARRAY];
-            } else {
-                agent = new Agent(key);
-                defineValue(val, AGENT_ARRAY, agent);
-            }
-        } else {
-            agent = new Agent(key);
-        }
-
-        // var agent = new Agent();
-
-        observe(watcher, val, agent);
-        object.define(obj, key, {
-            enumerable: true,
-            get: function () {
-                oldVal = getter ? getter.call(obj) : oldVal;
-                agent.link();
-                return oldVal;
-            },
-            set: function (val) {
-                var newVal = setter ? setter.call(obj, val) : val;
-
-                if (newVal === oldVal) {
-                    return;
-                }
-
-                oldVal = newVal;
-                agent.react();
-                observe(watcher, oldVal, agent);
-            }
-        });
+        observeObjectWithKeyAndVal(watcher, obj, key);
     });
 }
 
@@ -140,22 +148,29 @@ function observeArray(watcher, arr, agent) {
     //     defineValue(arr, AGENT_ARRAY, agent);
     // }
 
+    // // 如果值是数组，则从数组上取 agent
+    // if (hasOwn(arr, AGENT_ARRAY)) {
+    //     var preAgent = arr[AGENT_ARRAY];
+    //     agent.concat(preAgent);
+    // }
+    defineValue(arr, AGENT_ARRAY, agent);
+
     console.log(new Date(), 'observeArray agent.guid', agent.guid);
     var list;
     var map;
 
-    if (hasOwn(arr, AGENT_LIST)) {
-        list = arr[AGENT_LIST];
-        map = arr[AGENT_MAP];
-
-        if (!map[agent.guid]) {
-            map[agent.guid] = true;
-            list.push(agent);
-        }
-    } else {
-        defineValue(arr, AGENT_LIST, []);
-        defineValue(arr, AGENT_MAP, {});
-    }
+    // if (hasOwn(arr, AGENT_LIST)) {
+    //     list = arr[AGENT_LIST];
+    //     map = arr[AGENT_MAP];
+    //
+    //     if (!map[agent.guid]) {
+    //         map[agent.guid] = true;
+    //         list.push(agent);
+    //     }
+    // } else {
+    //     defineValue(arr, AGENT_LIST, []);
+    //     defineValue(arr, AGENT_MAP, {});
+    // }
 
     array.each(OVERRIDE_ARRAY_METHODS, function (index, method) {
         var original = Array.prototype[method];
@@ -224,7 +239,6 @@ function observeArray(watcher, arr, agent) {
             agent.react(operation);
         });
     });
-    defineValue(arr, AGENT_GUID, agent);
     array.each(arr, function (index, val) {
         observe(watcher, val, agent);
     });
@@ -246,4 +260,5 @@ function observeArray(watcher, arr, agent) {
     });
 }
 
-module.exports = observe;
+exports.data = observe;
+exports.key = observeObjectWithKeyAndVal;

@@ -123,7 +123,7 @@ exports.attr = function (node, attr, vm) {
     directive.category = category;
     directive.scope = scope;
     directive.data = data;
-    directive.watcher = new Watcher(scope);
+    // directive.watcher = new Watcher(scope);
     directive.vm = vm;
     directive.init();
 
@@ -200,7 +200,7 @@ exports.text = function (node, vm) {
         directive.category = TEXT_STR;
         directive.scope = scope;
         directive.vm = vm;
-        directive.watcher = new Watcher(scope);
+        // directive.watcher = new Watcher(scope);
         directive.init();
 
         // 表达式解析需要在指令 init 之后

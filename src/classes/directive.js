@@ -12,6 +12,8 @@ var random = require('blear.utils.random');
 var fun = require('blear.utils.function');
 var typeis = require('blear.utils.typeis');
 
+var Response = require('./response');
+
 module.exports = Class.extend({
     className: 'Directive',
     constructor: function (definition) {
@@ -30,6 +32,7 @@ module.exports = Class.extend({
         the.updated = false;
         the.destroyed = false;
         the.definition = definition;
+        the.response = new Response(the);
     },
 
     /**

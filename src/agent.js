@@ -15,7 +15,7 @@ var typeis = require('blear.utils.typeis');
 
 var Agent = Events.extend({
     className: 'Agent',
-    constructor: function (key) {
+    constructor: function () {
         var the = this;
 
         Agent.parent(the);
@@ -25,7 +25,7 @@ var Agent = Events.extend({
         the[_watcherMap] = {};
         the[_parent] = null;
         the[_child] = null;
-        console.log(new Date(), 'create agent.guid', the.guid, 'key', key);
+        console.log(new Date(), 'create agent', the.guid);
     },
 
     // /**
@@ -66,6 +66,11 @@ var Agent = Events.extend({
 
 
     concat: function (agent) {
+        if (agent === this) {
+            return;
+        }
+
+        console.log(new Date(), 'agent concat', agent.guid, this.guid);
         this[_siblings].push(agent);
     },
 
@@ -90,6 +95,10 @@ var Agent = Events.extend({
         // if (the[_child]) {
         //     the[_child].react.apply(the[_child], args);
         // }
+        //
+        // array.each(the[_siblings], function (index, agent) {
+        //     agent.react.apply(agent, args);
+        // });
 
         array.each(the[_watcherList], function (index, watcher) {
             watcher.dispath.apply(watcher, args);
@@ -100,11 +109,15 @@ var _watcherList = Agent.sole();
 var _watcherMap = Agent.sole();
 var _parent = Agent.sole();
 var _child = Agent.sole();
-var _guid = Agent.sole();
 var _siblings = Agent.sole();
 
-_parent = '_parent';
-_child = '_child';
+if (typeof DEBUG !== 'undefined' && DEBUG) {
+    _watcherList = '_watcherList';
+    _watcherMap = '_watcherMap';
+    _parent = '_parent';
+    _child = '_child';
+    _siblings = '_siblings';
+}
 
-Agent.watcher = null;
+Agent.response = null;
 module.exports = Agent;
