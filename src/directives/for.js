@@ -234,8 +234,8 @@ module.exports = {
             }
 
             if (isArray) {
-                array.each(directive.childScopeList, function (index, scope) {
-                    scope[directive.indexName] = index;
+                array.each(the.childScopeList, function (index, scope) {
+                    scope[the.indexName] = index;
                 });
             }
         } else {

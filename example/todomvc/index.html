@@ -1,0 +1,64 @@
+<!doctype html>
+<!--
+ - 文件描述
+ - @author ydr.me
+ - @created 2017-01-03 22:10
+ -->
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width,user-scalable=no,maximum-scale=1.0,minimum-scale=1.0,minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="author" content="云淡然;http://ydr.me">
+    <meta name="keywords" content="关键词1,关键词2">
+    <meta name="description" content="描述语句">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+    <title>todo mvc</title>
+    <link rel="stylesheet" href="./index.css">
+</head>
+<body ontouchstart="">
+
+<section class="todoapp" id="todoapp">
+    <header class="header">
+        <h1>blear todos</h1>
+        <input autofocus="autofocus" autocomplete="off"
+               @model="newTodo" @keypress.enter="onAddTodo"
+               placeholder="What needs to be done?" class="new-todo">
+    </header>
+
+    <section class="main">
+        <input type="checkbox" class="toggle-all">
+        <ul class="todo-list">
+            <li class="todo" @for="index, todo in todos">
+                <div class="view">
+                    <input type="checkbox" class="toggle">
+                    <label>{{todo.name}}</label>
+                    <button class="destroy" @click="onRemove(index)"></button>
+                </div>
+                <input type="text" class="edit">
+            </li>
+        </ul>
+    </section>
+
+    <footer class="footer">
+        <span class="todo-count"><strong>1</strong> item left</span>
+        <ul class="filters">
+            <li><a href="#/all" class="selected">All</a></li>
+            <li><a href="#/active" class="">Active</a></li>
+            <li><a href="#/completed" class="">Completed</a></li>
+        </ul>
+        <button class="clear-completed">Clear completed</button>
+    </footer>
+</section>
+
+
+<script src="/node_modules/coolie.js/coolie.js"
+        data-config="/example/coolie-config.js"
+        data-main="todomvc/index.js"></script>
+
+</body>
+</html>

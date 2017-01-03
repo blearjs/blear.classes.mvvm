@@ -50,7 +50,7 @@ module.exports = {
 
             if (keyCode) {
                 array.reduce(keyCode, function (p, n) {
-                    keyCodeMap[n] = true;
+                    p[n] = true;
                     return p;
                 }, keyCodeMap);
                 shouldEqualKeyCode = true;
@@ -63,7 +63,9 @@ module.exports = {
             if (shouldEqualKeyCode) {
                 canExec = false;
 
-                var keyCode = ev.keyCode;
+                // for 遍历对象，其键会转换为字符串，
+                // 因此这里也转换为字符串以作全等比较
+                var keyCode = ev.keyCode + '';
 
                 object.each(keyCodeMap, function (_keyCode) {
                     if (_keyCode === keyCode) {
