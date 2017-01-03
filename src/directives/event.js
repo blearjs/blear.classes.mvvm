@@ -57,7 +57,7 @@ module.exports = {
             }
         });
 
-        event.on(vm.el, eventType, node, the.listener = function (ev) {
+        event.on(vm.el, the.eventType = eventType, node, the.listener = function (ev) {
             var canExec = true;
 
             if (shouldEqualKeyCode) {
@@ -100,7 +100,7 @@ module.exports = {
     destroy: function () {
         var the = this;
 
-        event.un(the.vm, the.type, the.listener);
+        event.un(the.vm, the.eventType, the.listener);
     }
 };
 

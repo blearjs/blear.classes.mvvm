@@ -20,10 +20,15 @@ new MVVM({
             if (!this.newTodo) {
                 return;
             }
-            
+
             this.todos.push({
                 name: this.newTodo
-            })
+            });
+
+            this.newTodo = '';
+        },
+        onRemove: function (index) {
+            this.todos.remove(index);
         }
     }
 });

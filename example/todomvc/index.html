@@ -33,7 +33,9 @@
     <section class="main">
         <input type="checkbox" class="toggle-all">
         <ul class="todo-list">
-            <li class="todo" @for="index, todo in todos">
+            <li class="todo"
+                :class="{completed: todo.completed}"
+                @for="index, todo in todos">
                 <div class="view">
                     <input type="checkbox" class="toggle">
                     <label>{{todo.name}}</label>
