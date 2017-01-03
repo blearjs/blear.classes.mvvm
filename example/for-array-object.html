@@ -39,12 +39,15 @@
     <button @click="onShift">删除第一个学生</button>
     <button @click="onChangeName">修改第一个学生的 name</button>
     <button @click="onChangeTags">修改第一个学生的 tags</button>
+    <button @click="onUnshiftTags">添加第一个学生的 tag</button>
+    <button @click="onShiftTags">删除第一个学生的 tag</button>
     <hr>
     <ul>
-        <li @for="student in students">
+        <li @for="index, student in students">
+            第{{index + 1}}位同学
             <strong>{{student.name}}</strong>
             同学的标签是
-            <span class="tag" @for="tag in student.tags">{{tag}}</span>
+            <span class="tag" @for="(index2, tag) in student.tags">{{index2 + '. ' + tag}}</span>
         </li>
     </ul>
 </div>

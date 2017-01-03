@@ -103,8 +103,8 @@ module.exports = {
         var arr1 = the.value.split(' in ');
         var arr2 = arr1[0].split(',');
 
-        the.aliasName = arr2.pop().trim();
-        the.indexName = (arr2[0] || configs.forIndexName).trim();
+        the.aliasName = arr2.pop().trim().replace(/\)$/, '');
+        the.indexName = (arr2[0] || configs.forIndexName).trim().replace(/^\(/, '');
         the.exp = arr1[1].trim();
         the.childScopeList = [];
         the.childNodeList = [];

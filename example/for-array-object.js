@@ -42,18 +42,32 @@ new MVVM({
             data.students.shift();
         },
         onChangeName: function () {
-            if(!data.students.length) {
+            if (!data.students.length) {
                 return;
             }
 
             data.students[0].name = rs();
         },
         onChangeTags: function () {
-            if(!data.students.length) {
+            if (!data.students.length) {
                 return;
             }
 
             data.students[0].tags = ra();
+        },
+        onUnshiftTags: function () {
+            if (!data.students.length) {
+                return;
+            }
+
+            this.students[0].tags.unshift(rs());
+        },
+        onShiftTags: function () {
+            if (!data.students.length) {
+                return;
+            }
+
+            this.students[0].tags.shift();
         }
     }
 });
