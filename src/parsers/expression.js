@@ -8,6 +8,7 @@
 'use strict';
 
 var collection = require('blear.utils.collection');
+var typeis = require('blear.utils.typeis');
 
 var varible = require('../utils/varible');
 
@@ -277,7 +278,7 @@ var utils = {
 
 /**
  * 解析字符串表达式为函数表达式
- * @param expression
+ * @param {String|Function} expression
  * @returns {Function}
  */
 module.exports = function parseExpressionToGetter(expression) {
@@ -287,8 +288,19 @@ module.exports = function parseExpressionToGetter(expression) {
 
     var body =
         // 'try{' +
-        /****/'with(' + scopeName + '){' +
-        /****//****/ 'return ' + expression + ';' +
+        /****/'with(' + scopeName + '){';
+
+    if (typeis.Function(expression)) {
+        body += 'return ' + expression + '.call(' + scopeName + ');';
+    } else {
+        body += 'return (' +
+            'typeof(' + expression + ')==="function"' +
+            '?' + expression + '.call(' + scopeName + ')' +
+            ':' + expression +
+            ');';
+    }
+
+    body +=
         /****/'}' +
         // '}catch(' + errorName + '){' +
         // /****/'if(typeof DEBUG!=="undefined"&&DEBUG) {' +

@@ -1,7 +1,7 @@
-- @for 循环 √
 - 数组监听 √
 - 对象精细监听 √
 - 表达式解析 √
+- @for 循环 √
 - :html √
 - :text √
 - .once（一次性绑定，不监听）√
@@ -14,7 +14,7 @@
 - @cond（包括 if、else-if、else） √
 - @show √
 - @hide √
-- watch 表达式
-- computed 计算表达式
+- watch 表达式 √
+- computed 计算表达式 √
 - todoMVC
 

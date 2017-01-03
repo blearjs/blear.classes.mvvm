@@ -27,9 +27,16 @@ var unwatch = mvvm.watch('html + text', function (newVal, oldVal) {
     console.log('只监听一次', 'html + text', '=', newVal);
     unwatch();
 });
+
 mvvm.watch('html', function (newVal, oldVal) {
     console.log('html', '=', newVal);
 }, true);
+
+mvvm.watch(function () {
+    return this.html + this.text;
+}, function (newVal, oldVal) {
+    console.log('函数 this.html + this.text', '=', newVal);
+});
 
 document.getElementById('set1').onclick = function () {
     data.html = random.string();
