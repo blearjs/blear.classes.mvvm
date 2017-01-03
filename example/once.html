@@ -27,9 +27,9 @@
     <p>always: <span @text="name"></span></p>
     <pre>&lt;p&gt;once: &lt;span @text.once="name"&gt;&lt;/span&gt;&lt;/p&gt;</pre>
     <p>once: <span @text.once="name"></span></p>
-    <pre>&lt;p&gt;always: { {name}}&lt;/p&gt;</pre>
+    <pre @pre>&lt;p&gt;always: {{name}}&lt;/p&gt;</pre>
     <p>always: {{name}}</p>
-    <pre>&lt;p&gt;once: { { * name }}&lt;/p&gt;</pre>
+    <pre @pre>&lt;p&gt;once: {{ * name }}&lt;/p&gt;</pre>
     <p>once: {{ * name }}</p>
     <input type="text" @model="name">
 </div>

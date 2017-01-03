@@ -12,14 +12,14 @@ var random = require('blear.utils.random');
 
 var compileAttrs = function (node, vm) {
     var attrs = array.from(node.attributes);
-    var aborted = false;
+    var stop = false;
     var parser = vm.parser;
 
     array.each(attrs, function (index, attr) {
-        aborted = parser.attr(node, attr, vm);
+        stop = parser.attr(node, attr, vm);
     });
 
-    return aborted;
+    return stop;
 };
 
 var compileElement = function (node, vm) {

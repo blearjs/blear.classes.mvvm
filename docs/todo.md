@@ -4,7 +4,7 @@
 - 表达式解析 √
 - :html √
 - :text √
-- .once（一次性绑定，不监听）
+- .once（一次性绑定，不监听）√
 - @event √
 - @model（checkbox、radio、select、text）√
 - :class（注意连字符）√

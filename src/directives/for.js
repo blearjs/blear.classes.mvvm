@@ -96,7 +96,7 @@ var moveList = function (list, from, to, howMany) {
 };
 
 module.exports = {
-    aborted: true,
+    stop: true,
     init: function () {
         var the = this;
         var node = the.node;

@@ -7,7 +7,6 @@
 
 'use strict';
 
-var Watcher = require('../watcher');
 var array = require('blear.utils.array');
 var string = require('blear.utils.string');
 var event = require('blear.core.event');
@@ -31,6 +30,7 @@ var EVENT_STR = 'event';
 var CONDITION_STR = 'cond';
 var MODEL_STR = 'model';
 var FOR_STR = 'for';
+var PRE_STR = 'pre';
 var categoryNameMap = {};
 
 categoryNameMap['for'] = FOR_STR;
@@ -40,6 +40,7 @@ categoryNameMap['else-if'] = CONDITION_STR;
 categoryNameMap[MODEL_STR] = MODEL_STR;
 categoryNameMap[HTML_STR] = HTML_STR;
 categoryNameMap[TEXT_STR] = TEXT_STR;
+categoryNameMap[PRE_STR] = PRE_STR;
 
 
 function compileRegExp() {
@@ -149,7 +150,7 @@ exports.attr = function (node, attr, vm) {
 
     vm.add(directive);
 
-    return directive.aborted;
+    return directive.stop;
 };
 
 

@@ -14,5 +14,6 @@ exports.for = require('./for');
 exports.event = require('./event');
 exports.model = require('./model');
 exports.attr = require('./attr');
+exports.pre = require('./pre');
 
 
