@@ -9,6 +9,8 @@
 
 var modification = require('blear.core.modification');
 var array = require('blear.utils.array');
+var collection = require('blear.utils.collection');
+var typeis = require('blear.utils.typeis');
 var random = require('blear.utils.random');
 
 var anchor = require('../utils/anchor');
@@ -35,6 +37,7 @@ var buildChildMVVM = function (directive, index, data, operation) {
     var anchorStart = directive.anchorStart;
     var anchorEnd = directive.anchorEnd;
     var indexName = directive.indexName;
+    var keyName = directive.keyName;
     var aliasName = directive.aliasName;
     var vm = directive.vm;
     var insertTarget;
@@ -59,6 +62,7 @@ var buildChildMVVM = function (directive, index, data, operation) {
     }
 
     childScope[indexName] = index;
+    childScope[keyName] = index;
     childScope[aliasName] = data;
     modification.insert(childNode, insertTarget, insertPosition);
 
@@ -80,12 +84,6 @@ var buildChildMVVM = function (directive, index, data, operation) {
     }
 };
 
-var sortChildScopeListOrder = function (directive) {
-    array.each(directive.childScopeList, function (index, scope) {
-        scope[directive.indexName] = index;
-    });
-};
-
 var moveList = function (list, from, to, howMany) {
     var args = list.splice(from, howMany);
     // 删除个数
@@ -104,7 +102,9 @@ module.exports = {
         var arr2 = arr1[0].split(',');
 
         the.aliasName = arr2.pop().trim().replace(/\)$/, '');
-        the.indexName = (arr2[0] || configs.forIndexName).trim().replace(/^\(/, '');
+        var setKey = (arr2[0] || '').trim().replace(/^\(/, '');
+        the.indexName = setKey || configs.forIndexName;
+        the.keyName = setKey || configs.forKeyName;
         the.exp = arr1[1].trim();
         the.childScopeList = [];
         the.childNodeList = [];
@@ -121,8 +121,13 @@ module.exports = {
         var childNodeList = the.childNodeList;
         var childVMList = the.childVMList;
         var data = the.get();
+        var isArray = typeis.Array(data);
 
         if (the.bound) {
+            if (!isArray) {
+                return;
+            }
+
             // 多维数组的问题，VUE 1.x 是有 BUG 的
             // 但这里已经修正，在如下 DOM 结构里：
             // <1 @for="list1 in list0">
@@ -228,9 +233,13 @@ module.exports = {
                     break;
             }
 
-            sortChildScopeListOrder(the);
+            if (isArray) {
+                array.each(directive.childScopeList, function (index, scope) {
+                    scope[directive.indexName] = index;
+                });
+            }
         } else {
-            array.each(data, function (index, data) {
+            collection.each(data, function (index, data) {
                 buildChildMVVM(the, index, data, {
                     method: ARRAY_PUSH
                 });
