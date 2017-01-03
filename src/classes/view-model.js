@@ -14,8 +14,8 @@ var modification = require('blear.core.modification');
 var Watcher = require('../watcher');
 
 var compile = require('../bootstrap/compile');
-var monitor = require('../bootstrap/monitor');
-var parser = require('../bootstrap/parser');
+var paint = require('../bootstrap/paint');
+var parse = require('../bootstrap/parse');
 var Response = require('./response');
 var expParser = require('../parsers/expression');
 
@@ -27,8 +27,7 @@ var ViewModel = Class.extend({
         the.guid = random.guid();
         the.el = el;
         the.scope = scope;
-        the.monitor = monitor;
-        the.parser = parser;
+        the.parse = parse;
         the.children = [];
         the.directives = [];
 
@@ -53,9 +52,6 @@ var ViewModel = Class.extend({
         compile(el, the);
 
         // 2、绑定指令、确定指令更新
-        the.directives.sort(function (a, b) {
-            return a.weight - b.weight;
-        });
         array.each(the.directives, function (index, directive) {
             the[_execDirective](directive);
         });
@@ -70,14 +66,10 @@ var ViewModel = Class.extend({
     add: function (directive) {
         var the = this;
 
+        // 指令上色
+        paint(directive, the);
+
         if (the.done) {
-            directive.init();
-            directive.response = new Response();
-            var getter = directive.getter = expParser(directive.exp);
-            var scope = directive.scope = the.scope;
-            directive.get = function () {
-                return getter(scope);
-            };
             the[_execDirective](directive);
         } else {
             the.directives.push(directive);
@@ -129,8 +121,8 @@ var ViewModel = Class.extend({
         the.parent.children.splice(foundIndex, 1);
 
         // 5、删除当前引用
-        the.children = the.parent = the.parser
-            = the.monitor = the.directives
+        the.children = the.parent
+            = the.directives
             = the.el = the.scope
             = null;
     }

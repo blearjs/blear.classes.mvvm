@@ -94,6 +94,7 @@ var moveList = function (list, from, to, howMany) {
 };
 
 module.exports = {
+    weight: 10,
     stop: true,
     init: function () {
         var the = this;
@@ -112,7 +113,6 @@ module.exports = {
         the.anchorStart = anchor(node, '@for-start');
         the.anchorEnd = anchor(node, '@for-end');
         the.tplNode = node;
-        the.weight = Directive.LOOP_WEIGHT;
         modification.remove(node);
     },
     update: function (node, newVal, _oldVal, operation) {

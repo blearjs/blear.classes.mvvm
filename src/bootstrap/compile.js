@@ -10,13 +10,39 @@
 var array = require('blear.utils.array');
 var random = require('blear.utils.random');
 
+var parse = require('./parse');
+
 var compileAttrs = function (node, vm) {
     var attrs = array.from(node.attributes);
-    var stop = false;
-    var parser = vm.parser;
+    var directives = [];
 
+    // 1、遍历节点属性
     array.each(attrs, function (index, attr) {
-        stop = parser.attr(node, attr, vm);
+        var directive = parse.attr(node, attr);
+
+        if (!directive) {
+            return;
+        }
+
+        directives.push(directive);
+    });
+
+    // 2、按权重进行指令排序
+    directives.sort(function (a, b) {
+        return b.weight - a.weight;
+    });
+
+    var stop = false;
+
+    // 3、依次添加 directive，可被中断
+    array.each(directives, function (index, directive) {
+        node.removeAttribute(directive.attr);
+        vm.add(directive);
+
+        if (directive.stop) {
+            stop = true;
+            return false;
+        }
     });
 
     return stop;
@@ -36,8 +62,11 @@ var compileElement = function (node, vm) {
 };
 
 var compileText = function (node, vm) {
-    var parser = vm.parser;
-    parser.text(node, vm);
+    var directives = parse.text(node);
+
+    array.each(directives, function (index, directive) {
+        vm.add(directive);
+    });
 };
 
 var compileNode = function (node, vm) {

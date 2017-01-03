@@ -12,10 +12,8 @@ var string = require('blear.utils.string');
 var event = require('blear.core.event');
 var modification = require('blear.core.modification');
 
-var expressionParser = require('../parsers/expression');
 var textParser = require('../parsers/text');
-var eventParser = require('../parsers/event');
-var directiveFactory = require('../directives/factory');
+var Directive = require('../classes/directive');
 var configs = require('../configs');
 
 var attrDirectiveRE;
@@ -57,11 +55,8 @@ function compileRegExp() {
  * 解析属性节点为指令信息
  * @param {HTMLElement} node
  * @param {Node} attr
- * @param {ViewModel} vm
  */
-exports.attr = function (node, attr, vm) {
-    var scope = vm.scope;
-    var data = vm.data;
+exports.attr = function (node, attr) {
     var attrName = attr.nodeName.toLowerCase();
     var attrValue = attr.nodeValue;
     var category = '';
@@ -93,15 +88,15 @@ exports.attr = function (node, attr, vm) {
 
     switch (category) {
         case EVENT_STR:
-            directive = directiveFactory(EVENT_STR);
+            directive = Directive.create(EVENT_STR);
             break;
 
         case ATTR_STR:
-            directive = directiveFactory(ATTR_STR);
+            directive = Directive.create(ATTR_STR);
             break;
 
         default:
-            directive = directiveFactory(category);
+            directive = Directive.create(category);
             break;
     }
 
@@ -117,19 +112,15 @@ exports.attr = function (node, attr, vm) {
         return;
     }
 
-    node.removeAttribute(attrName);
     array.reduce(delimiters, function (prevVal, nowVal) {
         prevVal[nowVal] = true;
         return prevVal;
     }, directive.filters);
     directive.node = node;
-    directive.attr = attr;
+    directive.attr = attrName;
     directive.name = name;
     directive.exp = directive.value = attrValue;
     directive.category = category;
-    directive.scope = scope;
-    directive.data = data;
-    directive.vm = vm;
     directive.prev = lastAttrDirective;
 
     if (lastAttrDirective) {
@@ -137,48 +128,23 @@ exports.attr = function (node, attr, vm) {
     }
 
     lastAttrDirective = directive;
-    directive.init();
 
-    switch (category) {
-        case EVENT_STR:
-            // 表达式解析需要在指令 init 之后
-            var executer = directive.executer = eventParser(directive.exp);
-            directive.exec = function (el, ev) {
-                return executer(scope, el, ev);
-            };
-            break;
-
-        default:
-            if (!directive.empty) {
-                // 表达式解析需要在指令 init 之后
-                var getter = directive.getter = expressionParser(directive.exp);
-                directive.get = function () {
-                    return getter(scope);
-                };
-            }
-            break;
-    }
-
-    vm.add(directive);
-
-    return directive.stop;
+    return directive;
 };
 
 
 /**
  * 解析文本节点为指令信息
  * @param {Node} node
- * @param {ViewModel} vm
  */
-exports.text = function (node, vm) {
-    var scope = vm.scope;
-    var data = vm.data;
+exports.text = function (node) {
     var expression = node.textContent;
     var tokens = textParser(expression);
+    var directives = [];
 
     // 纯文本，直接跳过
     if (tokens === null) {
-        return;
+        return directives;
     }
 
     // 1、必须先处理节点
@@ -205,7 +171,7 @@ exports.text = function (node, vm) {
             return;
         }
 
-        var directive = directiveFactory(TEXT_STR);
+        var directive = Directive.create(TEXT_STR);
         var tokenValue = token.value;
 
         directive.filters.once = token.once;
@@ -213,17 +179,8 @@ exports.text = function (node, vm) {
         directive.attr = null;
         directive.exp = directive.value = tokenValue;
         directive.category = TEXT_STR;
-        directive.scope = scope;
-        directive.vm = vm;
-        directive.init();
-
-        // 表达式解析需要在指令 init 之后
-        var getter = expressionParser(directive.exp);
-
-        directive.getter = getter;
-        directive.get = function () {
-            return getter(scope);
-        };
-        vm.add(directive);
+        directives.push(directive);
     });
+
+    return directives;
 };

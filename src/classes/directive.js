@@ -12,21 +12,17 @@ var random = require('blear.utils.random');
 var fun = require('blear.utils.function');
 var typeis = require('blear.utils.typeis');
 var object = require('blear.utils.object');
+var string = require('blear.utils.string');
+var array = require('blear.utils.array');
 
 var Response = require('./response');
+var definitionMap = require('../directives/index');
 
 var Directive = Class.extend({
     className: 'Directive',
     constructor: function (definition) {
         var the = this;
 
-        if (typeis.Function(definition)) {
-            definition = {
-                update: definition
-            };
-        }
-
-        definition = definition || {};
         object.assign(the, definition);
         the.guid = random.guid();
         the.empty = definition.empty || false;
@@ -37,7 +33,7 @@ var Directive = Class.extend({
         the.destroyed = false;
         the.definition = definition;
         the.response = new Response(the);
-        the.weight = Directive.DEFAULT_WEIGHT;
+        the.weight = the.weight || 1;
         the.filters = {};
     },
 
@@ -110,7 +106,39 @@ var Directive = Class.extend({
     }
 });
 
-Directive.DEFAULT_WEIGHT = 1;
-Directive.LOOP_WEIGHT = 10;
-Directive.CONDITION_WEIGHT = 100;
+// Directive.DEFAULT_WEIGHT = 1;
+// Directive.LOOP_WEIGHT = 10;
+// Directive.CONDITION_WEIGHT = 100;
+
+/**
+ * 创建指令
+ * @param category
+ * @returns {*}
+ */
+Directive.create = function (category) {
+    var definition;
+
+    if (typeis.String(category)) {
+        definition = definitionMap[category];
+
+        if (!definition) {
+            if (typeof DEBUG !== 'undefined' && DEBUG) {
+                throw new TypeError('未找到`' + category + '`类型指令');
+            }
+
+            return;
+        }
+
+        return new Directive(definition);
+    }
+
+    if (typeis.Function(definition)) {
+        definition = {
+            update: definition
+        };
+    }
+
+    return new Directive(definition);
+};
+
 module.exports = Directive;

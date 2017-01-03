@@ -22,7 +22,8 @@ new MVVM({
             }
 
             this.todos.push({
-                name: this.newTodo
+                name: this.newTodo,
+                completed: false
             });
 
             this.newTodo = '';

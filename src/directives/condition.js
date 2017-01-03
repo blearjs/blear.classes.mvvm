@@ -11,8 +11,10 @@ var attribute = require('blear.core.attribute');
 var modification = require('blear.core.modification');
 
 var anchor = require('../utils/anchor');
+var Directive = require('../classes/directive');
 
 module.exports = {
+    weight: 100,
     init: function () {
         var the = this;
 

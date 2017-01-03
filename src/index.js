@@ -14,8 +14,8 @@ var array = require('blear.utils.array');
 var access = require('blear.utils.access');
 
 var anchor = require('./utils/anchor');
-var directiveFactory = require('./directives/factory');
 var ViewModel = require('./classes/view-model');
+var Directive = require('./classes/directive');
 
 var defaults = {
     el: 'body',
@@ -32,7 +32,7 @@ var MVVM = Events.extend({
         the[_compile]();
     },
     watch: function (exp, callback, immediate) {
-        var virtualDirective = directiveFactory({
+        var virtualDirective = new Directive({
             exp: exp,
             update: function (node, newVal, oldVal, operation) {
                 if (this.bound || immediate && !this.bound) {
