@@ -32,6 +32,7 @@ var MODEL_STR = 'model';
 var FOR_STR = 'for';
 var PRE_STR = 'pre';
 var categoryNameMap = {};
+var lastAttrDirective = null;
 
 categoryNameMap['for'] = FOR_STR;
 categoryNameMap['if'] = CONDITION_STR;
@@ -128,6 +129,13 @@ exports.attr = function (node, attr, vm) {
     directive.scope = scope;
     directive.data = data;
     directive.vm = vm;
+    directive.prev = lastAttrDirective;
+
+    if (lastAttrDirective) {
+        lastAttrDirective.refPrev = directive;
+    }
+
+    lastAttrDirective = directive;
     directive.init();
 
     switch (category) {
@@ -142,7 +150,7 @@ exports.attr = function (node, attr, vm) {
         default:
             // 表达式解析需要在指令 init 之后
             var getter = directive.getter = expressionParser(directive.exp);
-            directive.eval = function () {
+            directive.get = function () {
                 return getter(scope);
             };
             break;
@@ -212,7 +220,7 @@ exports.text = function (node, vm) {
         var getter = expressionParser(directive.exp);
 
         directive.getter = getter;
-        directive.eval = function () {
+        directive.get = function () {
             return getter(scope);
         };
         vm.add(directive);

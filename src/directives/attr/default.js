@@ -27,7 +27,7 @@ var booleanAttrs = array.reduce('checked selected readonly disabled multiple hid
 
 
 exports.update = function (directive, newVal) {
-    var value = directive.eval();
+    var value = directive.get();
     var node = directive.node;
     var name = directive.name;
     var isBooleanAttr = booleanAttrs[name];

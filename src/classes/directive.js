@@ -89,7 +89,14 @@ var Directive = Class.extend({
 
         the.response.unlink();
         fun.noop(definition.destroy).apply(the, arguments);
-        the.response = the.definition = null;
+        // 响应者
+        the.response =
+            // 指令定义
+            the.definition =
+                // 对前一个指令的引用
+                the.prev =
+                    // 前一个指令对自己的引用
+                    the.refPrev.prev = null;
         the.destroyed = true;
     }
 });

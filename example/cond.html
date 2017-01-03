@@ -21,8 +21,22 @@
     <link rel="stylesheet" href="./style.css">
     <style>
         p {
-            background: #000;
-            color: #fff;
+            padding: 10px;
+        }
+
+        .p1 {
+            background: #dffdf2;
+            color: #01ca77;
+        }
+
+        .p2 {
+            background: #d8cab2;
+            color: #d8530e;
+        }
+
+        .p3 {
+            background: #d8cab2;
+            color: #d8530e;
         }
     </style>
 </head>
@@ -32,8 +46,12 @@
     <fieldset>
         <legend>@if</legend>
         <input type="text" @model="name">
-        <pre @pre>&lt;p @if="name.length"&gt;{{name}}&lt;/p&gt;</pre>
-        <p @if="name.length">{{name}}</p>
+        <pre @pre>&lt;p class="p1" @if="name.length"&gt;{{name}}&lt;/p&gt;
+&lt;p class="p2" @else-if="name.length > 4">{{name}} 超过了 4 个长度&lt;/p>
+&lt;p class="p3" @else>请填写 name&lt;/p></pre>
+        <p class="p1" @if="name.length > 0 && name.length < 5">{{name}} 合理范围内</p>
+        <p class="p2" @else-if="name.length > 4">{{name}} 超过了 4 个长度</p>
+        <p class="p3" @else>请输入 name</p>
     </fieldset>
 </div>
 

@@ -67,7 +67,7 @@ var ViewModel = Class.extend({
                     var response = directive.response;
                     response.respond = function (operation) {
                         // 新值使用表达式计算
-                        var newVal = directive.eval();
+                        var newVal = directive.get();
                         directive.update(node, newVal, oldVal, operation);
                         oldVal = newVal;
                     };

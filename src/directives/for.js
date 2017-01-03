@@ -120,7 +120,7 @@ module.exports = {
         var childScopeList = the.childScopeList;
         var childNodeList = the.childNodeList;
         var childVMList = the.childVMList;
-        var data = the.eval();
+        var data = the.get();
 
         if (the.bound) {
             // 多维数组的问题，VUE 1.x 是有 BUG 的
