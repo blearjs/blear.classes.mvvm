@@ -8,6 +8,7 @@
 'use strict';
 
 module.exports = {
+    empty: true,
     stop: true
 };
 

@@ -26,7 +26,8 @@ var ATTR_STR = 'attr';
 var HTML_STR = 'html';
 var TEXT_STR = 'text';
 var EVENT_STR = 'event';
-var CONDITION_STR = 'cond';
+var CONDITION_STR = 'condition';
+var DISPLAY_STR = 'display';
 var MODEL_STR = 'model';
 var FOR_STR = 'for';
 var PRE_STR = 'pre';
@@ -34,8 +35,8 @@ var categoryNameMap = {};
 var lastAttrDirective = null;
 
 categoryNameMap['for'] = FOR_STR;
-categoryNameMap['show'] = CONDITION_STR;
-categoryNameMap['hide'] = CONDITION_STR;
+categoryNameMap['show'] = DISPLAY_STR;
+categoryNameMap['hide'] = DISPLAY_STR;
 categoryNameMap['if'] = CONDITION_STR;
 categoryNameMap['else'] = CONDITION_STR;
 categoryNameMap['else-if'] = CONDITION_STR;
@@ -148,11 +149,13 @@ exports.attr = function (node, attr, vm) {
             break;
 
         default:
-            // 表达式解析需要在指令 init 之后
-            var getter = directive.getter = expressionParser(directive.exp);
-            directive.get = function () {
-                return getter(scope);
-            };
+            if (!directive.empty) {
+                // 表达式解析需要在指令 init 之后
+                var getter = directive.getter = expressionParser(directive.exp);
+                directive.get = function () {
+                    return getter(scope);
+                };
+            }
             break;
     }
 

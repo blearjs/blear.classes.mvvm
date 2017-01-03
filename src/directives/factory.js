@@ -20,7 +20,8 @@ definitionMap.event = require('./event');
 definitionMap.model = require('./model');
 definitionMap.attr = require('./attr');
 definitionMap.pre = require('./pre');
-definitionMap.cond = require('./cond');
+definitionMap.condition = require('./condition');
+definitionMap.display = require('./display');
 definitionMap.virtual = require('./virtual');
 
 /**

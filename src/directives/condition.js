@@ -1,5 +1,5 @@
 /**
- * cond 指令，包括 if、else-if、else
+ * condition 指令，包括 if、else-if、else
  * @author ydr.me
  * @created 2016-12-19 19:01
  */
@@ -7,6 +7,7 @@
 
 'use strict';
 
+var attribute = require('blear.core.attribute');
 var modification = require('blear.core.modification');
 
 var anchor = require('../utils/anchor');
@@ -37,16 +38,12 @@ module.exports = {
                 foundDir = foundDir.prev;
             }
 
-            the.exp = 'Boolean(' + expList.join('||') + ')';
+            the.exp = '!Boolean(' + expList.join('||') + ')';
         }
     },
     update: function (node, newVal, oldVal, operation) {
         var the = this;
         var bool = the.get();
-
-        if (the.name === 'else' || the.name === 'hide') {
-            bool = !bool;
-        }
 
         if (bool) {
             modification.insert(node, the.anchor, 3);

@@ -22,7 +22,6 @@ var mvvm = new MVVM({
     data: data
 });
 
-// watch 所有变化
 var unwatch = mvvm.watch('html + text', function (newVal, oldVal) {
     console.log('只监听一次', 'html + text', '=', newVal);
     unwatch();

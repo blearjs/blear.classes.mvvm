@@ -29,6 +29,7 @@ var Directive = Class.extend({
         definition = definition || {};
         object.assign(the, definition);
         the.guid = random.guid();
+        the.empty = definition.empty || false;
         the.stop = definition.stop || false;
         the.inited = false;
         the.bound = false;

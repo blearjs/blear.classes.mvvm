@@ -16,5 +16,6 @@
 - @hide √
 - watch 表达式 √
 - computed 计算表达式 √
+- @if 性能优化，初次条件为假则不进行编译
 - todoMVC
 
