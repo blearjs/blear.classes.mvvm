@@ -10,7 +10,7 @@
 var random = require('blear.utils.random');
 
 module.exports = function (length) {
-    return random.string(length || 5,
+    return random.string(length || 3,
         '习近平致信祝贺中国国际电视台开播李克强主持召开国务' +
         '院常务会议茶话会上强调两大精神强调一个词' +
         '环保部发布年度十大雾霾谣言雾霾能堵死肺泡' +

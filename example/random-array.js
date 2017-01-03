@@ -12,9 +12,10 @@ var random = require('blear.utils.random');
 var rs = require('./random-string');
 
 module.exports = function (length) {
-    length = length || 6;
+    length = length || 3;
     var max = random.number(1, length);
     var arr = [];
+    max = 3;
 
     while (max--) {
         arr.push(rs(length))
