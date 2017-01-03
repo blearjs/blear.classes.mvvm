@@ -13,8 +13,6 @@ var array = require('blear.utils.array');
 var access = require('blear.utils.access');
 var typeis = require('blear.utils.typeis');
 
-window.agentList = [];
-
 var Agent = Events.extend({
     className: 'Agent',
     constructor: function () {
@@ -24,7 +22,6 @@ var Agent = Events.extend({
         the.guid = random.guid();
         the[_responseList] = [];
         the[_responseMap] = {};
-        agentList.push(the);
     },
 
     /**

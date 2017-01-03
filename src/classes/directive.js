@@ -11,6 +11,7 @@ var Class = require('blear.classes.class');
 var random = require('blear.utils.random');
 var fun = require('blear.utils.function');
 var typeis = require('blear.utils.typeis');
+var object = require('blear.utils.object');
 
 var Response = require('./response');
 
@@ -25,6 +26,8 @@ var Directive = Class.extend({
             };
         }
 
+        definition = definition || {};
+        object.assign(the, definition);
         the.guid = random.guid();
         the.stop = definition.stop || false;
         the.inited = false;
@@ -34,6 +37,7 @@ var Directive = Class.extend({
         the.definition = definition;
         the.response = new Response(the);
         the.weight = Directive.DEFAULT_WEIGHT;
+        the.filters = {};
     },
 
     /**

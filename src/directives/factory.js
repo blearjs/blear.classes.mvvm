@@ -7,6 +7,8 @@
 
 'use strict';
 
+var typeis = require('blear.utils.typeis');
+
 var Directive = require('../classes/directive');
 
 var definitionMap = {};
@@ -26,17 +28,23 @@ definitionMap.virtual = require('./virtual');
  * @param category
  */
 module.exports = function (category) {
-    var definition = definitionMap[category];
+    var definition;
 
-    if (!definition) {
-        if (typeof DEBUG !== 'undefined' && DEBUG) {
-            throw new TypeError('未找到`' + category + '`类型指令');
+    if (typeis.String(category)) {
+        definition = definitionMap[category];
+
+        if (!definition) {
+            if (typeof DEBUG !== 'undefined' && DEBUG) {
+                throw new TypeError('未找到`' + category + '`类型指令');
+            }
+
+            return;
         }
 
-        return;
+        return new Directive(definition);
     }
 
-    return new Directive(definition);
+    return new Directive(category);
 };
 
 

@@ -84,10 +84,6 @@ exports.attr = function (node, attr, vm) {
     // @click.enter.false
     var delimiters = fullname.split(directiveFilterDelimiterRE);
     var name = delimiters.shift();
-    var filtes = array.reduce(delimiters, function (prevVal, nowVal) {
-        prevVal[nowVal] = true;
-        return prevVal;
-    }, {});
 
     // 控制分类中再细分，默认为事件
     if (category === CTRL_STR) {
@@ -121,10 +117,13 @@ exports.attr = function (node, attr, vm) {
     }
 
     node.removeAttribute(attrName);
+    array.reduce(delimiters, function (prevVal, nowVal) {
+        prevVal[nowVal] = true;
+        return prevVal;
+    }, directive.filters);
     directive.node = node;
     directive.attr = attr;
     directive.name = name;
-    directive.filters = filtes;
     directive.exp = directive.value = attrValue;
     directive.category = category;
     directive.scope = scope;
@@ -206,9 +205,7 @@ exports.text = function (node, vm) {
         var directive = directiveFactory(TEXT_STR);
         var tokenValue = token.value;
 
-        directive.filters = {
-            once: token.once
-        };
+        directive.filters.once = token.once;
         directive.node = textNodes[index];
         directive.attr = null;
         directive.exp = directive.value = tokenValue;

@@ -16,8 +16,9 @@ var Watcher = require('../watcher');
 var compile = require('../bootstrap/compile');
 var monitor = require('../bootstrap/monitor');
 var parser = require('../bootstrap/parser');
+var Response = require('./response');
+var expParser = require('../parsers/expression');
 
-var vmList = [];
 var ViewModel = Class.extend({
     className: 'ViewModel',
     constructor: function (el, scope, keys, parent) {
@@ -56,33 +57,10 @@ var ViewModel = Class.extend({
             return a.weight - b.weight;
         });
         array.each(the.directives, function (index, directive) {
-            var scope = directive.scope;
-            var getter = directive.getter;
-            var node = directive.node;
-            var oldVal;
-
-            if (getter) {
-                // 一次性绑定
-                if (!directive.filters.once) {
-                    var response = directive.response;
-                    response.respond = function (operation) {
-                        // 新值使用表达式计算
-                        var newVal = directive.get();
-                        directive.update(node, newVal, oldVal, operation);
-                        oldVal = newVal;
-                    };
-                    // 不能省略
-                    Watcher.response = response;
-                }
-
-                // 第一次取值时传递 response
-                oldVal = getter(scope);
-                Watcher.response = null;
-            }
-
-            directive.bind(node, oldVal);
+            the[_execDirective](directive);
         });
-        vmList.push(the);
+
+        the.done = true;
     },
 
     /**
@@ -92,12 +70,17 @@ var ViewModel = Class.extend({
     add: function (directive) {
         var the = this;
 
-        the.directives.push(directive);
-
-        if (typeof DEBUG !== 'undefined' && DEBUG) {
-            directive.node.directives = directive.node.directives || [];
-            directive.node.directives.push(directive);
-            the.el.vm = the;
+        if (the.done) {
+            directive.init();
+            directive.response = new Response();
+            var getter = directive.getter = expParser(directive.exp);
+            var scope = directive.scope = the.scope;
+            directive.get = function () {
+                return getter(scope);
+            };
+            the[_execDirective](directive);
+        } else {
+            the.directives.push(directive);
         }
     },
 
@@ -150,9 +133,42 @@ var ViewModel = Class.extend({
             = the.monitor = the.directives
             = the.el = the.scope
             = null;
-        array.delete(vmList, the);
     }
 });
+var _execDirective = ViewModel.sole();
+var pro = ViewModel.prototype;
+
+/**
+ * 执行指令
+ * @param directive
+ */
+pro[_execDirective] = function (directive) {
+    var scope = directive.scope;
+    var getter = directive.getter;
+    var node = directive.node;
+    var oldVal;
+
+    if (getter) {
+        // 一次性绑定
+        if (!directive.filters.once) {
+            var response = directive.response;
+            response.respond = function (operation) {
+                // 新值使用表达式计算
+                var newVal = directive.get();
+                directive.update(node, newVal, oldVal, operation);
+                oldVal = newVal;
+            };
+            // 不能省略
+            Watcher.response = response;
+        }
+
+        // 第一次取值时传递 response
+        oldVal = getter(scope);
+        Watcher.response = null;
+    }
+
+    directive.bind(node, oldVal);
+};
 
 ViewModel.end = function () {
     // array.each(vmList, function (_, vm) {

@@ -14,13 +14,16 @@ var array = require('blear.utils.array');
 var access = require('blear.utils.access');
 
 var anchor = require('./utils/anchor');
-var directives = require('./directives/index');
+var directiveFactory = require('./directives/factory');
 var ViewModel = require('./classes/view-model');
 
 var defaults = {
     el: 'body',
     data: {},
     methods: {}
+};
+var watchDefaults = {
+    immediate: false
 };
 var MVVM = Events.extend({
     className: 'MVVM',
@@ -31,8 +34,17 @@ var MVVM = Events.extend({
         the[_options] = object.assign({}, defaults, options);
         the[_compile]();
     },
-    watch: function (exp, callback) {
-        this[_vm].add(directives.virtual);
+    watch: function (exp, callback, options) {
+        options = object.assign({}, watchDefaults, options);
+        var virtualDirective = directiveFactory({
+            exp: exp,
+            update: function (node, newVal, oldVal, operation) {
+                if (this.bound || options.immediate && !this.bound) {
+                    callback(newVal, oldVal);
+                }
+            }
+        });
+        this[_vm].add(virtualDirective);
     }
 });
 var _options = MVVM.sole();
@@ -59,7 +71,6 @@ pro[_compile] = function () {
 
 // static
 
-MVVM.directives = directives;
 // MVVM.directive = function (name, directive) {
 //     var args = access.args(arguments);
 //

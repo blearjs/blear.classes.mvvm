@@ -23,7 +23,7 @@ var mvvm = new MVVM({
 });
 
 // watch 所有变化
-mvvm.watch(function () {
+mvvm.watch('html + text', function () {
 
 });
 
