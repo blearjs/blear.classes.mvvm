@@ -98,9 +98,13 @@ var Directive = Class.extend({
             // 指令定义
             the.definition =
                 // 对前一个指令的引用
-                the.prev =
-                    // 前一个指令对自己的引用
-                    the.refPrev.prev = null;
+                the.prev = null;
+
+        if (the.refPrev) {
+            // 前一个指令对自己的引用
+            the.refPrev.prev = null;
+        }
+
         the.destroyed = true;
     }
 });

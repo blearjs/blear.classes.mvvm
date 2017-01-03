@@ -23,10 +23,13 @@ var mvvm = new MVVM({
 });
 
 // watch 所有变化
-mvvm.watch('html + text', function () {
-
+var unwatch = mvvm.watch('html + text', function (newVal, oldVal) {
+    console.log('只监听一次', 'html + text', '=', newVal);
+    unwatch();
 });
-
+mvvm.watch('html', function (newVal, oldVal) {
+    console.log('html', '=', newVal);
+}, true);
 
 document.getElementById('set1').onclick = function () {
     data.html = random.string();

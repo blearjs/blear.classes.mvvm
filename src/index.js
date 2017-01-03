@@ -22,9 +22,6 @@ var defaults = {
     data: {},
     methods: {}
 };
-var watchDefaults = {
-    immediate: false
-};
 var MVVM = Events.extend({
     className: 'MVVM',
     constructor: function (options) {
@@ -34,17 +31,20 @@ var MVVM = Events.extend({
         the[_options] = object.assign({}, defaults, options);
         the[_compile]();
     },
-    watch: function (exp, callback, options) {
-        options = object.assign({}, watchDefaults, options);
+    watch: function (exp, callback, immediate) {
         var virtualDirective = directiveFactory({
             exp: exp,
             update: function (node, newVal, oldVal, operation) {
-                if (this.bound || options.immediate && !this.bound) {
+                if (this.bound || immediate && !this.bound) {
                     callback(newVal, oldVal);
                 }
             }
         });
         this[_vm].add(virtualDirective);
+        return function unwatch() {
+            virtualDirective.destroy();
+            virtualDirective = null;
+        };
     }
 });
 var _options = MVVM.sole();
