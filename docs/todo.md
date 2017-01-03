@@ -14,6 +14,7 @@
 - @cond（包括 if、else-if、else） √
 - @show √
 - @hide √
-- computed
+- watch 表达式
+- computed 计算表达式
 - todoMVC
 

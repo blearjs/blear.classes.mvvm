@@ -12,7 +12,6 @@ var modification = require('blear.core.modification');
 var object = require('blear.utils.object');
 var array = require('blear.utils.array');
 var access = require('blear.utils.access');
-var Watcher = require('./watcher');
 
 var anchor = require('./utils/anchor');
 var directives = require('./directives/index');
@@ -31,6 +30,9 @@ var MVVM = Events.extend({
         MVVM.parent(the);
         the[_options] = object.assign({}, defaults, options);
         the[_compile]();
+    },
+    watch: function (exp, callback) {
+        this[_vm].add(directives.virtual);
     }
 });
 var _options = MVVM.sole();
@@ -48,6 +50,7 @@ pro[_compile] = function () {
     var scope = object.assign(options.data, options.methods);
 
     // fragment.appendChild(rootEl);
+    the.model = scope;
     the[_vm] = new ViewModel(rootEl, scope);
     ViewModel.end();
 

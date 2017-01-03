@@ -15,9 +15,8 @@ var modification = require('blear.core.modification');
 var expressionParser = require('../parsers/expression');
 var textParser = require('../parsers/text');
 var eventParser = require('../parsers/event');
-var directives = require('../directives/index');
+var directiveFactory = require('../directives/factory');
 var configs = require('../configs');
-var Directive = require('../classes/directive');
 
 var attrDirectiveRE;
 var ctrlDirectiveRE;
@@ -97,15 +96,15 @@ exports.attr = function (node, attr, vm) {
 
     switch (category) {
         case EVENT_STR:
-            directive = new Directive(directives.event);
+            directive = directiveFactory(EVENT_STR);
             break;
 
         case ATTR_STR:
-            directive = new Directive(directives.attr);
+            directive = directiveFactory(ATTR_STR);
             break;
 
         default:
-            directive = new Directive(directives[category]);
+            directive = directiveFactory(category);
             break;
     }
 
@@ -204,7 +203,7 @@ exports.text = function (node, vm) {
             return;
         }
 
-        var directive = new Directive(directives.text);
+        var directive = directiveFactory(TEXT_STR);
         var tokenValue = token.value;
 
         directive.filters = {

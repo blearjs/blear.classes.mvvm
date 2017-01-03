@@ -17,10 +17,16 @@ var data = window.data = {
     list: ['3']
 };
 
-new MVVM({
+var mvvm = new MVVM({
     el: '#app',
     data: data
 });
+
+// watch 所有变化
+mvvm.watch(function () {
+
+});
+
 
 document.getElementById('set1').onclick = function () {
     data.html = random.string();
