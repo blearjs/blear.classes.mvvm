@@ -313,6 +313,8 @@ module.exports = function parseExpressionToGetter(expression) {
         '';
 
     return function (scope) {
-        return (new Function(scopeName, utilsName, body)).call(scope, scope, utils);
+        var fn = new Function(scopeName, utilsName, body);
+
+        return fn.call(scope, scope, utils);
     };
 };

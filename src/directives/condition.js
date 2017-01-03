@@ -27,7 +27,7 @@ module.exports = {
             var foundDir = the.prev;
 
             while (true) {
-                if (foundDir.category === 'cond') {
+                if (foundDir.category === 'condition') {
                     expList.unshift(foundDir.exp)
                 }
 
