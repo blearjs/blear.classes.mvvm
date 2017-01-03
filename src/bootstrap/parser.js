@@ -94,7 +94,7 @@ exports.attr = function (node, attr, vm) {
             break;
 
         case ATTR_STR:
-            directive = new Directive(directives);
+            directive = new Directive(directives.attr);
             break;
 
         default:
