@@ -10,7 +10,7 @@
 - :class（注意连字符）√
 - :style（注意连字符）√
 - :attr（注意连字符）√
-- @pre
+- @pre √
 - @if
 - @else-if
 - @else
