@@ -35,6 +35,8 @@ var categoryNameMap = {};
 var lastAttrDirective = null;
 
 categoryNameMap['for'] = FOR_STR;
+categoryNameMap['show'] = CONDITION_STR;
+categoryNameMap['hide'] = CONDITION_STR;
 categoryNameMap['if'] = CONDITION_STR;
 categoryNameMap['else'] = CONDITION_STR;
 categoryNameMap['else-if'] = CONDITION_STR;

@@ -17,7 +17,7 @@
     <meta name="keywords" content="关键词1,关键词2">
     <meta name="description" content="描述语句">
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
-    <title>cond</title>
+    <title>@show and @hide</title>
     <link rel="stylesheet" href="./style.css">
     <style>
         p {
@@ -44,21 +44,21 @@
 
 <div id="app">
     <fieldset>
-        <legend>@if</legend>
+        <legend>@show and @hide</legend>
         <input type="text" @model="name">
-        <pre @pre>&lt;p class="p1" @if="name.length > 0 && name.length < 5"&gt;{{name}}&lt;/p&gt;
-&lt;p class="p2" @else-if="name.length > 4">{{name}} 超过了 4 个长度&lt;/p>
-&lt;p class="p3" @else>请填写 name&lt;/p></pre>
-        <p class="p1" @if="name.length > 0 && name.length < 5">{{name}} 合理范围内</p>
-        <p class="p2" @else-if="name.length > 4">{{name}} 超过了 4 个长度</p>
-        <p class="p3" @else>请输入 name</p>
+        <pre @pre>&lt;p class="p1" @show="name.length > 0 && name.length < 5"&gt;{{name}}&lt;/p&gt;
+&lt;p class="p2" @show="name.length > 4">{{name}} 超过了 4 个长度&lt;/p>
+&lt;p class="p3" @hide="name.length">请填写 name&lt;/p></pre>
+        <p class="p1" @show="name.length > 0 && name.length < 5">{{name}} 合理范围内</p>
+        <p class="p2" @show="name.length > 4">{{name}} 超过了 4 个长度</p>
+        <p class="p3" @hide="name.length">请输入 name</p>
     </fieldset>
 </div>
 
 
 <script src="/node_modules/coolie.js/coolie.js"
         data-config="/example/coolie-config.js"
-        data-main="cond.js"></script>
+        data-main="show-hide.js"></script>
 
 </body>
 </html>

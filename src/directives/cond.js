@@ -13,18 +13,43 @@ var anchor = require('../utils/anchor');
 
 module.exports = {
     init: function () {
-        this.exp = 'Boolean(' + this.exp + ')';
-        // this.tplNode = this.node.cloneNode(true);
-        this.childVM = this.childNode = this.childScope = null;
-        this.anchor = anchor(this.node, this.name);
+        var the = this;
 
-        debugger;
+        the.exp = 'Boolean(' + the.exp + ')';
+        // the.tplNode = the.node.cloneNode(true);
+        the.childVM = the.childNode = the.childScope = null;
+        the.anchor = anchor(the.node, the.name);
+
+        // 如果是 else，则需要向前查找 if、else-if 表达式
+        if (the.name === 'else') {
+            var expList = [];
+            var foundDir = the.prev;
+
+            while (true) {
+                if (foundDir.category === 'cond') {
+                    expList.unshift(foundDir.exp)
+                }
+
+                if (foundDir.name === 'if') {
+                    break;
+                }
+
+                foundDir = foundDir.prev;
+            }
+
+            the.exp = 'Boolean(' + expList.join('||') + ')';
+        }
     },
     update: function (node, newVal, oldVal, operation) {
-        var bool = this.get();
+        var the = this;
+        var bool = the.get();
+
+        if (the.name === 'else' || the.name === 'hide') {
+            bool = !bool;
+        }
 
         if (bool) {
-            modification.insert(node, this.anchor, 3);
+            modification.insert(node, the.anchor, 3);
         } else {
             modification.remove(node);
         }
