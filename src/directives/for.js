@@ -123,6 +123,17 @@ module.exports = {
         var data = the.eval();
 
         if (the.bound) {
+            // 多维数组的问题，VUE 1.x 是有 BUG 的
+            // 但这里已经修正，在如下 DOM 结构里：
+            // <1 @for="list1 in list0">
+            //     <2 @for="list2 in list1">
+            //         <3 @for="list3 in list2">
+            //             {{list0}}    <= 这里对 list0 的引用，当超过两级数组，新建的数据就对此不会生效
+            //             [[[1]]]      <= 第 1 次加的
+            //             [[[1, 2]]]   <= 第 2 次加的，新的列表里有两项，但历史数据没有被更新
+            //         </3>
+            //     </2>
+            // </1>
             // 不是同一个数据源，取消后续操作
             if (operation.newVal !== newVal) {
                 return;

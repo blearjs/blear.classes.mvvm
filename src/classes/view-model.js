@@ -121,9 +121,13 @@ var ViewModel = Class.extend({
         });
 
         // 2、销毁所有子 VM
-        array.each(the.children, function (index, child) {
+        // 这里必须使用 while 操作，因为 child 销毁的时候，
+        // 会对父级的 children 对象进行取消引用（删除数组项）
+        // 这样就会在 each 的时候，发现 child 是 undefined
+        var child;
+        while (( child = the.children.pop())) {
             child.destroy();
-        });
+        }
 
         // 3、删除 DOM 节点
         modification.remove(the.el);

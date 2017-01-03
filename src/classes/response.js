@@ -12,8 +12,6 @@ var Events = require('blear.classes.events');
 var random = require('blear.utils.random');
 var array = require('blear.utils.array');
 
-window.ResponseList = [];
-
 var Response = Events.extend({
     className: 'Response',
     constructor: function (directive) {
@@ -25,7 +23,6 @@ var Response = Events.extend({
         the.respond = null;
         the[_agentList] = [];
         the[_agentMap] = {};
-        ResponseList.push(the);
     },
 
     link: function (agent) {
