@@ -15,6 +15,10 @@ exports.ctrlDirective = '@';
 // 如：:diabled="abc"
 exports.attrDirective = ':';
 
+// 文本一次性绑定
+// 如：{{* once}}
+exports.textOnce = '*';
+
 // 指令过滤器分隔符
 // 如：@click.enter.false="onClick"
 exports.directiveFilterDelimiter = '.';

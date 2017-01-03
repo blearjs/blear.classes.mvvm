@@ -25,6 +25,7 @@ var ctrlDirectiveRE;
 var directiveFilterDelimiterRE;
 var CTRL_STR = 'ctrl';
 var ATTR_STR = 'attr';
+var HTML_STR = 'html';
 var TEXT_STR = 'text';
 var EVENT_STR = 'event';
 var CONDITION_STR = 'cond';
@@ -37,6 +38,8 @@ categoryNameMap['if'] = CONDITION_STR;
 categoryNameMap['else'] = CONDITION_STR;
 categoryNameMap['else-if'] = CONDITION_STR;
 categoryNameMap[MODEL_STR] = MODEL_STR;
+categoryNameMap[HTML_STR] = HTML_STR;
+categoryNameMap[TEXT_STR] = TEXT_STR;
 
 
 function compileRegExp() {
@@ -123,7 +126,6 @@ exports.attr = function (node, attr, vm) {
     directive.category = category;
     directive.scope = scope;
     directive.data = data;
-    // directive.watcher = new Watcher(scope);
     directive.vm = vm;
     directive.init();
 
@@ -194,13 +196,15 @@ exports.text = function (node, vm) {
         var directive = new Directive(directives.text);
         var tokenValue = token.value;
 
+        directive.filters = {
+            once: token.once
+        };
         directive.node = textNodes[index];
         directive.attr = null;
         directive.exp = directive.value = tokenValue;
         directive.category = TEXT_STR;
         directive.scope = scope;
         directive.vm = vm;
-        // directive.watcher = new Watcher(scope);
         directive.init();
 
         // 表达式解析需要在指令 init 之后

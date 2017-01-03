@@ -64,11 +64,20 @@ function parseTextToTokens(text) {
             })
         }
 
-        value = match[1];
+        value = match[1].trim();
+
+        var firstChar = value.charAt(0);
+        var once = false;
+
+        if (firstChar === configs.textOnce) {
+            once = true;
+            value = value.slice(1);
+        }
 
         tokens.push({
             tag: true,
-            value: value.trim()
+            value: value,
+            once: once
         });
         foundTag = true;
 

@@ -62,15 +62,18 @@ var ViewModel = Class.extend({
             var oldVal;
 
             if (getter) {
-                var response = directive.response;
-                response.respond = function (operation) {
-                    // 新值使用表达式计算
-                    var newVal = directive.eval();
-                    directive.update(node, newVal, oldVal, operation);
-                    oldVal = newVal;
-                };
-                // 不能省略
-                Watcher.response = response;
+                // 一次性绑定
+                if (!directive.filters.once) {
+                    var response = directive.response;
+                    response.respond = function (operation) {
+                        // 新值使用表达式计算
+                        var newVal = directive.eval();
+                        directive.update(node, newVal, oldVal, operation);
+                        oldVal = newVal;
+                    };
+                    // 不能省略
+                    Watcher.response = response;
+                }
 
                 // 第一次取值时传递 response
                 oldVal = getter(scope);
