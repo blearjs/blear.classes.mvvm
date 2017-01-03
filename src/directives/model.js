@@ -8,6 +8,7 @@
 'use strict';
 
 var event = require('blear.core.event');
+var object = require('blear.utils.object');
 
 var cateMap = {
     text: require('./models/text'),
@@ -36,7 +37,7 @@ module.exports = {
             return scope[modelName];
         };
         the.set = function (val) {
-            scope[modelName] = val;
+            object.set(scope, modelName, val);
         };
 
         var modelCate;

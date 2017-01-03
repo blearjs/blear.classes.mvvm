@@ -8,13 +8,14 @@
 'use strict';
 
 var MVVM = require('../../src/index');
+window.data = {
+    newTodo: '',
+    todos: []
+};
 
 new MVVM({
     el: '#todoapp',
-    data: {
-        newTodo: '',
-        todos: []
-    },
+    data: data,
     methods: {
         onAddTodo: function () {
             if (!this.newTodo) {

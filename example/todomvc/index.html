@@ -37,7 +37,7 @@
                 :class="{completed: todo.completed}"
                 @for="index, todo in todos">
                 <div class="view">
-                    <input type="checkbox" class="toggle">
+                    <input type="checkbox" class="toggle" @model="todo.completed">
                     <label>{{todo.name}}</label>
                     <button class="destroy" @click="onRemove(index)"></button>
                 </div>
