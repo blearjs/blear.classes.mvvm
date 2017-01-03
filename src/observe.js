@@ -103,8 +103,16 @@ function observeObjectWithKeyAndVal(obj, key) {
                 return;
             }
 
+            var operation = {
+                type: 'object',
+                parent: obj,
+                method: 'set',
+                oldVal: oldVal,
+                newVal: newVal
+            };
+
             oldVal = newVal;
-            agent.react();
+            agent.react(operation);
             observe(oldVal, agent);
         }
     });

@@ -134,15 +134,22 @@ module.exports = {
             //         </3>
             //     </2>
             // </1>
-            // 不是同一个数据源，取消后续操作
+            // 不是同一个数据源 => 取消后续操作
             if (operation.newVal !== newVal) {
                 return;
             }
 
+            var oldVal = operation.oldVal;
             var spliceIndex = operation.spliceIndex;
             var spliceCount = operation.spliceCount;
             var insertValue = operation.insertValue;
-            var oldVal = operation.oldVal;
+
+            // object set 操作
+            if (operation.method === 'set') {
+                spliceIndex = 0;
+                spliceCount = oldVal.length;
+                insertValue = operation.newVal;
+            }
 
             switch (operation.method) {
                 case ARRAY_SORT:
