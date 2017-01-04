@@ -314,7 +314,6 @@ module.exports = function parseExpressionToGetter(expression) {
 
     return function (scope) {
         var fn = new Function(scopeName, utilsName, body);
-
         return fn.call(scope, scope, utils);
     };
 };

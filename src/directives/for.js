@@ -140,7 +140,7 @@ module.exports = {
             //     </2>
             // </1>
             // 不是同一个数据源 => 取消后续操作
-            if (operation.newVal !== newVal) {
+            if (operation.method !== 'set' && operation.newVal !== newVal) {
                 return;
             }
 
@@ -151,9 +151,10 @@ module.exports = {
 
             // object set 操作
             if (operation.method === 'set') {
+                oldVal = _oldVal;
                 spliceIndex = 0;
                 spliceCount = oldVal.length;
-                insertValue = operation.newVal;
+                insertValue = newVal;
             }
 
             switch (operation.method) {

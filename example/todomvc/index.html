@@ -26,7 +26,7 @@
     <header class="header">
         <h1>blear todos</h1>
         <input autofocus="autofocus" autocomplete="off"
-               @model="newTodo" @keypress.enter="onAddTodo"
+               @model="newTodo" @keypress.enter="onAdd"
                placeholder="What needs to be done?" class="new-todo">
     </header>
 
@@ -47,13 +47,13 @@
     </section>
 
     <footer class="footer">
-        <span class="todo-count"><strong>1</strong> item left</span>
+        <span class="todo-count"><strong>{{remaining}}</strong> {{remaining > 1 ? 'items' : 'item'}} left</span>
         <ul class="filters">
-            <li><a href="#/all" class="selected">All</a></li>
-            <li><a href="#/active" class="">Active</a></li>
-            <li><a href="#/completed" class="">Completed</a></li>
+            <li><a href="#/all" :class="{selected: filter==0}" @click="onFilter(0)">All</a></li>
+            <li><a href="#/active" :class="{selected: filter==1}"  @click="onFilter(1)">Active</a></li>
+            <li><a href="#/completed" :class="{selected: filter==2}" @click="onFilter(2)">Completed</a></li>
         </ul>
-        <button class="clear-completed">Clear completed</button>
+        <button class="clear-completed" @click="todos = []">Clear completed</button>
     </footer>
 </section>
 

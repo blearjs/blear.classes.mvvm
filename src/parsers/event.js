@@ -27,8 +27,8 @@ module.exports = function (expression, utilsName) {
     var eventName = configs.eventName;
     var elName = configs.elementName;
     var body =
-    // 'try{' +
-    /****/'with(' + scopeName + '){';
+        // 'try{' +
+        /****/'with(' + scopeName + '){';
 
     // 运算
     // 如：abc.def += 123
@@ -59,7 +59,8 @@ module.exports = function (expression, utilsName) {
         '';
 
     return function (scope, el, ev) {
-        return (new Function(scopeName, elName, eventName, utilsName, body)).call(scope, scope, el, ev, utils);
+        var fn = new Function(scopeName, elName, eventName, utilsName, body);
+        return fn.call(scope, scope, el, ev, utils);
     };
 };
 

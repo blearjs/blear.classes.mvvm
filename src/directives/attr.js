@@ -23,7 +23,7 @@ var mapRE = /\{.*?}/g;
 // {class1, class2: varible}
 // {bordr-width: 20px; width: 30px}
 var groupRE = /\s*[,;]\s*/;
-var itemRE = /\s*[:=]\s*/;
+var itemRE = /^(.*?)[:=](.*)$/;
 var arrRE = /^\[|]$/g;
 var strRE = /^["']/;
 var spaceRE = /\s+/;
@@ -65,10 +65,10 @@ module.exports = {
             var groups = match.split(groupRE);
 
             array.each(groups, function (index, group) {
-                var items = group.split(itemRE);
-                var key = items[0];
+                var items = group.match(itemRE);
+                var key = items[1].trim();
 
-                map[key] = items[1] || TRUE_STR;
+                map[key] = items[2].trim() || TRUE_STR;
             });
         });
 
