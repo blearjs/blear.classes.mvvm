@@ -11,6 +11,10 @@
 var Events = require('blear.classes.events');
 var random = require('blear.utils.random');
 var array = require('blear.utils.array');
+var access = require('blear.utils.access');
+
+var Queue = require('./queue');
+var queue = new Queue();
 
 var Response = Events.extend({
     className: 'Response',
@@ -49,6 +53,11 @@ var Response = Events.extend({
         the.respond = null;
         the.destroy();
         the.unlinked = true;
+    },
+
+    receive: function () {
+        var args = access.args(arguments);
+        queue.push(this, args);
     }
 });
 var _agentList = Response.sole();

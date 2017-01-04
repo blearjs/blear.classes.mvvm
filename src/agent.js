@@ -32,8 +32,8 @@ var Agent = Events.extend({
         var response = Agent.response;
 
         if (response &&
-            // 用来执行变化
-            isFunction(response.respond) &&
+            // 用来接收变化
+            isFunction(response.receive) &&
             // 用来关联代理
             isFunction(response.link)) {
             var guid = response.guid;
@@ -73,7 +73,7 @@ var Agent = Events.extend({
                 return;
             }
 
-            response.respond.apply(response, args);
+            response.receive.apply(response, args);
         });
     }
 });

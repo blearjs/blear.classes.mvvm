@@ -35,7 +35,7 @@
         <ul class="todo-list">
             <li class="todo"
                 :class="{completed: todo.completed}"
-                @for="index, todo in todos">
+                @for="index, todo in filteredTodos">
                 <div class="view">
                     <input type="checkbox" class="toggle" @model="todo.completed">
                     <label>{{todo.name}}</label>
@@ -47,7 +47,7 @@
     </section>
 
     <footer class="footer">
-        <span class="todo-count"><strong>{{remaining}}</strong> {{remaining > 1 ? 'items' : 'item'}} left</span>
+        <span class="todo-count"><strong>{{remaining}}</strong> {{filteredTodos.length > 1 ? 'items' : 'item'}} left</span>
         <ul class="filters">
             <li><a href="#/all" :class="{selected: filter==0}" @click="onFilter(0)">All</a></li>
             <li><a href="#/active" :class="{selected: filter==1}"  @click="onFilter(1)">Active</a></li>

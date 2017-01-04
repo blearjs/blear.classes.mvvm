@@ -10,32 +10,35 @@
 var MVVM = require('../../src/index');
 window.data = {
     newTodo: '',
-    store: [],
-    filter: 0,
-    todos: function () {
-        switch (this.filter) {
-            case 0:
-                return this.store;
-
-            case 1:
-                return this.store.filter(function (item) {
-                    return !item.completed;
-                });
-
-            case 2:
-                return this.store.filter(function (item) {
-                    return item.completed;
-                });
-        }
-    },
-    remaining: function () {
-        return this.todos().length;
-    }
+    todos: [],
+    filter: 0
 };
 
 new MVVM({
     el: '#todoapp',
     data: data,
+    computed: {
+        filteredTodos: function () {
+            switch (this.filter) {
+                case 0:
+                    return this.todos;
+
+                case 1:
+                    return this.todos.filter(function (item) {
+                        return !item.completed;
+                    });
+
+                case 2:
+                    return this.todos.filter(function (item) {
+                        return item.completed;
+                    });
+            }
+        },
+
+        remaining: function () {
+            return this.filteredTodos.length;
+        }
+    },
     methods: {
         onAdd: function () {
             if (!this.newTodo) {
@@ -47,12 +50,12 @@ new MVVM({
                 completed: false
             };
 
-            this.store.push(item);
+            this.todos.push(item);
             this.newTodo = '';
         },
         onRemove: function (index) {
-            var item = this.todos.call(this)[index];
-            this.store.delete(item);
+            var item = this.filteredTodos[index];
+            this.todos.delete(item);
         },
         onFilter: function (filter) {
             this.filter = filter;
