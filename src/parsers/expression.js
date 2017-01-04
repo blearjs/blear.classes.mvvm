@@ -294,9 +294,9 @@ module.exports = function parseExpressionToGetter(expression) {
         body += 'return ' + expression + '.call(' + scopeName + ');';
     } else {
         body += 'return (' +
-            'typeof(' + expression + ')==="function"' +
-            '?' + expression + '.call(' + scopeName + ')' +
-            ':' + expression +
+            // 'typeof(' + expression + ')==="function"' +
+            // '?' + expression + '.call(' + scopeName + ')' +
+            expression +
             ');';
     }
 

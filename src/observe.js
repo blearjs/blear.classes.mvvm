@@ -81,7 +81,7 @@ function observe(any, agent) {
 }
 
 function observeObjectWithKeyAndVal(obj, key) {
-    var descriptor = Object.getOwnPropertyDescriptor(object, key);
+    var descriptor = Object.getOwnPropertyDescriptor(obj, key);
     var getter = descriptor && descriptor.get;
     var setter = descriptor && descriptor.set;
     var val = obj[key];

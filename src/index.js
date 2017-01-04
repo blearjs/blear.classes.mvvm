@@ -11,6 +11,7 @@ var selector = require('blear.core.selector');
 var modification = require('blear.core.modification');
 var object = require('blear.utils.object');
 var array = require('blear.utils.array');
+var typeis = require('blear.utils.typeis');
 var access = require('blear.utils.access');
 
 var anchor = require('./utils/anchor');
@@ -20,6 +21,7 @@ var Directive = require('./classes/directive');
 var defaults = {
     el: 'body',
     data: {},
+    computed: {},
     methods: {}
 };
 var MVVM = Events.extend({
@@ -62,6 +64,37 @@ pro[_compile] = function () {
     var scope = object.assign(options.data, options.methods);
 
     // fragment.appendChild(rootEl);
+
+    object.each(options.computed, function (key, val) {
+        var set = function () {
+            // empty
+        };
+        var get;
+
+        if (typeis.Function(val)) {
+            get = function () {
+                return val.call(scope);
+            };
+        } else {
+            get = function () {
+                return val.get.call(scope);
+            };
+            set = function (newVal) {
+                val.set.call(scope, newVal);
+            };
+        }
+
+        object.define(scope, key, {
+            enumerable: true,
+            get: function () {
+                return get();
+            },
+            set: function (newVal) {
+                set(newVal);
+            }
+        });
+    });
+    options.computed = null;
     the.model = scope;
     the[_vm] = new ViewModel(rootEl, scope);
     ViewModel.end();
