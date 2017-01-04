@@ -33,8 +33,6 @@ var Queue = Events.extend({
         var queues = the[_list];
         var foundIndex = map[guid];
 
-        console.log(new Date(), 'push queue', guid, args);
-
         // 同一个响应只运行添加一次
         // 防止同一份数据多次变化影响页面展示
         // 增加这个的原因是 computed 的字段易出现问题，尤其是数组
