@@ -23,8 +23,17 @@
 <body ontouchstart="">
 
 <div id="app">
-    <h1>自定义实例指令 @reverse</h1>
+    <h1>自定义静态指令 @reverse</h1>
+    <pre>MVVM.directive('reverse', function (node, newVal, oldVal, operation) {
+    node.innerHTML = newVal.split('').reverse().join('-');
+});
 
+new MVVM({
+    el: '#app',
+    data: {
+        abc: 'abc'
+    }
+});</pre>
     <pre>&lt;p @reverse="abc">&lt;/p></pre>
     <p @reverse="abc"></p>
 
