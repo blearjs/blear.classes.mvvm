@@ -64,11 +64,29 @@ new MVVM({
         },
         onFilter: function (filter) {
             this.filter = filter;
+        },
+        onBlur: function (el) {
+            if (!this.editingTodo) {
+                return;
+            }
+
+            var newVal = el.value.trim();
+
+            if (newVal) {
+                this.editingTodo.name = el.value;
+            } else {
+                this.todos.delete(this.editingTodo);
+            }
+
+            this.editingTodo = null;
         }
     },
     directives: {
         'todo-focus': function (node, newVal, oldVal) {
-            node.focus();
+            if (newVal) {
+                node.focus();
+                node.value = this.scope.editingTodo.name;
+            }
         }
     }
 });

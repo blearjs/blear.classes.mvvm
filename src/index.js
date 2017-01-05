@@ -71,6 +71,7 @@ pro[_initScope] = function () {
 
 pro[_initComputed] = function () {
     var the = this;
+    var scope = the.scope;
     var options = the[_options];
 
     object.each(options.computed, function (key, val) {

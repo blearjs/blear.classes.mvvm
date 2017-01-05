@@ -22,6 +22,13 @@ var event = require('blear.core.event');
 var object = require('blear.utils.object');
 var array = require('blear.utils.array');
 
+// @ref https://en.wikipedia.org/wiki/DOM_events#Events
+var doNotBubbleEvents = 'load unload scroll blur focus loadstart progress error abort loadend'.split(' ');
+doNotBubbleEvents = array.reduce(doNotBubbleEvents, function (p, n) {
+    p[n] = 1;
+    return p;
+}, {});
+
 // keyCode aliases
 var keyCodes = {
     esc: [27],
@@ -57,7 +64,9 @@ module.exports = {
             }
         });
 
-        event.on(vm.el, the.eventType = eventType, node, the.listener = function (ev) {
+        the.eventType = eventType;
+
+        var listener = the.listener = function (ev) {
             var canExec = true;
 
             if (shouldEqualKeyCode) {
@@ -94,7 +103,14 @@ module.exports = {
             }
 
             return ret;
-        });
+        };
+
+        // 不同冒泡的事件不代理
+        if (doNotBubbleEvents[eventType]) {
+            event.on(node, eventType, listener);
+        } else {
+            event.on(vm.el, eventType, node, listener);
+        }
     },
 
     destroy: function () {

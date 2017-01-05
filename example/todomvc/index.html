@@ -26,24 +26,25 @@
     <header class="header">
         <h1>blear todos</h1>
         <input autofocus="autofocus" autocomplete="off"
-               @model="newTodo" @keypress.enter="onAdd"
+               @model="newTodo" @keyup.enter="onAdd"
                placeholder="What needs to be done?" class="new-todo">
     </header>
 
     <section class="main">
-        <input type="checkbox" class="toggle-all">
+        <input type="checkbox" class="toggle-all" @model="toggleAll">
         <ul class="todo-list">
             <li class="todo"
                 :class="{completed: todo.completed, editing: todo == editingTodo}"
                 @for="index, todo in filteredTodos">
                 <div class="view">
-                    <input type="checkbox" class="toggle"
-                           @todo-focus="todo == editingTodo"
-                           @model="todo.completed">
+                    <input type="checkbox" class="toggle" @model="todo.completed">
                     <label @dblclick="onEdit(todo)">{{todo.name}}</label>
                     <button class="destroy" @click="onRemove(index)"></button>
                 </div>
-                <input type="text" class="edit">
+                <input type="text" class="edit"
+                       @todo-focus="todo == editingTodo"
+                       @keyup.enter="onBlur($el)"
+                       @blur="onBlur($el)">
             </li>
         </ul>
     </section>
