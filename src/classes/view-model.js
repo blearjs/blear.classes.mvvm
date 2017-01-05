@@ -78,6 +78,7 @@ var ViewModel = Class.extend({
         var the = this;
 
         directive.scope = the.scope;
+        directive.vm = the;
         directive.init();
         directive.response = new Response(directive);
 
@@ -166,7 +167,7 @@ var pro = ViewModel.prototype;
 pro[_execDirective] = function (directive) {
     var node = directive.node;
 
-    directive.bind(node, directive.response.get());
+    directive.bind(node, directive.get());
 };
 
 module.exports = ViewModel;

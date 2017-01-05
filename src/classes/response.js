@@ -40,22 +40,22 @@ var Response = Events.extend({
             case 'event':
                 // 表达式解析需要在指令 init 之后
                 var executer = evtParser(exp);
-                the.get = function (el, ev) {
-                    return executer(scope, el, ev);
+                directive.get = function (el, ev) {
+                    return executer.call(scope, scope, el, ev);
                 };
                 break;
 
             default:
                 if (directive.empty) {
-                    the.get = function () {
+                    directive.get = function () {
                         // empty
                     };
                 } else {
                     // 表达式解析需要在指令 init 之后
                     var getter = expParser(exp);
-                    the.get = function () {
+                    directive.get = function () {
                         the.beforeGet();
-                        var ret = getter(scope);
+                        var ret = getter.call(scope, scope);
                         the.afterGet();
                         return ret;
                     };
@@ -65,7 +65,7 @@ var Response = Events.extend({
 
         if (!directive.filters.once) {
             the.respond = function (operation) {
-                var newVal = the.get();
+                var newVal = directive.get();
                 directive.update(directive.node, newVal, the.oldVal, operation);
                 the.oldVal = newVal;
             };
