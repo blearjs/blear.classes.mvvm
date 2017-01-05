@@ -36,17 +36,19 @@ var MVVM = Events.extend({
         the[_initComputed]();
         the[_initDirectives]();
         the[_initVM]();
+        the[_initWatch]();
     },
     watch: function (exp, callback, immediate) {
+        var the = this;
         var virtualDirective = new Directive({
             exp: exp,
             update: function (node, newVal, oldVal, operation) {
                 if (this.bound || immediate && !this.bound) {
-                    callback(newVal, oldVal);
+                    callback.call(the.scope, newVal, oldVal, operation);
                 }
             }
         });
-        this[_vm].add(virtualDirective);
+        the[_vm].add(virtualDirective);
         return function unwatch() {
             virtualDirective.destroy();
             virtualDirective = null;
@@ -60,6 +62,7 @@ var _initComputed = MVVM.sole();
 var _initDirectives = MVVM.sole();
 var _definitions = MVVM.sole();
 var _initVM = MVVM.sole();
+var _initWatch = MVVM.sole();
 var pro = MVVM.prototype;
 
 pro[_initScope] = function () {
@@ -127,6 +130,22 @@ pro[_initVM] = function () {
     the[_vm].setStaticlDefinitions(definitions);
     the[_vm].run();
     modification.insert(rootEl, anchorNode, 3);
+};
+
+pro[_initWatch] = function () {
+    var the = this;
+    var options = the[_options];
+
+    object.each(options.watch || {}, function (key, watcher) {
+        var immediate = false;
+
+        if (typeis.Object(watcher)) {
+            immediate = watcher.immediate;
+            watcher = watcher.handle;
+        }
+
+        the.watch(key, watcher, immediate);
+    });
 };
 
 // ======================================== static ========================================

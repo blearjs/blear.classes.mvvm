@@ -7,38 +7,70 @@
 
 'use strict';
 
+var array = require('blear.utils.array');
+
 var MVVM = require('../../src/index');
 
-window.data = {
-    newTodo: '',
-    editingTodo: null,
-    todos: [],
-    filter: 0
+var storeKey = 'blear.todos';
+
+var getStore = function () {
+    try {
+        return JSON.parse(localStorage.getItem(storeKey));
+    } catch (err) {
+        return [];
+    }
 };
 
-new MVVM({
+var setStore = function (todos) {
+    localStorage.setItem(storeKey, JSON.stringify(todos))
+};
+
+var filterTodos = function (filter, todos) {
+    switch (filter) {
+        case 0:
+            return todos;
+
+        case 1:
+            return todos.filter(function (item) {
+                return !item.completed;
+            });
+
+        case 2:
+            return todos.filter(function (item) {
+                return item.completed;
+            });
+    }
+};
+
+var mvvm = new MVVM({
     el: '#todoapp',
-    data: data,
+    data: {
+        newTodo: '',
+        editingTodo: null,
+        todos: getStore(),
+        filter: 0
+    },
     computed: {
         filteredTodos: function () {
-            switch (this.filter) {
-                case 0:
-                    return this.todos;
-
-                case 1:
-                    return this.todos.filter(function (item) {
-                        return !item.completed;
-                    });
-
-                case 2:
-                    return this.todos.filter(function (item) {
-                        return item.completed;
-                    });
-            }
+            return filterTodos(this.filter, this.todos);
         },
 
         remaining: function () {
-            return this.filteredTodos.length;
+            return filterTodos(1, this.todos).length;
+        },
+
+        allCompleted: {
+            get: function () {
+                setStore(this.todos);
+                return 0 === this.remaining;
+            },
+            set: function (newVal) {
+                this.todos.forEach(function (todo) {
+                    todo.completed = newVal;
+                });
+                this.filteredTodos = filterTodos(this.filter, this.todos);
+                setStore(this.todos);
+            }
         }
     },
     methods: {
@@ -88,7 +120,8 @@ new MVVM({
                 node.value = this.scope.editingTodo.name;
             }
         }
+    },
+    watch: {
+        todos: setStore
     }
 });
-
-

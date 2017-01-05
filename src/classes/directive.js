@@ -14,6 +14,7 @@ var typeis = require('blear.utils.typeis');
 var object = require('blear.utils.object');
 var string = require('blear.utils.string');
 var array = require('blear.utils.array');
+var access = require('blear.utils.access');
 
 var Response = require('./response');
 var definitionMap = require('../directives/index');
@@ -22,6 +23,13 @@ var Directive = Class.extend({
     className: 'Directive',
     constructor: function (category, name, definition) {
         var the = this;
+        var args = access.args(arguments);
+
+        if (args.length === 1) {
+            definition = args[0];
+            category = 'watch';
+            name = random.guid();
+        }
 
         if (typeis.Function(definition)) {
             definition = {

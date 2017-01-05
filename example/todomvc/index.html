@@ -31,7 +31,7 @@
     </header>
 
     <section class="main">
-        <input type="checkbox" class="toggle-all" @model="toggleAll">
+        <input type="checkbox" class="toggle-all" @model="allCompleted">
         <ul class="todo-list">
             <li class="todo"
                 :class="{completed: todo.completed, editing: todo == editingTodo}"
