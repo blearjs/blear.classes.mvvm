@@ -24,6 +24,7 @@ var defaults = {
     computed: {},
     methods: {}
 };
+var definitions = {};
 var MVVM = Events.extend({
     className: 'MVVM',
     constructor: function (options) {
@@ -59,7 +60,6 @@ var _initComputed = MVVM.sole();
 var _initDirectives = MVVM.sole();
 var _definitions = MVVM.sole();
 var _initVM = MVVM.sole();
-var _runVM = MVVM.sole();
 var pro = MVVM.prototype;
 
 pro[_initScope] = function () {
@@ -109,7 +109,7 @@ pro[_initDirectives] = function () {
     var the = this;
     var options = the[_options];
 
-    the[_definitions] = options.directives;
+    the[_definitions] = options.directives || {};
 };
 
 // 编译
@@ -122,22 +122,25 @@ pro[_initVM] = function () {
 
     fragment.appendChild(rootEl);
     the[_vm] = new ViewModel(rootEl, the.scope);
-    the[_vm].setDefinitions(the[_definitions]);
+    the[_vm].setInstanceDefinitions(the[_definitions]);
+    the[_vm].setStaticlDefinitions(definitions);
     the[_vm].run();
     modification.insert(rootEl, anchorNode, 3);
 };
 
-// static
+// ======================================== static ========================================
 
-// MVVM.directive = function (name, directive) {
-//     var args = access.args(arguments);
-//
-//     if (args.length === 1) {
-//         return directives[name];
-//     }
-//
-//     directives[name] = directive;
-// };
+
+MVVM.directives = definitions;
+MVVM.directive = function (name, definition) {
+    var args = access.args(arguments);
+
+    if (args.length === 1) {
+        return definitions[name];
+    }
+
+    definitions[name] = definition;
+};
 
 
 module.exports = MVVM;

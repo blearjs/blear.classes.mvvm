@@ -33,15 +33,22 @@ var ViewModel = Class.extend({
         the.data = scope;
         the.children = [];
         the.directives = [];
+        the[_instanceDefinitions] = {};
+        the[_staticalDefinitions] = {};
     },
 
-    setDefinitions: function (definitions) {
+    setInstanceDefinitions: function (definitions) {
         // 实例指令定义
-        this.definitions = definitions;
+        this[_instanceDefinitions] = definitions;
     },
 
-    getDefinition: function (category) {
-        return this.definitions[category];
+    setStaticlDefinitions: function (definitions) {
+        // 实例指令定义
+        this[_staticalDefinitions] = definitions;
+    },
+
+    getDefinition: function (name) {
+        return this[_instanceDefinitions][name] || this[_staticalDefinitions][name];
     },
 
     run: function () {
@@ -97,7 +104,9 @@ var ViewModel = Class.extend({
         child.parent = parent;
         child.root = parent.root;
         child.data = parent.root.data;
-        child.definitions = parent.definitions;
+        // 传递指令定义引用
+        child[_instanceDefinitions] = parent[_instanceDefinitions];
+        child[_staticalDefinitions] = parent[_staticalDefinitions];
         child.run();
         return child;
     },
@@ -138,12 +147,15 @@ var ViewModel = Class.extend({
         // 5、删除当前引用
         the.children = the.parent
             = the.directives
-            = the.definitions
+            = the[_instanceDefinitions]
+            = the[_staticalDefinitions]
             = the.el = the.scope
             = null;
     }
 });
 var _execDirective = ViewModel.sole();
+var _instanceDefinitions = ViewModel.sole();
+var _staticalDefinitions = ViewModel.sole();
 var pro = ViewModel.prototype;
 
 /**

@@ -126,16 +126,14 @@ var Directive = Class.extend({
  * @returns {*}
  */
 Directive.create = function (category, name, vm) {
-    // 1、优先使用实例指令
+    // 1、优先使用实例指令、静态指令
     var definition = vm && vm.getDefinition(name);
 
     if (definition) {
         return new Directive('instance', name, definition);
     }
 
-    // 2、其次使用静态指令
-
-    // 3、最后使用内置指令
+    // 2、然后使用内置指令
     definition = definitionMap[category];
 
     if (!definition) {
