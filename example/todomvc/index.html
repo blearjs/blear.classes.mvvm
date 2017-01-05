@@ -34,11 +34,13 @@
         <input type="checkbox" class="toggle-all">
         <ul class="todo-list">
             <li class="todo"
-                :class="{completed: todo.completed}"
+                :class="{completed: todo.completed, editing: todo == editingTodo}"
                 @for="index, todo in filteredTodos">
                 <div class="view">
-                    <input type="checkbox" class="toggle" @model="todo.completed">
-                    <label>{{todo.name}}</label>
+                    <input type="checkbox" class="toggle"
+                           @todo-focus="todo == editingTodo"
+                           @model="todo.completed">
+                    <label @dblclick="onEdit(todo)">{{todo.name}}</label>
                     <button class="destroy" @click="onRemove(index)"></button>
                 </div>
                 <input type="text" class="edit">
@@ -46,14 +48,16 @@
         </ul>
     </section>
 
-    <footer class="footer">
-        <span class="todo-count"><strong>{{remaining}}</strong> {{filteredTodos.length > 1 ? 'items' : 'item'}} left</span>
+    <footer class="footer" @show="todos.length">
+        <span class="todo-count"><strong>{{remaining}}</strong> {{remaining > 1 ? 'items' : 'item'}} left</span>
         <ul class="filters">
             <li><a href="#/all" :class="{selected: filter==0}" @click="onFilter(0)">All</a></li>
             <li><a href="#/active" :class="{selected: filter==1}"  @click="onFilter(1)">Active</a></li>
             <li><a href="#/completed" :class="{selected: filter==2}" @click="onFilter(2)">Completed</a></li>
         </ul>
-        <button class="clear-completed" @click="todos = []">Clear completed</button>
+        <button class="clear-completed"
+                @show="todos.length > remaining"
+                @click="todos = []">Clear completed</button>
     </footer>
 </section>
 

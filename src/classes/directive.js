@@ -23,6 +23,12 @@ var Directive = Class.extend({
     constructor: function (definition) {
         var the = this;
 
+        if (typeis.Function(definition)) {
+            definition = {
+                update: definition
+            };
+        }
+
         object.assign(the, definition);
         the.guid = random.guid();
         the.empty = definition.empty || false;
@@ -113,12 +119,20 @@ var Directive = Class.extend({
 /**
  * 创建指令
  * @param category
+ * @param vm
  * @returns {*}
  */
-Directive.create = function (category) {
+Directive.create = function (category, vm) {
     var definition;
 
     if (typeis.String(category)) {
+        definition = vm && vm.getDefinition(category);
+
+        if (definition) {
+            debugger;
+            return new Directive(definition);
+        }
+
         definition = definitionMap[category];
 
         if (!definition) {
@@ -130,12 +144,6 @@ Directive.create = function (category) {
         }
 
         return new Directive(definition);
-    }
-
-    if (typeis.Function(definition)) {
-        definition = {
-            update: definition
-        };
     }
 
     return new Directive(definition);

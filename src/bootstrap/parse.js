@@ -53,10 +53,11 @@ function compileRegExp() {
 
 /**
  * 解析属性节点为指令信息
+ * @param {ViewModel} vm
  * @param {HTMLElement} node
  * @param {Node} attr
  */
-exports.attr = function (node, attr) {
+exports.attr = function (vm, node, attr) {
     var attrName = attr.nodeName.toLowerCase();
     var attrValue = attr.nodeValue;
     var category = '';
@@ -88,15 +89,15 @@ exports.attr = function (node, attr) {
 
     switch (category) {
         case EVENT_STR:
-            directive = Directive.create(EVENT_STR);
+            directive = Directive.create(EVENT_STR, vm);
             break;
 
         case ATTR_STR:
-            directive = Directive.create(ATTR_STR);
+            directive = Directive.create(ATTR_STR, vm);
             break;
 
         default:
-            directive = Directive.create(category);
+            directive = Directive.create(category, vm);
             break;
     }
 
@@ -135,9 +136,10 @@ exports.attr = function (node, attr) {
 
 /**
  * 解析文本节点为指令信息
+ * @param {ViewModel} vm
  * @param {Node} node
  */
-exports.text = function (node) {
+exports.text = function (vm, node) {
     var expression = node.textContent;
     var tokens = textParser(expression);
     var directives = [];
@@ -171,7 +173,7 @@ exports.text = function (node) {
             return;
         }
 
-        var directive = Directive.create(TEXT_STR);
+        var directive = Directive.create(TEXT_STR, vm);
         var tokenValue = token.value;
 
         directive.filters.once = token.once;

@@ -8,8 +8,10 @@
 'use strict';
 
 var MVVM = require('../../src/index');
+
 window.data = {
     newTodo: '',
+    editingTodo: null,
     todos: [],
     filter: 0
 };
@@ -53,12 +55,20 @@ new MVVM({
             this.todos.push(item);
             this.newTodo = '';
         },
+        onEdit: function (todo) {
+            this.editingTodo = todo;
+        },
         onRemove: function (index) {
             var item = this.filteredTodos[index];
             this.todos.delete(item);
         },
         onFilter: function (filter) {
             this.filter = filter;
+        }
+    },
+    directives: {
+        'todo-focus': function (node, newVal, oldVal) {
+            node.focus();
         }
     }
 });

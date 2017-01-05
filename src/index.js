@@ -31,7 +31,10 @@ var MVVM = Events.extend({
 
         MVVM.parent(the);
         the[_options] = object.assign({}, defaults, options);
-        the[_compile]();
+        the[_initScope]();
+        the[_initComputed]();
+        the[_initDirectives]();
+        the[_initVM]();
     },
     watch: function (exp, callback, immediate) {
         var virtualDirective = new Directive({
@@ -50,20 +53,24 @@ var MVVM = Events.extend({
     }
 });
 var _options = MVVM.sole();
-var _compile = MVVM.sole();
+var _initVM = MVVM.sole();
 var _vm = MVVM.sole();
+var _initScope = MVVM.sole();
+var _initComputed = MVVM.sole();
+var _initDirectives = MVVM.sole();
+var _definitions = MVVM.sole();
 var pro = MVVM.prototype;
 
-// 编译
-pro[_compile] = function () {
+pro[_initScope] = function () {
     var the = this;
     var options = the[_options];
-    var rootEl = the.view = selector.query(options.el)[0];
-    // var fragment = modification.create('#fragment');
-    // var anchorNode = anchor(rootEl, 'mvvm');
-    var scope = object.assign(options.data, options.methods);
 
-    // fragment.appendChild(rootEl);
+    the.scope = object.assign(options.data, options.methods);
+};
+
+pro[_initComputed] = function () {
+    var the = this;
+    var options = the[_options];
 
     object.each(options.computed, function (key, val) {
         var set = function () {
@@ -95,11 +102,28 @@ pro[_compile] = function () {
         });
     });
     options.computed = null;
-    the.model = scope;
-    the[_vm] = new ViewModel(rootEl, scope);
-    ViewModel.end();
+};
 
-    // modification.insert(rootEl, anchorNode, 3);
+pro[_initDirectives] = function () {
+    var the = this;
+    var options = the[_options];
+
+    debugger;
+};
+
+// 编译
+pro[_initVM] = function () {
+    var the = this;
+    var options = the[_options];
+    var rootEl = the.view = selector.query(options.el)[0];
+    var fragment = modification.create('#fragment');
+    var anchorNode = anchor(rootEl, 'mvvm');
+
+    fragment.appendChild(rootEl);
+    the[_vm] = new ViewModel(rootEl, the.scope);
+    the[_vm].setDefinitions(the[_definitions]);
+    the[_vm].run();
+    modification.insert(rootEl, anchorNode, 3);
 };
 
 // static

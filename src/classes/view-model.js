@@ -16,42 +16,46 @@ var Watcher = require('../watcher');
 var compile = require('../bootstrap/compile');
 var paint = require('../bootstrap/paint');
 var parse = require('../bootstrap/parse');
-var Response = require('./response');
-var expParser = require('../parsers/expression');
 
 var ViewModel = Class.extend({
     className: 'ViewModel',
-    constructor: function (el, scope, keys, parent) {
+    constructor: function (el, scope, keys) {
         var the = this;
 
         the.guid = random.guid();
         the.el = el;
+        the.keys = keys;
         the.scope = scope;
         the.parse = parse;
+        the.parent = null;
+        the.definitions = null;
+        the.root = the;
+        the.data = scope;
         the.children = [];
         the.directives = [];
+    },
 
-        if (parent) {
-            // 不保证顺序关系，如果需要维护顺序，
-            // 请指令自行完成，如 for 指令
-            parent.children.push(the);
-            the.parent = parent;
-            the.root = parent.root;
-            the.data = parent.root.data;
-            the.watcher = new Watcher(scope, {
-                keys: keys
-            });
-        } else {
-            the.parent = null;
-            the.root = the;
-            the.data = scope;
-            the.watcher = new Watcher(scope);
-        }
+    setDefinitions: function (definitions) {
+        // 实例指令定义
+        this.definitions = definitions;
+    },
 
-        // 1、编译 + 解析
-        compile(el, the);
+    getDefinition: function (category) {
+        return this.definitions[category];
+    },
 
-        // 2、绑定指令、确定指令更新
+    run: function () {
+        var the = this;
+
+        // 1、数据监听
+        the.watcher = new Watcher(the.scope, {
+            keys: the.keys
+        });
+
+        // 2、编译 + 解析
+        compile(the.el, the);
+
+        // 3、绑定指令、确定指令更新
         array.each(the.directives, function (index, directive) {
             the[_execDirective](directive);
         });
@@ -81,10 +85,21 @@ var ViewModel = Class.extend({
      * @param el
      * @param scope
      * @param keys
-     * @returns {*}
+     * @returns {ViewModel}
      */
     child: function (el, scope, keys) {
-        return new ViewModel(el, scope, keys, this);
+        var parent = this;
+        var child = new ViewModel(el, scope, keys);
+
+        // 不保证顺序关系，如果需要维护顺序，
+        // 请指令自行完成，如 for 指令
+        parent.children.push(child);
+        child.parent = parent;
+        child.root = parent.root;
+        child.data = parent.root.data;
+        child.definitions = parent.definitions;
+        child.run();
+        return child;
     },
 
     /**
@@ -123,6 +138,7 @@ var ViewModel = Class.extend({
         // 5、删除当前引用
         the.children = the.parent
             = the.directives
+            = the.definitions
             = the.el = the.scope
             = null;
     }
@@ -160,14 +176,6 @@ pro[_execDirective] = function (directive) {
     }
 
     directive.bind(node, oldVal);
-};
-
-ViewModel.end = function () {
-    // array.each(vmList, function (_, vm) {
-    //     array.each(vm.directives, function (__, directive) {
-    //         directive.watcher.linkEnd();
-    //     });
-    // });
 };
 
 module.exports = ViewModel;
