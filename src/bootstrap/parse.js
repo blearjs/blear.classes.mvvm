@@ -89,15 +89,15 @@ exports.attr = function (vm, node, attr) {
 
     switch (category) {
         case EVENT_STR:
-            directive = Directive.create(EVENT_STR, vm);
+            directive = Directive.create(EVENT_STR, name, vm);
             break;
 
         case ATTR_STR:
-            directive = Directive.create(ATTR_STR, vm);
+            directive = Directive.create(ATTR_STR, name, vm);
             break;
 
         default:
-            directive = Directive.create(category, vm);
+            directive = Directive.create(category, name, vm);
             break;
     }
 
@@ -119,9 +119,7 @@ exports.attr = function (vm, node, attr) {
     }, directive.filters);
     directive.node = node;
     directive.attr = attrName;
-    directive.name = name;
     directive.exp = directive.value = attrValue;
-    directive.category = category;
     directive.prev = lastAttrDirective;
 
     if (lastAttrDirective) {
@@ -173,14 +171,13 @@ exports.text = function (vm, node) {
             return;
         }
 
-        var directive = Directive.create(TEXT_STR, vm);
+        var directive = Directive.create(TEXT_STR, TEXT_STR, vm);
         var tokenValue = token.value;
 
         directive.filters.once = token.once;
         directive.node = textNodes[index];
         directive.attr = null;
         directive.exp = directive.value = tokenValue;
-        directive.category = TEXT_STR;
         directives.push(directive);
     });
 

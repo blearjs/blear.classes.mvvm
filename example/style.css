@@ -6,6 +6,11 @@
     content-sizing: border-content;
 }
 
+p {
+    line-height: 20px;
+    min-height: 20px;
+}
+
 pre {
     background: #f3f3f3;
     padding: 10px 16px;

@@ -53,12 +53,13 @@ var MVVM = Events.extend({
     }
 });
 var _options = MVVM.sole();
-var _initVM = MVVM.sole();
 var _vm = MVVM.sole();
 var _initScope = MVVM.sole();
 var _initComputed = MVVM.sole();
 var _initDirectives = MVVM.sole();
 var _definitions = MVVM.sole();
+var _initVM = MVVM.sole();
+var _runVM = MVVM.sole();
 var pro = MVVM.prototype;
 
 pro[_initScope] = function () {
@@ -108,7 +109,7 @@ pro[_initDirectives] = function () {
     var the = this;
     var options = the[_options];
 
-    debugger;
+    the[_definitions] = options.directives;
 };
 
 // 编译

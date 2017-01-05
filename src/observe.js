@@ -223,7 +223,7 @@ function observeArray(arr, agent) {
         });
     });
 
-    defineValue(arr, 'set', function (index, val) {
+    defineValue(arr, ARRAY_SET, function (index, val) {
         if (val === arr[index]) {
             return;
         }
@@ -231,11 +231,11 @@ function observeArray(arr, agent) {
         arr.splice(index, 1, val);
     });
 
-    defineValue(arr, 'remove', function (index) {
+    defineValue(arr, ARRAY_REMOVE, function (index) {
         array.remove(arr, index);
     });
 
-    defineValue(arr, 'delete', function (val) {
+    defineValue(arr, ARRAY_DELETE, function (val) {
         array.delete(arr, val);
     });
 

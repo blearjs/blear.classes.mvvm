@@ -20,7 +20,7 @@ var definitionMap = require('../directives/index');
 
 var Directive = Class.extend({
     className: 'Directive',
-    constructor: function (definition) {
+    constructor: function (category, name, definition) {
         var the = this;
 
         if (typeis.Function(definition)) {
@@ -30,6 +30,8 @@ var Directive = Class.extend({
         }
 
         object.assign(the, definition);
+        the.category = category;
+        the.name = name;
         the.guid = random.guid();
         the.empty = definition.empty || false;
         the.stop = definition.stop || false;
@@ -119,34 +121,32 @@ var Directive = Class.extend({
 /**
  * 创建指令
  * @param category
+ * @param name
  * @param vm
  * @returns {*}
  */
-Directive.create = function (category, vm) {
-    var definition;
+Directive.create = function (category, name, vm) {
+    // 1、优先使用实例指令
+    var definition = vm && vm.getDefinition(name);
 
-    if (typeis.String(category)) {
-        definition = vm && vm.getDefinition(category);
-
-        if (definition) {
-            debugger;
-            return new Directive(definition);
-        }
-
-        definition = definitionMap[category];
-
-        if (!definition) {
-            if (typeof DEBUG !== 'undefined' && DEBUG) {
-                throw new TypeError('未找到`' + category + '`类型指令');
-            }
-
-            return;
-        }
-
-        return new Directive(definition);
+    if (definition) {
+        return new Directive('instance', name, definition);
     }
 
-    return new Directive(definition);
+    // 2、其次使用静态指令
+
+    // 3、最后使用内置指令
+    definition = definitionMap[category];
+
+    if (!definition) {
+        if (typeof DEBUG !== 'undefined' && DEBUG) {
+            throw new TypeError('未找到`' + category + '`类型指令');
+        }
+
+        return;
+    }
+
+    return new Directive(category, name, definition);
 };
 
 module.exports = Directive;

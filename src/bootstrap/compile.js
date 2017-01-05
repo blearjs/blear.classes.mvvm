@@ -18,7 +18,7 @@ var compileAttrs = function (node, vm) {
 
     // 1、遍历节点属性
     array.each(attrs, function (index, attr) {
-        var directive = parse.attr(node, attr);
+        var directive = parse.attr(vm, node, attr);
 
         if (!directive) {
             return;
@@ -62,7 +62,7 @@ var compileElement = function (node, vm) {
 };
 
 var compileText = function (node, vm) {
-    var directives = parse.text(node);
+    var directives = parse.text(vm, node);
 
     array.each(directives, function (index, directive) {
         vm.add(directive);
