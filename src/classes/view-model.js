@@ -173,8 +173,10 @@ pro[_execDirective] = function (directive) {
         if (!directive.filters.once) {
             var response = directive.response;
             response.respond = function (operation) {
-                // 新值使用表达式计算
+                // 每次求值的时候，都指向当前响应，以便新数据可以被正确匹配
+                Watcher.response = response;
                 var newVal = directive.get();
+                Watcher.response = null;
                 directive.update(node, newVal, oldVal, operation);
                 oldVal = newVal;
             };

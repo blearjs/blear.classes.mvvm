@@ -223,6 +223,8 @@ function observeArray(arr, agent) {
         });
     });
 
+    defineValue(arr, 'guid', random.guid());
+
     defineValue(arr, ARRAY_SET, function (index, val) {
         if (val === arr[index]) {
             return;

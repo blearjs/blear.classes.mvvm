@@ -37,7 +37,21 @@
     <h1>学生成表</h1>
     <pre>{{JSON.stringify(students, null, 4)}}</pre>
     <button @click="onPush">添加新学生</button>
+    <button @click="onShif <button @click="onPush">添加新学生</button>
     <button @click="onShift">删除第一个学生</button>
+    <button @click="onChangeName">修改第一个学生的 name</button>
+    <button @click="onChangeTags">修改第一个学生的 tags</button>
+    <button @click="onUnshiftTags">添加第一个学生的 tag</button>
+    <button @click="onShiftTags">删除第一个学生的 tag</button>
+    <hr>
+    <ul>
+        <li @for="index, student in students">
+            第{{index + 1}}位同学
+            <strong>{{student.name}}</strong>
+            同学的标签是
+            <span class="tag" @for="(index2, tag) in student.tags">{{index2 + '. ' + tag}}</span>
+        </li>
+    </ul>t">删除第一个学生</button>
     <button @click="onChangeName">修改第一个学生的 name</button>
     <button @click="onChangeTags">修改第一个学生的 tags</button>
     <button @click="onUnshiftTags">添加第一个学生的 tag</button>
