@@ -167,7 +167,9 @@ var pro = ViewModel.prototype;
 pro[_execDirective] = function (directive) {
     var node = directive.node;
 
-    directive.bind(node, directive.get());
+    if (directive.category !== 'event') {
+        directive.bind(node, directive.get());
+    }
 };
 
 module.exports = ViewModel;
