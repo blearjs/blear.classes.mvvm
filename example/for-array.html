@@ -72,24 +72,24 @@
             <ul>
                 <li class="l2"><p>第2层<code>index2, list2 in list1</code></p></li>
                 <li class="l2" @for="index2, list2 in list1">
-                    <!--<ul>-->
-                        <!--<li class="l3"><p>第3层<code>index3, list3 in list2</code></p></li>-->
-                        <!--<li class="l3" @for="index3, list3 in list2">-->
-                            <!--<ul>-->
-                                <!--<li class="l4"><p>第4层<code>index4, item4 in list3</code></p></li>-->
-                                <!--<li class="l4" @for="index4, item4 in list3">-->
+                    <ul>
+                        <li class="l3"><p>第3层<code>index3, list3 in list2</code></p></li>
+                        <li class="l3" @for="index3, list3 in list2">
+                            <ul>
+                                <li class="l4"><p>第4层<code>index4, item4 in list3</code></p></li>
+                                <li class="l4" @for="index4, item4 in list3">
                                     <p class="p1">对第0层的引用 list0: {{JSON.stringify(list0)}}</p>
-                                    <!--<p class="p2">对第0层的引用 list0[0][0]: {{JSON.stringify(list0[0][0])}}</p>-->
-                                    <!--<p class="p3">对第0层的引用 list0[0][0][0]: {{JSON.stringify(list0[0][0][0])}}</p>-->
-                                    <!--<p class="p4">对第0层的引用 list0[0][0][0][0]: {{JSON.stringify(list0[0][0][0][0])}}</p>-->
-                                    <!--<p class="p5">对第1层的引用 list1: {{JSON.stringify(list1)}}</p>-->
-                                    <!--<p class="p6">对第2层的引用 list2: {{JSON.stringify(list2)}}</p>-->
-                                    <!--<p class="p7">对第3层的引用 list3: {{JSON.stringify(list3)}}</p>-->
-                                    <!--<p class="p8">对第4层的引用 item4: {{JSON.stringify(item4)}}</p>-->
-                                <!--</li>-->
-                            <!--</ul>-->
-                        <!--</li>-->
-                    <!--</ul>-->
+                                    <p class="p2">对第0层的引用 list0[0][0]: {{JSON.stringify(list0[0][0])}}</p>
+                                    <p class="p3">对第0层的引用 list0[0][0][0]: {{JSON.stringify(list0[0][0][0])}}</p>
+                                    <p class="p4">对第0层的引用 list0[0][0][0][0]: {{JSON.stringify(list0[0][0][0][0])}}</p>
+                                    <p class="p5">对第1层的引用 list1: {{JSON.stringify(list1)}}</p>
+                                    <p class="p6">对第2层的引用 list2: {{JSON.stringify(list2)}}</p>
+                                    <p class="p7">对第3层的引用 list3: {{JSON.stringify(list3)}}</p>
+                                    <p class="p8">对第4层的引用 item4: {{JSON.stringify(item4)}}</p>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </li>

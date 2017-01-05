@@ -14,11 +14,14 @@ var data = window.data = {
     list0: [
         // list1
         [
-
+            // list2
+            [
+                // list3
+                []
+            ]
         ]
     ]
 };
-
 
 var random = require('blear.utils.random');
 
@@ -27,10 +30,10 @@ new MVVM({
     data: data,
     methods: {
         pushArray: function () {
-            data.list0[0].push(rs());
+            data.list0[0][0][0].push(rs());
         },
         popArray: function () {
-            data.list0[0].pop();
+            data.list0[0][0][0].pop();
         }
     }
 });

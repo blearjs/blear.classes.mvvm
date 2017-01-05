@@ -118,6 +118,23 @@ function defineValue(obj, key, val) {
     });
 }
 
+
+function deepLinkArray(data) {
+    if (isArray(data)) {
+        array.each(data, function (index, item) {
+            var distributor = getDistributor(item);
+
+            if (!distributor) {
+                return;
+            }
+
+            distributor.agent.link();
+
+            deepLinkArray(item);
+        });
+    }
+}
+
 function observeObjectWithKeyAndVal(obj, key) {
     var descriptor = Object.getOwnPropertyDescriptor(obj, key);
     var getter = descriptor && descriptor.get;
@@ -138,17 +155,7 @@ function observeObjectWithKeyAndVal(obj, key) {
                 childDistributor.agent.link();
             }
 
-            if (isArray(oldVal)) {
-                array.each(oldVal, function (index, item) {
-                    var distributor = getDistributor(item);
-
-                    if (!distributor) {
-                        return;
-                    }
-
-                    distributor.agent.link();
-                });
-            }
+            deepLinkArray(oldVal);
 
             return oldVal;
         },
