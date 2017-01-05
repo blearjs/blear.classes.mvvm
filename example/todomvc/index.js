@@ -15,7 +15,7 @@ var storeKey = 'blear.todos';
 
 var getStore = function () {
     try {
-        return JSON.parse(localStorage.getItem(storeKey));
+        return JSON.parse(localStorage.getItem(storeKey)) || [];
     } catch (err) {
         return [];
     }
@@ -42,7 +42,7 @@ var filterTodos = function (filter, todos) {
     }
 };
 
-var mvvm = new MVVM({
+window.mvvm = new MVVM({
     el: '#todoapp',
     data: {
         newTodo: '',
@@ -75,12 +75,14 @@ var mvvm = new MVVM({
     },
     methods: {
         onAdd: function () {
-            if (!this.newTodo) {
+            var todo = this.newTodo.trim();
+
+            if (!todo) {
                 return;
             }
 
             var item = {
-                name: this.newTodo,
+                name: todo,
                 completed: false
             };
 

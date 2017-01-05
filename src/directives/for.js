@@ -120,8 +120,7 @@ module.exports = {
         var childScopeList = the.childScopeList;
         var childNodeList = the.childNodeList;
         var childVMList = the.childVMList;
-        var data = the.get();
-        var isArray = typeis.Array(data);
+        var isArray = typeis.Array(newVal);
 
         if (the.bound) {
             if (!isArray) {
@@ -136,7 +135,6 @@ module.exports = {
 
             // object set 操作
             if (operation.method === 'set') {
-                oldVal = _oldVal;
                 spliceIndex = 0;
                 spliceCount = oldVal.length;
                 insertValue = newVal;
@@ -225,7 +223,7 @@ module.exports = {
                 });
             }
         } else {
-            collection.each(data, function (index, data) {
+            collection.each(newVal, function (index, data) {
                 buildChildMVVM(the, index, data, {
                     method: ARRAY_PUSH
                 });
