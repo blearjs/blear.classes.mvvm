@@ -50,8 +50,8 @@ var Response = Events.extend({
             agent.unlink(the);
         });
 
-        the.respond = null;
         the.destroy();
+        the.respond = null;
         the.unlinked = true;
     },
 

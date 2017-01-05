@@ -50,6 +50,11 @@ var Queue = Events.extend({
                 var res = combin[0];
                 var args = combin[1];
 
+                // response 已经断开
+                if (res.unlinked) {
+                    return;
+                }
+
                 res.respond.apply(res, args);
             });
             the[_list] = [];

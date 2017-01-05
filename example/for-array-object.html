@@ -35,6 +35,7 @@
 
 <div id="app">
     <h1>学生成表</h1>
+    <pre>{{JSON.stringify(students, null, 4)}}</pre>
     <button @click="onPush">添加新学生</button>
     <button @click="onShift">删除第一个学生</button>
     <button @click="onChangeName">修改第一个学生的 name</button>
