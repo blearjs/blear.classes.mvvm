@@ -39,7 +39,7 @@
                 <div class="view">
                     <input type="checkbox" class="toggle" @model="todo.completed">
                     <label @dblclick="onEdit(todo)">{{todo.name}}</label>
-                    <button class="destroy" @click="onRemove(index)"></button>
+                    <button class="destroy" @click="onRemove(todo)"></button>
                 </div>
                 <input type="text" class="edit"
                        @todo-focus="todo == editingTodo"

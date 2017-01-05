@@ -11,7 +11,7 @@ var Class = require('blear.classes.class');
 var random = require('blear.utils.random');
 var array = require('blear.utils.array');
 var modification = require('blear.core.modification');
-var Watcher = require('../watcher');
+var Watcher = require('../watcher/index');
 
 var compile = require('../bootstrap/compile');
 var paint = require('../bootstrap/paint');

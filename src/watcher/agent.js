@@ -67,7 +67,7 @@ var Agent = Events.extend({
         var the = this;
         var args = access.args(arguments);
 
-        array.each(the[_responseList], function (index, response) {
+        array.each(the[_responseList].slice(), function (index, response) {
             // 如果已经被销毁的 response
             if (!response || !response.respond) {
                 return;

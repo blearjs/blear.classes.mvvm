@@ -37,7 +37,7 @@ var Watcher = Events.extend({
                 observe.key(data, key);
             });
         } else {
-            observe.data(data);
+            observe.data(data, null, null);
         }
     },
 
@@ -87,4 +87,9 @@ object.define(Watcher, 'response', {
 });
 
 Agent.Watcher = Watcher;
+
+Watcher.getParent = function (data) {
+    return data[observe.DATA_PARENT];
+};
+
 module.exports = Watcher;

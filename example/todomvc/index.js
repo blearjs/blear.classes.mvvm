@@ -90,9 +90,8 @@ var mvvm = new MVVM({
         onEdit: function (todo) {
             this.editingTodo = todo;
         },
-        onRemove: function (index) {
-            var item = this.filteredTodos[index];
-            this.todos.delete(item);
+        onRemove: function (todo) {
+            this.todos.delete(todo);
         },
         onFilter: function (filter) {
             this.filter = filter;

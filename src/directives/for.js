@@ -139,7 +139,7 @@ module.exports = {
             //     </2>
             // </1>
             // 不是同一个数据源 => 取消后续操作
-            if (operation.method !== 'set' && operation.newVal.guid !== newVal.guid) {
+            if (operation.method !== 'set' && newVal !== operation.parent) {
                 return;
             }
 

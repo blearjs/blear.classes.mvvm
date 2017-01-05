@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "blear.classes.class": "^1.1.4",
-    "blear.classes.events": "^1.0.5",
+    "blear.classes.events": "^1.0.6",
     "blear.classes.watcher": "^1.0.8",
     "blear.core.attribute": "^1.0.9",
     "blear.core.event": "^1.0.4",

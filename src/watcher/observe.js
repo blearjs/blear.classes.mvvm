@@ -12,16 +12,61 @@ var array = require('blear.utils.array');
 var random = require('blear.utils.random');
 var typeis = require('blear.utils.typeis');
 var access = require('blear.utils.access');
+var Class = require('blear.classes.class');
 
 var Agent = require('./agent');
+var Distributor = Class.extend({
+    className: 'Distributor',
+    constructor: function (data) {
+        var the = this;
 
-var WATCH_FLAG = random.guid();
-var AGENT_KEY = random.guid();
-var AGENT_GUID = random.guid();
-var AGENT_ARRAY = random.guid();
-var AGENT_LIST = random.guid();
-var AGENT_MAP = random.guid();
-var DATA_GUID = random.guid();
+        the.agent = new Agent();
+        the.guid = guid();
+        defineValue(data, DISTRIBUTOR_KEY, the);
+        defineValue(data, DATA_GUID, guid());
+
+        if (isObject(data)) {
+            observeObject(data);
+        } else if (isArray(data)) {
+            observeArray(data);
+        }
+    }
+});
+var DISTRIBUTOR_KEY = Distributor.sole();
+
+
+function createDistributor(data) {
+    var distributor = getDistributor(data);
+
+    if (distributor === null || distributor) {
+        return distributor;
+    }
+
+    return new Distributor(data);
+}
+
+
+function getDistributor(data) {
+    if (!isData(data)) {
+        return null;
+    }
+
+    if (hasOwn(data, DISTRIBUTOR_KEY)) {
+        return data[DISTRIBUTOR_KEY];
+    }
+}
+
+
+var WATCH_FLAG = guid();
+var AGENT_KEY = guid();
+var AGENT_GUID = guid();
+var AGENT_ARRAY = guid();
+var AGENT_LIST = guid();
+var AGENT_MAP = guid();
+var DATA_GUID = guid();
+var DATA_PARENT = guid();
+var DATA_GET_GUID = guid();
+var DATA_SET_GUID = guid();
 var ARRAY_POP = 'pop';
 var ARRAY_PUSH = 'push';
 var ARRAY_REVERSE = 'reverse';
@@ -44,6 +89,11 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
     AGENT_MAP = '__AGENT_MAP__';
     AGENT_GUID = '__AGENT_GUID__';
     DATA_GUID = '__DATA_GUID__';
+    DATA_PARENT = '__DATA_PARENT__';
+}
+
+function guid() {
+    return random.guid();
 }
 
 function hasOwn(obj, key) {
@@ -68,18 +118,6 @@ function defineValue(obj, key, val) {
     });
 }
 
-function observe(any, agent) {
-    if (!isData(any)) {
-        return;
-    }
-
-    if (isObject(any)) {
-        observeObject(any);
-    } else if (isArray(any)) {
-        observeArray(any, agent);
-    }
-}
-
 function observeObjectWithKeyAndVal(obj, key) {
     var descriptor = Object.getOwnPropertyDescriptor(obj, key);
     var getter = descriptor && descriptor.get;
@@ -87,6 +125,7 @@ function observeObjectWithKeyAndVal(obj, key) {
     var val = obj[key];
     var oldVal = val;
     var agent = new Agent();
+    var childDistributor = getDistributor(oldVal);
 
     // 1、先深度遍历
     object.define(obj, key, {
@@ -94,6 +133,23 @@ function observeObjectWithKeyAndVal(obj, key) {
         get: function () {
             oldVal = getter ? getter.call(obj) : oldVal;
             agent.link();
+
+            if (childDistributor) {
+                childDistributor.agent.link();
+            }
+
+            if (isArray(oldVal)) {
+                array.each(oldVal, function (index, item) {
+                    var distributor = getDistributor(item);
+
+                    if (!distributor) {
+                        return;
+                    }
+
+                    distributor.agent.link();
+                });
+            }
+
             return oldVal;
         },
         set: function (val) {
@@ -112,13 +168,13 @@ function observeObjectWithKeyAndVal(obj, key) {
             };
 
             oldVal = newVal;
+            childDistributor = createDistributor(oldVal);
             agent.react(operation);
-            observe(oldVal, agent);
         }
     });
 
     // 2、再广度遍历
-    observe(val, agent);
+    createDistributor(val);
 }
 
 function observeObject(obj) {
@@ -131,28 +187,7 @@ function observeObject(obj) {
     });
 }
 
-function observeArray(arr, agent) {
-    var list;
-    var map;
-    var guid = agent.guid;
-
-    if (hasOwn(arr, AGENT_LIST)) {
-        list = arr[AGENT_LIST];
-        map = arr[AGENT_MAP];
-
-        if (!map[guid]) {
-            map[guid] = true;
-            list.push(agent);
-            agent.refMap = map;
-            agent.refList = list;
-        }
-    } else {
-        map = {};
-        map[agent.guid] = true;
-        defineValue(arr, AGENT_LIST, list = [agent]);
-        defineValue(arr, AGENT_MAP, map);
-    }
-
+function observeArray(arr) {
     array.each(OVERRIDE_ARRAY_METHODS, function (index, method) {
         var original = Array.prototype[method];
         defineValue(arr, method, function () {
@@ -160,7 +195,7 @@ function observeArray(arr, agent) {
             var oldLength = arr.length;
             var spliceIndex = 0;
             var spliceCount = 0;
-            var oldVal = [].concat(arr);
+            var oldVal = arr;
             original.apply(arr, args);
             var insertValue = [];
 
@@ -202,7 +237,7 @@ function observeArray(arr, agent) {
 
             if (insertValue) {
                 array.each(insertValue, function (index, insertValue) {
-                    observe(insertValue, agent);
+                    createDistributor(insertValue);
                 });
             }
 
@@ -217,13 +252,9 @@ function observeArray(arr, agent) {
                 newVal: arr
             };
 
-            array.each(list, function (index, agent) {
-                agent.react(operation);
-            });
+            getDistributor(arr).agent.react(operation);
         });
     });
-
-    defineValue(arr, 'guid', random.guid());
 
     defineValue(arr, ARRAY_SET, function (index, val) {
         if (val === arr[index]) {
@@ -242,9 +273,12 @@ function observeArray(arr, agent) {
     });
 
     array.each(arr, function (index, val) {
-        observe(val, agent);
+        createDistributor(val);
     });
 }
 
-exports.data = observe;
+
+// ===================================
+
+exports.data = createDistributor;
 exports.key = observeObjectWithKeyAndVal;
