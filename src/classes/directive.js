@@ -16,7 +16,6 @@ var string = require('blear.utils.string');
 var array = require('blear.utils.array');
 var access = require('blear.utils.access');
 
-var Response = require('./response');
 var definitionMap = require('../directives/index');
 
 var Directive = Class.extend({
@@ -48,7 +47,6 @@ var Directive = Class.extend({
         the.updated = false;
         the.destroyed = false;
         the.definition = definition;
-        the.response = new Response(the);
         the.weight = the.weight || 1;
         the.filters = {};
     },

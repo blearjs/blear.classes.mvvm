@@ -7,7 +7,6 @@
 
 'use strict';
 
-var Response = require('../classes/response');
 var expParser = require('../parsers/expression');
 var eventParser = require('../parsers/event');
 

@@ -12,8 +12,12 @@ var Events = require('blear.classes.events');
 var random = require('blear.utils.random');
 var array = require('blear.utils.array');
 var access = require('blear.utils.access');
+var Watcher = require('../watcher/index');
 
 var Queue = require('./queue');
+var expParser = require('../parsers/expression');
+var evtParser = require('../parsers/event');
+
 var queue = new Queue();
 
 var Response = Events.extend({
@@ -27,6 +31,53 @@ var Response = Events.extend({
         the.respond = null;
         the[_agentList] = [];
         the[_agentMap] = {};
+        the.oldVal = undefined;
+
+        var exp = directive.exp;
+        var scope = directive.scope;
+
+        switch (directive.category) {
+            case 'event':
+                // 表达式解析需要在指令 init 之后
+                var executer = evtParser(exp);
+                the.get = function (el, ev) {
+                    return executer(scope, el, ev);
+                };
+                break;
+
+            default:
+                if (directive.empty) {
+                    the.get = function () {
+                        // empty
+                    };
+                } else {
+                    // 表达式解析需要在指令 init 之后
+                    var getter = expParser(exp);
+                    the.get = function () {
+                        the.beforeGet();
+                        var ret = getter(scope);
+                        the.afterGet();
+                        return ret;
+                    };
+                }
+                break;
+        }
+
+        if (!directive.filters.once) {
+            the.respond = function (operation) {
+                var newVal = the.get();
+                directive.update(directive.node, newVal, the.oldVal, operation);
+                the.oldVal = newVal;
+            };
+        }
+    },
+
+    beforeGet: function () {
+        Watcher.response = this;
+    },
+
+    afterGet: function () {
+        Watcher.response = null;
     },
 
     link: function (agent) {

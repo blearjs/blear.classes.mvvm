@@ -14,8 +14,8 @@ var modification = require('blear.core.modification');
 var Watcher = require('../watcher/index');
 
 var compile = require('../bootstrap/compile');
-var paint = require('../bootstrap/paint');
 var parse = require('../bootstrap/parse');
+var Response = require('./response');
 
 var ViewModel = Class.extend({
     className: 'ViewModel',
@@ -77,8 +77,9 @@ var ViewModel = Class.extend({
     add: function (directive) {
         var the = this;
 
-        // 指令上色
-        paint(directive, the);
+        directive.scope = the.scope;
+        directive.init();
+        directive.response = new Response(directive);
 
         if (the.done) {
             the[_execDirective](directive);
@@ -163,33 +164,9 @@ var pro = ViewModel.prototype;
  * @param directive
  */
 pro[_execDirective] = function (directive) {
-    var scope = directive.scope;
-    var getter = directive.getter;
     var node = directive.node;
-    var oldVal;
 
-    if (getter) {
-        // 一次性绑定
-        if (!directive.filters.once) {
-            var response = directive.response;
-            response.respond = function (operation) {
-                // 每次求值的时候，都指向当前响应，以便新数据可以被正确匹配
-                Watcher.response = response;
-                var newVal = directive.get();
-                Watcher.response = null;
-                directive.update(node, newVal, oldVal, operation);
-                oldVal = newVal;
-            };
-            // 不能省略
-            Watcher.response = response;
-        }
-
-        // 第一次取值时传递 response
-        oldVal = getter(scope);
-        Watcher.response = null;
-    }
-
-    directive.bind(node, oldVal);
+    directive.bind(node, directive.response.get());
 };
 
 module.exports = ViewModel;
