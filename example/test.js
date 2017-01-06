@@ -1,9 +1,13 @@
-try {
-    with (_201612251903561E) {
-        text = $el.value;
+if (typeof DEBUG !== "undefined" && DEBUG) {
+    with (_201701062333020r) {
+        return (list);
     }
-} catch (_201612251903561F) {
-    if (typeof EDBUG !== "undefined" && DEBUG) {
-        console.error(err);
+} else {
+    try {
+        with (_201701062333020r) {
+            return (list);
+        }
+    } catch (_201701062333020s) {
+        return "";
     }
 }

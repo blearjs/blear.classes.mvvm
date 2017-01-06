@@ -90,10 +90,15 @@ var Response = Events.extend({
                 // </1>
                 // 不是同一个数据源 => 取消后续操作
 
-                var notSameOrigin = directive.category === 'for'
-                    && operation.method !== 'set' && the.newVal !== operation.parent;
+                var isForDirective = directive.category === 'for';
 
-                if (notSameOrigin) {
+                // for 变化的不是同一个数组（多维数组）
+                var notSameOrigin = isForDirective && the.newVal !== operation.parent;
+
+                // set 的是 for 指定的字段 abc.list = [1, 2, 3];
+                var setSameKey = isForDirective && operation.method === 'set' && operation.key === directive.exp;
+
+                if (notSameOrigin && !setSameKey) {
                     // 如果是计算属性的话，当做 set 来处理，重写 operation
                     if (the.newVal[configs.computedFlagName]) {
                         operation = object.filter(operation, [
@@ -104,7 +109,9 @@ var Response = Events.extend({
                             'insertValue'
                         ]);
                         operation.method = 'set';
-                    } else {
+                    }
+                    // 其他变化都忽略
+                    else {
                         the.afterGet();
                         return;
                     }

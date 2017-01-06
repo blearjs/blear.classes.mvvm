@@ -12,25 +12,27 @@ var modification = require('blear.core.modification');
 
 var anchor = require('../utils/anchor');
 var Directive = require('../classes/directive');
+var booleanStart = 'Boolean(';
+var booleanEnd = ')';
 
 module.exports = {
     weight: 100,
     init: function () {
         var the = this;
 
-        the.exp = 'Boolean(' + the.exp + ')';
+        the.exp = booleanStart + the.exp + booleanEnd;
         // the.tplNode = the.node.cloneNode(true);
         the.childVM = the.childNode = the.childScope = null;
         the.anchor = anchor(the.node, the.name);
 
-        // 如果是 else，则需要向前查找 if、else-if 表达式
-        if (the.name === 'else') {
+        // 如果是 else、else-if，则需要向前查找 if、else-if 表达式
+        if (the.name !== 'if') {
             var expList = [];
             var foundDir = the.prev;
 
             while (true) {
                 if (foundDir.category === 'condition') {
-                    expList.unshift(foundDir.exp)
+                    expList.unshift('!' + booleanStart + foundDir.exp + booleanEnd)
                 }
 
                 if (foundDir.name === 'if') {
@@ -40,7 +42,21 @@ module.exports = {
                 foundDir = foundDir.prev;
             }
 
-            the.exp = '!Boolean(' + expList.join('||') + ')';
+            var exp = expList.join('&&');
+
+            // if c1
+            // else-if c2
+            // else-if c3
+            // else => !c1 && !c2 && !c3
+            if (the.name === 'else') {
+                the.exp = exp;
+            }
+            // if c1
+            // else-if c2
+            // else-if c3 => !c1 && !c2 && c3
+            else {
+                the.exp = exp + '&&' + the.exp;
+            }
         }
     },
     update: function (node, newVal, oldVal, operation) {

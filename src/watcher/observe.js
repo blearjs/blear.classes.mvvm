@@ -176,6 +176,7 @@ function observeObjectWithKeyAndVal(obj, key) {
             var operation = {
                 type: 'object',
                 parent: obj,
+                key: key,
                 method: 'set',
                 oldVal: oldVal,
                 newVal: setVal
