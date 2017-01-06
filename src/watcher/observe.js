@@ -148,7 +148,6 @@ function observeObjectWithKeyAndVal(obj, key) {
     object.define(obj, key, {
         enumerable: true,
         get: function () {
-            key;
             var oldVal = preGet ? preGet.call(obj) : val;
 
             childDistributor = getDistributor(oldVal);
@@ -162,7 +161,6 @@ function observeObjectWithKeyAndVal(obj, key) {
             return oldVal;
         },
         set: function (setVal) {
-            key;
             var oldVal = preGet ? preGet.call(obj) : val;
 
             if (setVal === oldVal) {

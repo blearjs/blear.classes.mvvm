@@ -30,7 +30,7 @@
                placeholder="What needs to be done?" class="new-todo">
     </header>
 
-    <section class="main">
+    <section class="main" @show="todos.length">
         <input type="checkbox" class="toggle-all" @model="allCompleted">
         <ul class="todo-list">
             <li class="todo"

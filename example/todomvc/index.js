@@ -14,16 +14,15 @@ var MVVM = require('../../src/index');
 var storeKey = 'blear.todos';
 
 var getStore = function () {
-    // try {
-    //     return JSON.parse(localStorage.getItem(storeKey)) || [];
-    // } catch (err) {
-    //     return [];
-    // }
-    return [];
+    try {
+        return JSON.parse(localStorage.getItem(storeKey)) || [];
+    } catch (err) {
+        return [];
+    }
 };
 
 var setStore = function (todos) {
-    // localStorage.setItem(storeKey, JSON.stringify(todos))
+    localStorage.setItem(storeKey, JSON.stringify(todos))
 };
 
 var filterTodos = function (filter, todos) {
@@ -125,6 +124,9 @@ window.mvvm = new MVVM({
         }
     },
     watch: {
-        todos: setStore
+        todos: {
+            deep: true,
+            handle: setStore
+        }
     }
 });

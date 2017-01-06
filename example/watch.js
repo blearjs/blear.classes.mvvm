@@ -29,7 +29,9 @@ var unwatch = mvvm.watch('html + text', function (newVal, oldVal) {
 
 mvvm.watch('html', function (newVal, oldVal) {
     console.log('html', '=', newVal);
-}, true);
+}, {
+    immediate: true
+});
 
 mvvm.watch(function () {
     return this.html + this.text;

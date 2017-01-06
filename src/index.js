@@ -25,7 +25,11 @@ var defaults = {
     data: {},
     computed: {},
     watch: {},
-    methods: {}
+    methods: {},
+    watchDefaults: {
+        immediate: false,
+        deep: false
+    }
 };
 var definitions = {};
 var MVVM = Events.extend({
@@ -42,12 +46,13 @@ var MVVM = Events.extend({
         the[_initVM]();
         the[_initWatch]();
     },
-    watch: function (exp, callback, immediate) {
+    watch: function (exp, callback, options) {
         var the = this;
+        options = object.assign({}, the[_options].watchDefaults, options);
         var virtualDirective = new Directive({
             exp: exp,
             update: function (node, newVal, oldVal, operation) {
-                if (this.bound || immediate && !this.bound) {
+                if (this.bound || options.immediate && !this.bound) {
                     callback.call(the.scope, newVal, oldVal, operation);
                 }
             }
@@ -155,17 +160,22 @@ pro[_initWatch] = function () {
             scope[key] = newVal
         }, true);
     });
+    the[_computedWatchList] = null;
 
     object.each(options.watch, function (key, watcher) {
         var immediate = false;
+        var options = null;
 
         if (typeis.Object(watcher)) {
-            immediate = watcher.immediate;
-            watcher = watcher.handle;
+            options = {
+                immediate: watcher.immediately,
+                deep: watcher.deep
+            };
         }
 
-        the.watch(key, watcher, immediate);
+        the.watch(key, watcher, options);
     });
+    options.watch = null;
 };
 
 // ======================================== static ========================================
