@@ -13,6 +13,7 @@ var object = require('blear.utils.object');
 var array = require('blear.utils.array');
 var typeis = require('blear.utils.typeis');
 var access = require('blear.utils.access');
+var fun = require('blear.utils.function');
 
 var anchor = require('./utils/anchor');
 var ViewModel = require('./classes/view-model');
@@ -78,32 +79,22 @@ pro[_initComputed] = function () {
     var options = the[_options];
 
     object.each(options.computed, function (key, val) {
-        var set = function () {
-            // empty
+        var computedSet = function (newVal) {
+            return newVal;
         };
-        var get;
+        var computedGet;
 
         if (typeis.Function(val)) {
-            get = function () {
-                return val.call(scope);
-            };
+            computedGet = fun.bind(val, scope);
         } else {
-            get = function () {
-                return val.get.call(scope);
-            };
-            set = function (newVal) {
-                val.set.call(scope, newVal);
-            };
+            computedGet = fun.bind(val.get, scope);
+            computedSet = fun.bind(val.set, scope);
         }
 
         object.define(scope, key, {
             enumerable: true,
-            get: function () {
-                return get();
-            },
-            set: function (newVal) {
-                set(newVal);
-            }
+            get: computedGet,
+            set: computedSet
         });
     });
     options.computed = null;

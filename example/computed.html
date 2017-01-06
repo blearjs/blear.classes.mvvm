@@ -26,8 +26,20 @@
 <div id="app">
     <p>firstName: <input type="text" @model="firstName"></p>
     <p>lastName: <input type="text" @model="lastName"></p>
-    <p>fullName1: <input type="text" @model="fullName1"></p>
-    <p>fullName2: <input type="text" @model="fullName2"></p>
+    <p>fullName: <input type="text" @model="fullName"></p>
+    <hr>
+    <p>
+        <button @click="onPush">新增数组</button>
+    </p>
+    <pre @pre>原始数组：{{JSON.stringify(arr1, null, 4)}}</pre>
+    <pre>原始数组：{{JSON.stringify(arr1, null, 4)}}</pre>
+    <pre @pre>计算数组：{{JSON.stringify(arr2, null, 4)}}</pre>
+    <pre>arr2: function () {
+    return this.arr1.filter(function (item) {
+        return item.n > 0.5;
+    });
+}</pre>
+    <pre>计算数组：{{JSON.stringify(arr2, null, 4)}}</pre>
 </div>
 
 <script src="/node_modules/coolie.js/coolie.js"

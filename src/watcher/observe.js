@@ -142,14 +142,16 @@ function observeObjectWithKeyAndVal(obj, key) {
     var val = obj[key];
     var oldVal = val;
     var agent = new Agent();
-    var childDistributor = getDistributor(oldVal);
+    var childDistributor;
 
     // 1、先深度遍历
     object.define(obj, key, {
         enumerable: true,
         get: function () {
+            console.log('get val', 'obj=', obj, 'key=', key);
             oldVal = getter ? getter.call(obj) : oldVal;
             agent.link();
+            childDistributor = getDistributor(oldVal);
 
             if (childDistributor) {
                 childDistributor.agent.link();

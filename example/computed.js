@@ -11,16 +11,14 @@ var MVVM = require('../src/index');
 
 window.data = {
     firstName: '张',
-    lastName: '三'
+    lastName: '三',
+    arr1: []
 };
 new MVVM({
     el: '#app',
     data: data,
     computed: {
-        fullName1: function () {
-            return this.firstName + this.lastName;
-        },
-        fullName2: {
+        fullName: {
             get: function () {
                 return this.firstName + ' ' + this.lastName
             },
@@ -30,6 +28,16 @@ new MVVM({
                 this.firstName = full[1];
                 this.lastName = full[2];
             }
+        },
+        arr2: function () {
+            return this.arr1.filter(function (item) {
+                return item.n > 0.5;
+            });
+        }
+    },
+    methods: {
+        onPush: function () {
+            this.arr1.push({n: Math.random()})
         }
     }
 });

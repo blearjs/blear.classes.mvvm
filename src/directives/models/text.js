@@ -1,5 +1,5 @@
 /**
- * 文件描述
+ * model text 指令
  * @author ydr.me
  * @created 2016-12-25 19:36
  */
@@ -31,9 +31,11 @@ exports.init = function (directive) {
     });
 
     event.on(el, 'input', node, directive.listener = function (ev) {
-        var el = this;
-        var smoothChange = function () {
-            vm[inputing] = el;
+        vm[inputing] = node;
+        time.nextTick(function () {
+            if (compositionstart) {
+                return;
+            }
 
             var setVal = node.value;
 
@@ -42,24 +44,16 @@ exports.init = function (directive) {
             }
 
             directive.set(setVal);
-            time.nextTick(function () {
-                vm[inputing] = null;
-            });
-        };
-
-        if (compositionstart) {
-            time.nextFrame(smoothChange);
-        } else {
-            smoothChange();
-        }
+        });
     });
 };
 
 exports.update = function (directive, newVal) {
     var node = directive.node;
+    var vm = directive.vm;
 
     // 避免当前正在输入的输入框重新赋值影响输入体验
-    if (directive.vm[inputing] !== node) {
+    if (vm[inputing] !== node) {
         node.value = newVal;
     }
 };
