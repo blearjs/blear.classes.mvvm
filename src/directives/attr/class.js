@@ -27,10 +27,18 @@ exports.update = function (directive, newVal, oldVal) {
     var diff = arrayCompare(oldVal.list, newVal.list);
 
     array.each(diff.insert, function (index, val) {
+        if (!val) {
+            return;
+        }
+
         attribute.addClass(node, val);
     });
 
     array.each(diff.remove, function (index, val) {
+        if (!val) {
+            return;
+        }
+
         attribute.removeClass(node, val);
     });
 };

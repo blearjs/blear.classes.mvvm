@@ -1,5 +1,5 @@
 /**
- * class 指令
+ * attr 指令
  * @author ydr.me
  * @created 2016-12-26 10:34
  */
@@ -98,7 +98,7 @@ module.exports = {
         var listExpList = [];
         array.each(list, function (index, val) {
             listExpList.push(
-                'String(' + val + ')'
+                'String(Boolean(' + val + ')?' + val + ':"")'
             );
         });
         var listExp = '[' + listExpList.join(',') + ']';

@@ -26,8 +26,10 @@ exports.init = function (directive, newVal) {
         var val = directive.response.get();
         var nodeVal = node.value;
 
+        vm[checking] = node;
+
         if (typeis.Boolean(val)) {
-            directive.set(!val);
+            directive.response.set(!val);
         } else {
             if (node.checked) {
                 arrFlow.set(val, nodeVal);

@@ -10,7 +10,7 @@
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
-it('文本指令', function (done) {
+it('插值', function (done) {
     var el = utils.createDIV();
     var data = {
         text: '1'
@@ -24,9 +24,26 @@ it('文本指令', function (done) {
 
     expect(el.innerHTML).toEqual('1');
     data.text = 2;
-    data.text = 3;
-    data.text = 4;
-    expect(el.innerHTML).toEqual('4');
+    expect(el.innerHTML).toEqual('2');
+    utils.removeDIV(el);
+    done();
+});
+
+it('@text', function (done) {
+    var el = utils.createDIV();
+    var data = {
+        text: '1'
+    };
+    el.innerHTML = '<p @text="text"></p>';
+
+    new MVVM({
+        el: el,
+        data: data
+    });
+
+    expect(el.innerHTML).toEqual('<p>1</p>');
+    data.text = 2;
+    expect(el.innerHTML).toEqual('<p>2</p>');
     utils.removeDIV(el);
     done();
 });

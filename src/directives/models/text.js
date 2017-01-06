@@ -14,7 +14,7 @@ var number = require('blear.utils.number');
 var configs = require('../../configs');
 var varible = require('../../utils/varible');
 
-var inputing = varible();
+var timer;
 
 exports.init = function (directive) {
     var vm = directive.vm;
@@ -31,29 +31,34 @@ exports.init = function (directive) {
     });
 
     event.on(el, 'input', node, directive.listener = function (ev) {
-        vm[inputing] = node;
-        time.nextTick(function () {
+        clearTimeout(timer);
+        timer = setTimeout(function () {
             if (compositionstart) {
                 return;
             }
 
             var setVal = node.value;
 
+            if (directive.filters.trim) {
+                setVal = setVal.trim();
+            }
+
             if (directive.filters.number) {
                 setVal = number.parseFloat(setVal);
             }
 
-            directive.set(setVal);
-        });
+            directive.response.set(setVal);
+        }, 1);
     });
 };
 
 exports.update = function (directive, newVal) {
     var node = directive.node;
-    var vm = directive.vm;
 
-    // 避免当前正在输入的输入框重新赋值影响输入体验
-    if (vm[inputing] !== node || newVal !== node.value) {
+    // 相同的值重新赋值影响输入体验
+    // 但不同的值，相同的输入框是可以的
+    // 比如一个回车操作，将输入框清空（后续的提交操作等）
+    if (newVal !== node.value) {
         node.value = newVal;
     }
 };

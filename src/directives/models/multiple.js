@@ -19,12 +19,14 @@ var configs = require('../../configs');
 var getOptionVal = function (el) {
     return el.value || el.textContent;
 };
+var changing;
 
 exports.init = function (directive, newVal) {
     var node = directive.node;
     var vm = directive.vm;
 
     event.on(vm.el, 'change', node, directive.listener = function (ev) {
+        changing = node;
         var children = selector.children(node);
         array.each(children, function (index, optionEl) {
             var val = directive.response.get();
@@ -43,6 +45,11 @@ exports.update = function (directive, newVal) {
     var node = directive.node;
     var children = selector.children(node);
     var val = directive.response.get();
+
+    if (changing === node) {
+        changing = null;
+        return;
+    }
 
     array.each(children, function (index, optionEl) {
         var optionVal = getOptionVal(optionEl);

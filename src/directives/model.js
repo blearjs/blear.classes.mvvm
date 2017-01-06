@@ -29,16 +29,8 @@ module.exports = {
             inputType = tagName;
         }
 
-        var modelName = the.exp;
-
-        the.modelName = modelName;
+        the.modelName = the.exp;
         the.modelType = inputType;
-        the.get = function () {
-            return scope[modelName];
-        };
-        the.set = function (val) {
-            object.set(scope, modelName, val);
-        };
 
         var modelCate;
 

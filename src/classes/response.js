@@ -67,6 +67,12 @@ var Response = Events.extend({
                 break;
         }
 
+        if (directive.category === 'model') {
+            the.set = function (val) {
+                object.set(scope, directive.modelName, val);
+            };
+        }
+
         if (!directive.filters.once) {
             the.respond = function (operation) {
                 the.beforeGet();
