@@ -7,11 +7,9 @@
 
 'use strict';
 
-var index = require('../src/index.js');
+window.DEBUG = false;
 
-describe('测试文件', function () {
-    it('exports', function (done) {
-        expect(index).toEqual('index');
-        done();
-    });
+describe('指令测试', function () {
+    require('./directives/text');
 });
+
