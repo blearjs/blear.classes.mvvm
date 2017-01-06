@@ -24,9 +24,10 @@ var Directive = Class.extend({
         var the = this;
         var args = access.args(arguments);
 
+        // 虚拟指令
         if (args.length === 1) {
             definition = args[0];
-            category = 'watch';
+            category = 'virtual';
             name = random.guid();
         }
 
@@ -64,14 +65,19 @@ var Directive = Class.extend({
 
     /**
      * 指令绑定操作
-     * @param node
-     * @param newVal
      */
-    bind: function (node, newVal) {
+    bind: function () {
         var the = this;
         var definition = the.definition;
+        var response = the.response;
 
-        fun.noop(definition.bind || definition.update).apply(the, arguments);
+        if (the.category === 'event') {
+            return;
+        }
+
+        response.beforeGet();
+        fun.noop(definition.bind || definition.update).call(the, the.node, response.get());
+        response.afterGet();
         the.bound = true;
     },
 

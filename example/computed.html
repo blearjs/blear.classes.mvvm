@@ -20,16 +20,20 @@
     <title>computed.html</title>
     <link rel="stylesheet" href="./style.css">
     <style>
-        .p1 {
-            background: #000;
-            color: #fff;
+        .p1,
+        .p2 {
             padding: 10px;
+            border: 1px solid #ff5783;
         }
 
-        .p2 {
+        .n {
             background: #7d10d8;
             color: #fff;
-            padding: 10px;
+            display: inline-block;
+            margin: 5px;
+            padding: 3px 4px;
+            line-height: 1;
+            border-radius: 10px;
         }
     </style>
 </head>
@@ -37,16 +41,20 @@
 
 
 <div id="app">
-    <p>firstName: <input type="text" @model="firstName"></p>
-    <p>lastName: <input type="text" @model="lastName"></p>
-    <p>fullName: <input type="text" @model="fullName"></p>
-    <hr>
+    <!--<p>firstName: <input type="text" @model="firstName"></p>-->
+    <!--<p>lastName: <input type="text" @model="lastName"></p>-->
+    <!--<p>fullName: <input type="text" @model="fullName"></p>-->
+    <!--<hr>-->
     <p>
         <button @click="onPush">新增数组</button>
         <button @click="onFilter">切换比较值</button>
     </p>
-    <p class="p1">原始数组：{{JSON.stringify(arr1)}}</p>
-    <p class="p2">&gt;{{filter}}的数组：{{JSON.stringify(arr2)}}</p>
+    <p class="p1">原始数组：<br>
+        <span class="n" @for="n in arr1">{{n}}</span>
+    </p>
+    <p class="p2">&gt;{{filter}}的数组：<br>
+        <span class="n" @for="n in arr2">{{n}}</span>
+    </p>
 </div>
 
 <script src="/node_modules/coolie.js/coolie.js"

@@ -35,6 +35,10 @@ var ViewModel = Class.extend({
         the.directives = [];
         the[_instanceDefinitions] = {};
         the[_staticalDefinitions] = {};
+
+        if (typeof DEBUG !== 'undefined' && DEBUG) {
+            el.vm = the;
+        }
     },
 
     setInstanceDefinitions: function (definitions) {
@@ -64,7 +68,7 @@ var ViewModel = Class.extend({
 
         // 3、绑定指令、确定指令更新
         array.each(the.directives, function (index, directive) {
-            the[_execDirective](directive);
+            directive.bind();
         });
 
         the.done = true;
@@ -83,7 +87,7 @@ var ViewModel = Class.extend({
         directive.response = new Response(directive);
 
         if (the.done) {
-            the[_execDirective](directive);
+            directive.bind();
         } else {
             the.directives.push(directive);
         }
@@ -155,21 +159,8 @@ var ViewModel = Class.extend({
             = null;
     }
 });
-var _execDirective = ViewModel.sole();
 var _instanceDefinitions = ViewModel.sole();
 var _staticalDefinitions = ViewModel.sole();
-var pro = ViewModel.prototype;
 
-/**
- * 执行指令
- * @param directive
- */
-pro[_execDirective] = function (directive) {
-    var node = directive.node;
-
-    if (directive.category !== 'event') {
-        directive.bind(node, directive.get());
-    }
-};
 
 module.exports = ViewModel;

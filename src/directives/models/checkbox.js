@@ -23,7 +23,7 @@ exports.init = function (directive, newVal) {
     var el = vm.el;
 
     event.on(el, 'change', node, directive.listener = function (ev) {
-        var val = directive.get();
+        var val = directive.response.get();
         var nodeVal = node.value;
 
         vm[checking] = node;
@@ -37,25 +37,26 @@ exports.init = function (directive, newVal) {
                 arrFlow.rm(val, nodeVal);
             }
         }
-
-        time.nextTick(function () {
-            vm[checking] = null;
-        });
     });
 };
 
 exports.update = function (directive, newVal) {
     var node = directive.node;
+    var vm= directive.vm;
 
-    if (directive.vm[checking] === node) {
-        return;
-    }
+    time.nextTick(function () {
+        if (vm[checking] === node) {
+            return;
+        }
 
-    var nodeVal = node.value;
+        var nodeVal = node.value;
 
-    if (typeis.Boolean(newVal)) {
-        node.checked = newVal;
-    } else {
-        node.checked = arrFlow.fd(newVal, nodeVal) > -1;
-    }
+        if (typeis.Boolean(newVal)) {
+            node.checked = newVal;
+        } else {
+            node.checked = arrFlow.fd(newVal, nodeVal) > -1;
+        }
+    });
+
+
 };

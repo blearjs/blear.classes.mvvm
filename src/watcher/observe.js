@@ -137,10 +137,10 @@ function deepLinkArray(data) {
 
 function observeObjectWithKeyAndVal(obj, key) {
     var descriptor = Object.getOwnPropertyDescriptor(obj, key);
-    var getter = descriptor && descriptor.get;
-    var setter = descriptor && descriptor.set;
+    // 预先设置的 get/set
+    var preGet = descriptor && descriptor.get;
+    var preSet = descriptor && descriptor.set;
     var val = obj[key];
-    var oldVal = val;
     var agent = new Agent();
     var childDistributor;
 
@@ -148,24 +148,29 @@ function observeObjectWithKeyAndVal(obj, key) {
     object.define(obj, key, {
         enumerable: true,
         get: function () {
-            console.log('get val', 'obj=', obj, 'key=', key);
-            oldVal = getter ? getter.call(obj) : oldVal;
-            agent.link();
+            var oldVal = preGet ? preGet.call(obj) : val;
+
             childDistributor = getDistributor(oldVal);
+            deepLinkArray(oldVal);
+            agent.link();
 
             if (childDistributor) {
                 childDistributor.agent.link();
             }
 
-            deepLinkArray(oldVal);
-
             return oldVal;
         },
-        set: function (val) {
-            var newVal = setter ? setter.call(obj, val) : val;
+        set: function (setVal) {
+            var oldVal = preGet ? preGet.call(obj) : val;
 
-            if (newVal === oldVal) {
+            if (setVal === oldVal) {
                 return;
+            }
+
+            if (preSet) {
+                preSet.call(obj, setVal);
+            } else {
+                val = setVal;
             }
 
             var operation = {
@@ -173,11 +178,10 @@ function observeObjectWithKeyAndVal(obj, key) {
                 parent: obj,
                 method: 'set',
                 oldVal: oldVal,
-                newVal: newVal
+                newVal: setVal
             };
 
-            oldVal = newVal;
-            childDistributor = createDistributor(oldVal);
+            createDistributor(setVal);
             agent.react(operation);
         }
     });

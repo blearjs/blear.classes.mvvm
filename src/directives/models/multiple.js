@@ -29,7 +29,7 @@ exports.init = function (directive, newVal) {
         vm[selecting] = node;
         var children = selector.children(node);
         array.each(children, function (index, optionEl) {
-            var val = directive.get();
+            var val = directive.response.get();
             var optionVal = getOptionVal(optionEl);
 
             if (optionEl.selected) {
@@ -52,7 +52,7 @@ exports.update = function (directive, newVal) {
     }
 
     var children = selector.children(node);
-    var val = directive.get();
+    var val = directive.response.get();
 
     array.each(children, function (index, optionEl) {
         var optionVal = getOptionVal(optionEl);

@@ -14,26 +14,26 @@ var n = function () {
 };
 
 window.data = {
-    firstName: '张',
-    lastName: '三',
-    filter: 0.5,
+    // firstName: '张',
+    // lastName: '三',
+    filter: 0.01,
     arr1: []
 };
 new MVVM({
     el: '#app',
     data: data,
     computed: {
-        fullName: {
-            get: function () {
-                return this.firstName + ' ' + this.lastName
-            },
-            set: function (val) {
-                var full = val.match(/^(.*?)\s(.*)$/) || ['', ''];
-
-                this.firstName = full[1];
-                this.lastName = full[2];
-            }
-        },
+        // fullName: {
+        //     get: function () {
+        //         return this.firstName + ' ' + this.lastName
+        //     },
+        //     set: function (val) {
+        //         var full = val.match(/^(.*?)\s(.*)$/) || ['', ''];
+        //
+        //         this.firstName = full[1];
+        //         this.lastName = full[2];
+        //     }
+        // },
         arr2: function () {
             var the = this;
             return the.arr1.filter(function (item) {

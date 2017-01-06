@@ -61,7 +61,6 @@ window.mvvm = new MVVM({
 
         allCompleted: {
             get: function () {
-                setStore(this.todos);
                 return 0 === this.remaining;
             },
             set: function (newVal) {
@@ -69,7 +68,6 @@ window.mvvm = new MVVM({
                     todo.completed = newVal;
                 });
                 this.filteredTodos = filterTodos(this.filter, this.todos);
-                setStore(this.todos);
             }
         }
     },

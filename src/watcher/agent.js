@@ -73,7 +73,7 @@ var Agent = Events.extend({
                 return;
             }
 
-            response.receive.apply(response, args);
+            response.respond.apply(response, args);
         });
     }
 });

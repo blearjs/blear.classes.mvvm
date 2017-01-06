@@ -37,7 +37,7 @@ exports.update = function (directive, newVal) {
         return;
     }
 
-    var val = directive.get();
+    var val = directive.response.get();
     if (node.type === 'radio') {
         node.checked = Boolean(strFlow.similar(val, node.value));
     } else {

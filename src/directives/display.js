@@ -19,7 +19,7 @@ module.exports = {
     },
     update: function (node, newVal, oldVal, operation) {
         var the = this;
-        var bool = the.get();
+        var bool = the.response.get();
 
         if (the.name === 'hide') {
             bool = !bool;

@@ -7,6 +7,8 @@
 
 'use strict';
 
-module.exports = {};
+module.exports = {
+    weight: 1000
+};
 
 

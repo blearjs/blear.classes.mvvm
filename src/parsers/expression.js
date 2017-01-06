@@ -282,38 +282,30 @@ var utils = {
  * @returns {Function}
  */
 module.exports = function parseExpressionToGetter(expression) {
+    if (typeis.Function(expression)) {
+        return function (scope) {
+            return expression.call(scope);
+        };
+    }
+
     var scopeName = varible();
     var errorName = varible();
     var utilsName = varible();
-
     var body =
-        // 'try{' +
-        /****/'with(' + scopeName + '){';
-
-    if (typeis.Function(expression)) {
-        body += 'return ' + expression + '.call(' + scopeName + ');';
-    } else {
-        body += 'return (' +
-            // 'typeof(' + expression + ')==="function"' +
-            // '?' + expression + '.call(' + scopeName + ')' +
-            expression +
-            ');';
-    }
-
-    body +=
+        'if(typeof DEBUG!=="undefined"&&DEBUG){' +
+        /****/'with(' + scopeName + '){' +
+        /****//****/'return (' + expression + ');' +
         /****/'}' +
-        // '}catch(' + errorName + '){' +
-        // /****/'if(typeof DEBUG!=="undefined"&&DEBUG) {' +
-        // /****//****/'debugger;' +
-        // /****//****/'return ' + errorName + '.message;' +
-        // /****/'}' +
-        // /****/
-        // /****/'return "";' +
-        // '}' +
-        '';
+        '}else{' +
+        /****/'try{' +
+        /****//****/'with(' + scopeName + '){' +
+        /****//****//****/'return (' + expression + ');' +
+        /****//****/'}' +
+        /****/'}catch(' + errorName + '){return "";}' +
+        '}';
 
+    var fn = new Function(scopeName, utilsName, body);
     return function (scope) {
-        var fn = new Function(scopeName, utilsName, body);
         return fn.call(scope, scope, utils);
     };
 };

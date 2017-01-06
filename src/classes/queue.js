@@ -29,23 +29,24 @@ var Queue = Events.extend({
         var the = this;
         var options = the[_options];
         var guid = response.guid;
-        var map = the[_map];
-        var queues = the[_list];
-        var foundIndex = map[guid];
+        var foundIndex = the[_map][guid];
 
         // 同一个响应只运行添加一次
         // 防止同一份数据多次变化影响页面展示
         // 增加这个的原因是 computed 的字段易出现问题，尤其是数组
         if (foundIndex !== undefined) {
             // 直接修改原始的参数
-            queues[foundIndex][1] = args;
+            the[_list][foundIndex][1] = args;
             return;
         }
 
-        map[guid] = queues.length;
-        queues.push([response, args]);
+        the[_map][guid] = the[_list].length;
+        the[_list].push([response, args]);
         clearTimeout(the[_timer]);
         the[_timer] = setTimeout(function () {
+            var queues = the[_list].slice();
+            the[_list] = [];
+            the[_map] = {};
             array.each(queues, function (index, combin) {
                 var res = combin[0];
                 var args = combin[1];
@@ -57,8 +58,6 @@ var Queue = Events.extend({
 
                 res.respond.apply(res, args);
             });
-            the[_list] = [];
-            the[_map] = {};
         }, options.tick);
     }
 });

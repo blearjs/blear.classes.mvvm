@@ -12,6 +12,8 @@ var Events = require('blear.classes.events');
 var random = require('blear.utils.random');
 var array = require('blear.utils.array');
 var access = require('blear.utils.access');
+var typeis = require('blear.utils.typeis');
+var object = require('blear.utils.object');
 var Watcher = require('../watcher/index');
 
 var Queue = require('./queue');
@@ -32,32 +34,33 @@ var Response = Events.extend({
         the[_agentList] = [];
         the[_agentMap] = {};
         the.oldVal = undefined;
+        the.newVal = undefined;
 
         var exp = directive.exp;
         var scope = directive.scope;
 
         switch (directive.category) {
+            // 事件指令
             case 'event':
                 // 表达式解析需要在指令 init 之后
                 var executer = evtParser(exp);
-                directive.get = function (el, ev) {
-                    return executer.call(scope, scope, el, ev);
+                the.get = function (el, ev) {
+                    return executer(scope, el, ev);
                 };
                 break;
 
+            // 普通指令
+            // 虚拟指令
             default:
                 if (directive.empty) {
-                    directive.get = function () {
+                    the.get = function () {
                         // empty
                     };
                 } else {
                     // 表达式解析需要在指令 init 之后
                     var getter = expParser(exp);
-                    directive.get = function () {
-                        the.beforeGet();
-                        var ret = getter.call(scope, scope);
-                        the.afterGet();
-                        return ret;
+                    the.get = function () {
+                        return (the.newVal = getter(scope));
                     };
                 }
                 break;
@@ -65,7 +68,8 @@ var Response = Events.extend({
 
         if (!directive.filters.once) {
             the.respond = function (operation) {
-                var newVal = directive.get();
+                the.beforeGet();
+                the.get();
 
                 // 但这里已经修正，在如下 DOM 结构里：
                 // <1 @for="list1 in list0">
@@ -78,12 +82,16 @@ var Response = Events.extend({
                 //     </2>
                 // </1>
                 // 不是同一个数据源 => 取消后续操作
-                if (directive.category === 'for' && operation.method !== 'set' && newVal !== operation.parent) {
-                    return;
+
+                var notSameOrigin = directive.category === 'for' && operation.method !== 'set' && the.newVal !== operation.parent;
+                var hasChanged = the.newVal !== the.oldVal;
+
+                // for 指令数组变化同源 && 已经变化
+                if (!notSameOrigin && hasChanged) {
+                    directive.update(directive.node, the.newVal, the.oldVal, operation);
                 }
 
-                directive.update(directive.node, newVal, the.oldVal, operation);
-                the.oldVal = newVal;
+                the.afterGet();
             };
         }
     },
@@ -94,6 +102,15 @@ var Response = Events.extend({
 
     afterGet: function () {
         Watcher.response = null;
+
+        var the = this;
+        var newVal = the.newVal;
+
+        if (typeof newVal === 'object') {
+            the.oldVal = object.assign(typeis.Object(newVal) ? {} : [], newVal)
+        } else {
+            the.oldVal = newVal;
+        }
     },
 
     link: function (agent) {

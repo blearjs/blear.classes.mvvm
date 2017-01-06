@@ -23,6 +23,7 @@ var defaults = {
     el: 'body',
     data: {},
     computed: {},
+    watch: {},
     methods: {}
 };
 var definitions = {};
@@ -32,6 +33,7 @@ var MVVM = Events.extend({
         var the = this;
 
         MVVM.parent(the);
+        the[_computedWatchList] = [];
         the[_options] = object.assign({}, defaults, options);
         the[_initScope]();
         the[_initComputed]();
@@ -63,6 +65,7 @@ var _initComputed = MVVM.sole();
 var _initDirectives = MVVM.sole();
 var _definitions = MVVM.sole();
 var _initVM = MVVM.sole();
+var _computedWatchList = MVVM.sole();
 var _initWatch = MVVM.sole();
 var pro = MVVM.prototype;
 
@@ -91,6 +94,8 @@ pro[_initComputed] = function () {
             computedSet = fun.bind(val.set, scope);
         }
 
+        // 加入观察列表
+        the[_computedWatchList].push([scope, key, computedGet, computedSet]);
         object.define(scope, key, {
             enumerable: true,
             get: computedGet,
@@ -127,7 +132,18 @@ pro[_initWatch] = function () {
     var the = this;
     var options = the[_options];
 
-    object.each(options.watch || {}, function (key, watcher) {
+    array.each(the[_computedWatchList], function (index, comb) {
+        var scope = comb[0];
+        var key = comb[1];
+        var computedGet = comb[2];
+        var computedSet = comb[3];
+
+        the.watch(computedGet, function (newVal) {
+            scope[key] = newVal;
+        }, true);
+    });
+
+    object.each(options.watch, function (key, watcher) {
         var immediate = false;
 
         if (typeis.Object(watcher)) {

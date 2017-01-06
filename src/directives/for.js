@@ -115,7 +115,7 @@ module.exports = {
         the.tplNode = node;
         modification.remove(node);
     },
-    update: function (node, newVal, _oldVal, operation) {
+    update: function (node, newVal, oldVal, operation) {
         var the = this;
         var childScopeList = the.childScopeList;
         var childNodeList = the.childNodeList;
@@ -128,7 +128,7 @@ module.exports = {
                 return;
             }
 
-            var oldVal = operation.oldVal;
+            oldVal = oldVal || operation.oldVal;
             var spliceIndex = operation.spliceIndex;
             var spliceCount = operation.spliceCount;
             var insertValue = operation.insertValue;
