@@ -26,8 +26,6 @@ exports.init = function (directive, newVal) {
         var val = directive.response.get();
         var nodeVal = node.value;
 
-        vm[checking] = node;
-
         if (typeis.Boolean(val)) {
             directive.set(!val);
         } else {
@@ -42,21 +40,11 @@ exports.init = function (directive, newVal) {
 
 exports.update = function (directive, newVal) {
     var node = directive.node;
-    var vm= directive.vm;
+    var nodeVal = node.value;
 
-    time.nextTick(function () {
-        if (vm[checking] === node) {
-            return;
-        }
-
-        var nodeVal = node.value;
-
-        if (typeis.Boolean(newVal)) {
-            node.checked = newVal;
-        } else {
-            node.checked = arrFlow.fd(newVal, nodeVal) > -1;
-        }
-    });
-
-
+    if (typeis.Boolean(newVal)) {
+        node.checked = newVal;
+    } else {
+        node.checked = arrFlow.fd(newVal, nodeVal) > -1;
+    }
 };

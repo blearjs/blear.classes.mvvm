@@ -19,6 +19,7 @@ var Watcher = require('../watcher/index');
 var Queue = require('./queue');
 var expParser = require('../parsers/expression');
 var evtParser = require('../parsers/event');
+var configs = require('../configs');
 
 var queue = new Queue();
 
@@ -83,11 +84,28 @@ var Response = Events.extend({
                 // </1>
                 // 不是同一个数据源 => 取消后续操作
 
-                var notSameOrigin = directive.category === 'for' && operation.method !== 'set' && the.newVal !== operation.parent;
-                var hasChanged = the.newVal !== the.oldVal;
+                var notSameOrigin = directive.category === 'for'
+                    && operation.method !== 'set' && the.newVal !== operation.parent;
+
+                if (notSameOrigin) {
+                    // 如果是计算属性的话，当做 set 来处理，重写 operation
+                    if (the.newVal[configs.computedFlagName]) {
+                        operation = object.filter(operation, [
+                            'newVal',
+                            'oldVal',
+                            'parent',
+                            'type',
+                            'insertValue'
+                        ]);
+                        operation.method = 'set';
+                    } else {
+                        the.afterGet();
+                        return;
+                    }
+                }
 
                 // for 指令数组变化同源 && 已经变化
-                if (!notSameOrigin && hasChanged) {
+                if (the.newVal !== the.oldVal) {
                     directive.update(directive.node, the.newVal, the.oldVal, operation);
                 }
 

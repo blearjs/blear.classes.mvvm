@@ -14,15 +14,16 @@ var MVVM = require('../../src/index');
 var storeKey = 'blear.todos';
 
 var getStore = function () {
-    try {
-        return JSON.parse(localStorage.getItem(storeKey)) || [];
-    } catch (err) {
-        return [];
-    }
+    // try {
+    //     return JSON.parse(localStorage.getItem(storeKey)) || [];
+    // } catch (err) {
+    //     return [];
+    // }
+    return [];
 };
 
 var setStore = function (todos) {
-    localStorage.setItem(storeKey, JSON.stringify(todos))
+    // localStorage.setItem(storeKey, JSON.stringify(todos))
 };
 
 var filterTodos = function (filter, todos) {
@@ -92,6 +93,9 @@ window.mvvm = new MVVM({
         },
         onRemove: function (todo) {
             this.todos.delete(todo);
+        },
+        onClearCompleted: function () {
+            this.todos = filterTodos(1, this.todos);
         },
         onFilter: function (filter) {
             this.filter = filter;

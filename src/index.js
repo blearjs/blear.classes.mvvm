@@ -18,6 +18,7 @@ var fun = require('blear.utils.function');
 var anchor = require('./utils/anchor');
 var ViewModel = require('./classes/view-model');
 var Directive = require('./classes/directive');
+var configs = require('./configs');
 
 var defaults = {
     el: 'body',
@@ -94,11 +95,23 @@ pro[_initComputed] = function () {
             computedSet = fun.bind(val.set, scope);
         }
 
+        var rewritedGet = function () {
+            var val = computedGet();
+
+            if (typeof val === 'object') {
+                object.define(val, configs.computedFlagName, {
+                    value: true
+                });
+            }
+
+            return val;
+        };
+
         // 加入观察列表
         the[_computedWatchList].push([scope, key, computedGet, computedSet]);
         object.define(scope, key, {
             enumerable: true,
-            get: computedGet,
+            get: rewritedGet,
             set: computedSet
         });
     });
@@ -139,7 +152,7 @@ pro[_initWatch] = function () {
         var computedSet = comb[3];
 
         the.watch(computedGet, function (newVal) {
-            scope[key] = newVal;
+            scope[key] = newVal
         }, true);
     });
 

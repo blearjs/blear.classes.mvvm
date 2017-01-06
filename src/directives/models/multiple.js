@@ -16,7 +16,6 @@ var arrFlow = require('../../utils/array-flow');
 var varible = require('../../utils/varible');
 var configs = require('../../configs');
 
-var selecting = varible();
 var getOptionVal = function (el) {
     return el.value || el.textContent;
 };
@@ -26,7 +25,6 @@ exports.init = function (directive, newVal) {
     var vm = directive.vm;
 
     event.on(vm.el, 'change', node, directive.listener = function (ev) {
-        vm[selecting] = node;
         var children = selector.children(node);
         array.each(children, function (index, optionEl) {
             var val = directive.response.get();
@@ -38,19 +36,11 @@ exports.init = function (directive, newVal) {
                 arrFlow.rm(val, optionVal);
             }
         });
-        time.nextTick(function () {
-            vm[selecting] = null;
-        });
     });
 };
 
 exports.update = function (directive, newVal) {
     var node = directive.node;
-
-    if (directive.vm[selecting] === node) {
-        return;
-    }
-
     var children = selector.children(node);
     var val = directive.response.get();
 

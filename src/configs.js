@@ -46,3 +46,6 @@ exports.forIndexName = '$index';
 // for 指令的 index 名称
 // 如：@for="item in map" $key 会隐式创建
 exports.forKeyName = '$key';
+
+// 标记数据是计算属性的名称
+exports.computedFlagName = '__computed__';
