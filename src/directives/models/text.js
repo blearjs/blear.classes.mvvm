@@ -53,7 +53,7 @@ exports.update = function (directive, newVal) {
     var vm = directive.vm;
 
     // 避免当前正在输入的输入框重新赋值影响输入体验
-    if (vm[inputing] !== node) {
+    if (vm[inputing] !== node || newVal !== node.value) {
         node.value = newVal;
     }
 };

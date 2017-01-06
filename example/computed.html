@@ -19,6 +19,19 @@
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
     <title>computed.html</title>
     <link rel="stylesheet" href="./style.css">
+    <style>
+        .p1 {
+            background: #000;
+            color: #fff;
+            padding: 10px;
+        }
+
+        .p2 {
+            background: #7d10d8;
+            color: #fff;
+            padding: 10px;
+        }
+    </style>
 </head>
 <body ontouchstart="">
 
@@ -30,16 +43,10 @@
     <hr>
     <p>
         <button @click="onPush">新增数组</button>
+        <button @click="onFilter">切换比较值</button>
     </p>
-    <pre @pre>原始数组：{{JSON.stringify(arr1, null, 4)}}</pre>
-    <pre>原始数组：{{JSON.stringify(arr1, null, 4)}}</pre>
-    <pre @pre>计算数组：{{JSON.stringify(arr2, null, 4)}}</pre>
-    <pre>arr2: function () {
-    return this.arr1.filter(function (item) {
-        return item.n > 0.5;
-    });
-}</pre>
-    <pre>计算数组：{{JSON.stringify(arr2, null, 4)}}</pre>
+    <p class="p1">原始数组：{{JSON.stringify(arr1)}}</p>
+    <p class="p2">&gt;{{filter}}的数组：{{JSON.stringify(arr2)}}</p>
 </div>
 
 <script src="/node_modules/coolie.js/coolie.js"

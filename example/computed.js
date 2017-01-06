@@ -9,9 +9,14 @@
 
 var MVVM = require('../src/index');
 
+var n = function () {
+    return Number(Math.random().toFixed(2));
+};
+
 window.data = {
     firstName: '张',
     lastName: '三',
+    filter: 0.5,
     arr1: []
 };
 new MVVM({
@@ -30,14 +35,18 @@ new MVVM({
             }
         },
         arr2: function () {
-            return this.arr1.filter(function (item) {
-                return item.n > 0.5;
+            var the = this;
+            return the.arr1.filter(function (item) {
+                return item > the.filter;
             });
         }
     },
     methods: {
         onPush: function () {
-            this.arr1.push({n: Math.random()})
+            this.arr1.push(n());
+        },
+        onFilter: function () {
+            this.filter = n();
         }
     }
 });

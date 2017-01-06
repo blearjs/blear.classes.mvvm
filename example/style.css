@@ -9,6 +9,7 @@
 p {
     line-height: 20px;
     min-height: 20px;
+    word-break: break-all;
 }
 
 pre {
