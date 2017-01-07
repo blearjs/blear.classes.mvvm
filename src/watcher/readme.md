@@ -7,23 +7,22 @@
 
 
 ```
-data => wire => vibrator
+data => wire => terminal
 
-{ --> linker --> wire --> [terminal1, terminal2]
-    obj: --> wire --> [terminal1, terminal2]
-        { --> linker --> wire --> [terminal1, terminal2]
-            a: --> wire --> [terminal1, terminal2]
-            b: --> wire --> [terminal1, terminal2]
+{ --> linker --> wire --> [terminal1, ...]
+    obj: --> wire --> [terminal1, ...]
+        { --> linker --> wire --> [terminal1, ...]
+            a: --> wire --> [terminal1, ...]
+            b: --> wire --> [terminal1, ...]
         }
         
-    arr: --> wire --> [terminal1, terminal2]
-        [ --> linker --> wire --> [terminal1, terminal2]
+    arr: --> wire --> [terminal1, ...]
+        [ --> linker --> wire --> [terminal1, ...]
            1,
            2
         ]
 }
 ```
-
 
 - 其中 `terminal` 需要调用者实现
 - `terminal` 需要实现 `.link` 方法，用来与 `wire` 进行关联
