@@ -12,14 +12,15 @@ var array = require('blear.utils.array');
 var random = require('blear.utils.random');
 var typeis = require('blear.utils.typeis');
 var access = require('blear.utils.access');
-var Class = require('blear.classes.class');
+var Events = require('blear.classes.events');
 
 var Agent = require('./agent');
-var Bait = Class.extend({
+var Bait = Events.extend({
     className: 'Bait',
     constructor: function (data) {
         var the = this;
 
+        Bait.parent(the);
         the.agent = new Agent();
         the.guid = guid();
         defineValue(data, BAIT_FLAG_NAME, the);

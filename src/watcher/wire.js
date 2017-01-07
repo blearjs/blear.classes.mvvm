@@ -13,12 +13,12 @@ var array = require('blear.utils.array');
 var access = require('blear.utils.access');
 var typeis = require('blear.utils.typeis');
 
-var Agent = Events.extend({
-    className: 'Agent',
+var Wire = Events.extend({
+    className: 'Wire',
     constructor: function () {
         var the = this;
 
-        Agent.parent(the);
+        Wire.parent(the);
         the.guid = random.guid();
         the[_responseList] = [];
         the[_responseMap] = {};
@@ -29,7 +29,7 @@ var Agent = Events.extend({
      */
     link: function () {
         var the = this;
-        var response = Agent.response;
+        var response = Wire.response;
 
         if (response &&
             // 用来接收变化
@@ -61,9 +61,9 @@ var Agent = Events.extend({
     },
 
     /**
-     * 中枢变化
+     * 传递
      */
-    react: function () {
+    pipe: function () {
         var the = this;
         var args = access.args(arguments);
 
@@ -73,15 +73,15 @@ var Agent = Events.extend({
                 return;
             }
 
-            response.respond.apply(response, args);
+            response.pipe.apply(response, args);
         });
     }
 });
-var _responseList = Agent.sole();
-var _responseMap = Agent.sole();
+var _responseList = Wire.sole();
+var _responseMap = Wire.sole();
 
-Agent.response = null;
-module.exports = Agent;
+Wire.response = null;
+module.exports = Wire;
 
 
 function isFunction(any) {
