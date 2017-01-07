@@ -126,6 +126,7 @@ window.mvvm = new MVVM({
     watch: {
         todos: {
             deep: true,
+            imme: false,
             handle: setStore
         }
     }

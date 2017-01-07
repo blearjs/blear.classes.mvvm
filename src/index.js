@@ -27,7 +27,8 @@ var defaults = {
     watch: {},
     methods: {},
     watchDefaults: {
-        immediate: false,
+        // immediately
+        imme: false,
         deep: false
     }
 };
@@ -52,7 +53,7 @@ var MVVM = Events.extend({
         var virtualDirective = new Directive({
             exp: exp,
             update: function (node, newVal, oldVal, signal) {
-                if (this.bound || options.immediate && !this.bound) {
+                if (this.bound || options.imme && !this.bound) {
                     callback.call(the.scope, newVal, oldVal, signal);
                 }
             }
@@ -163,14 +164,14 @@ pro[_initWatch] = function () {
     the[_computedWatchList] = null;
 
     object.each(options.watch, function (key, watcher) {
-        var immediate = false;
         var options = null;
 
         if (typeis.Object(watcher)) {
             options = {
-                immediate: watcher.immediately,
+                imme: watcher.imme,
                 deep: watcher.deep
             };
+            watcher = watcher.handle;
         }
 
         the.watch(key, watcher, options);

@@ -95,8 +95,19 @@ it('@model checkbox multiple', function (done) {
         expect(input4El.checked).toBe(true);
         expect(pEl.innerHTML).toBe('3,4');
 
-        utils.removeDIV(el);
-        done();
+        input3El.checked = false;
+        event.emit(input3El, 'change');
+
+        time.nextTick(function () {
+            expect(input1El.checked).toBe(false);
+            expect(input2El.checked).toBe(false);
+            expect(input3El.checked).toBe(false);
+            expect(input4El.checked).toBe(true);
+            expect(pEl.innerHTML).toBe('4');
+
+            utils.removeDIV(el);
+            done();
+        });
     });
 });
 

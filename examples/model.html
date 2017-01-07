@@ -34,8 +34,15 @@
         <legend>input:number</legend>
         <p>number: {{number}}</p>
         <pre>@model.number="number"</pre>
-        <p><input type="number" @model.number="number"></p>
-        <p><input type="number" @model.number="number"></p>
+        <p><input type="number" @model="number"></p>
+        <p><input type="number" @model="number"></p>
+    </fieldset>
+    <fieldset>
+        <legend>input:text</legend>
+        <p>number: {{number}}</p>
+        <pre>@model.number="number"</pre>
+        <p><input type="text" @model.number="number"></p>
+        <p><input type="text" @model.number="number"></p>
     </fieldset>
     <fieldset>
         <legend>input:checkbox:array</legend>

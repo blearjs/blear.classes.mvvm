@@ -17,7 +17,7 @@ it(':attr', function (done) {
         def: 456,
         xyz: true
     };
-    el.innerHTML = '<p :abc="abc"></p>';
+    el.innerHTML = '<p :abc="abc" :def.prop="def" :hidden="xyz"></p>';
     var childEl = el.firstChild;
 
     new MVVM({
@@ -28,13 +28,13 @@ it(':attr', function (done) {
     expect(childEl.getAttribute('abc')).toBe('123');
     data.abc = 456;
     expect(childEl.getAttribute('abc')).toBe('456');
-    // data.abc = true;
-    // expect(childEl.getAttribute('abc')).toBe('true');
-    // data.abc = null;
-    // expect(childEl.getAttribute('abc')).toBe('');
-    //
-    // expect(childEl.def).toBe(456);
-    // expect(childEl.hidden).toBe(true);
+    data.abc = true;
+    expect(childEl.getAttribute('abc')).toBe('true');
+    data.abc = null;
+    expect(childEl.getAttribute('abc')).toBe('');
+
+    expect(childEl.def).toBe(456);
+    expect(childEl.hidden).toBe(true);
 
     utils.removeDIV(el);
     done();

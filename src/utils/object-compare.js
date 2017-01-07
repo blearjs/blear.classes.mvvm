@@ -21,7 +21,11 @@ module.exports = function (before, after) {
     var removeList = [];
 
     object.each(before, function (key) {
-        if (!(key in after)) {
+        if (
+            after[key] === null ||
+            after[key] === false ||
+            after[key] === undefined
+        ) {
             removeList.push(key);
         }
     });

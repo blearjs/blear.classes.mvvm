@@ -37,6 +37,13 @@ it(':style', function (done) {
     expect(firstEl.style.borderLeftWidth).toEqual('3px');
     expect(firstEl.style.paddingLeft).toEqual('5px');
 
+    data.borderWidth = null;
+    expect(firstEl.style.width).toEqual('1px');
+    expect(firstEl.style.height).toEqual('2px');
+    expect(firstEl.style.borderLeftWidth).toEqual('');
+    expect(firstEl.style.paddingLeft).toEqual('5px');
+
+
     done();
 });
 
