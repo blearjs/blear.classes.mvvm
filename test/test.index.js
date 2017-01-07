@@ -13,6 +13,8 @@ window.UNIT_TEST = true;
 describe('指令', function () {
     require('./directives/attr');
     require('./directives/class');
+    require('./directives/display');
+    require('./directives/event');
     require('./directives/for');
     require('./directives/html');
     require('./directives/if');
@@ -24,8 +26,6 @@ describe('指令', function () {
     require('./directives/pre');
     require('./directives/style');
     require('./directives/text');
-    // 事件
-    // 显示
 });
 
 describe('参数', function () {

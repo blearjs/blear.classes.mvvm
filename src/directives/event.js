@@ -105,8 +105,8 @@ module.exports = {
             return ret;
         };
 
-        // 不同冒泡的事件不代理
-        if (doNotBubbleEvents[eventType]) {
+        // 不同冒泡的事件不代理 || 需要 stop 事件
+        if (doNotBubbleEvents[eventType] || filters.stop || filters['false']) {
             event.on(node, eventType, listener);
         } else {
             event.on(vm.el, eventType, node, listener);
@@ -116,7 +116,8 @@ module.exports = {
     destroy: function () {
         var the = this;
 
-        event.un(the.vm, the.eventType, the.listener);
+        event.un(the.vm.el, the.eventType, the.listener);
+        event.un(the.node, the.eventType, the.listener);
     }
 };
 

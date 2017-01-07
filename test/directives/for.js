@@ -7,6 +7,9 @@
 
 'use strict';
 
+var array = require('blear.utils.array');
+var random = require('blear.utils.random');
+
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
@@ -112,6 +115,39 @@ it('@for 1 维数组', function (done) {
     );
 
     utils.removeDIV(el);
+    done();
+});
+
+it('@for sort', function (done) {
+    var data = {
+        list: []
+    };
+    var el = utils.createDIV();
+    el.innerHTML =
+        '<a @for="n in list">{{n}}</a>';
+    var length = 30;
+
+    while (length--) {
+        data.list.push(random.number(1, 1000));
+    }
+
+    new MVVM({
+        el: el,
+        data: data
+    });
+
+    length = 30;
+
+    while (length--) {
+        data.list.sort(function () {
+            return Math.random() - 0.5;
+        });
+
+        array.each(el.children, function (index, childEl) {
+            expect(childEl.innerHTML).toBe(data.list[index] + '');
+        });
+    }
+
     done();
 });
 

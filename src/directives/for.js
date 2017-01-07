@@ -16,7 +16,6 @@ var random = require('blear.utils.random');
 var anchor = require('../utils/anchor');
 var arrayDiff = require('../utils/array-diff');
 var configs = require('../configs');
-var Directive = require('../classes/directive');
 
 var ARRAY_POP = 'pop';
 var ARRAY_PUSH = 'push';
@@ -48,11 +47,6 @@ var buildChildMVVM = function (directive, index, data, signal) {
         case ARRAY_PUSH:
             insertTarget = anchorEnd;
             insertPosition = 0;
-            break;
-
-        case ARRAY_UNSHIFT:
-            insertTarget = anchorStart;
-            insertPosition = 3;
             break;
 
         case ARRAY_SPLICE:
@@ -120,14 +114,8 @@ module.exports = {
         var childScopeList = the.childScopeList;
         var childNodeList = the.childNodeList;
         var childVMList = the.childVMList;
-        var isArray = typeis.Array(newVal);
 
         if (the.bound) {
-            if (!isArray) {
-                debugger;
-                return;
-            }
-
             oldVal = oldVal || signal.oldVal;
             var spliceIndex = signal.spliceIndex;
             var spliceCount = signal.spliceCount;
@@ -143,6 +131,7 @@ module.exports = {
             switch (signal.method) {
                 case ARRAY_SORT:
                     var diffs = arrayDiff(oldVal, newVal);
+                    // @todo 性能优化
                     array.each(diffs, function (index, diff) {
                         switch (diff.type) {
                             case 'move':
@@ -153,35 +142,35 @@ module.exports = {
                                 var howMany = diff.howMany;
 
                                 // 计算相对移动
-                                array.each(diffs, function (preIndex, preDiff) {
-                                    if (preIndex === index) {
-                                        return false;
-                                    }
-
-                                    var preFrom = preDiff.from;
-                                    var preTo = preDiff.to;
-                                    var preHowMany = preDiff.howMany;
-
-                                    // oooAooooAooo
-                                    // ooooooBooooo
-                                    // 如果 A 移动是跨越 B 的，那么就需要计算偏移量了
-                                    // 1. B 的右边到 B 的左边
-                                    if (preFrom > from0 && preTo < from0) {
-                                        from1 += preHowMany;
-
-                                        if (preTo < to0) {
-                                            to1 += preHowMany;
-                                        }
-                                    }
-                                    // 2. B 的左边到 B 的右边
-                                    if (preFrom < from0 && preTo > from0) {
-                                        from1 -= preHowMany;
-
-                                        if (preTo > to0) {
-                                            to1 -= preHowMany;
-                                        }
-                                    }
-                                });
+                                // array.each(diffs, function (preIndex, preDiff) {
+                                //     if (preIndex === index) {
+                                //         return false;
+                                //     }
+                                //
+                                //     var preFrom = preDiff.from;
+                                //     var preTo = preDiff.to;
+                                //     var preHowMany = preDiff.howMany;
+                                //
+                                //     // oooAooooAooo
+                                //     // ooooooBooooo
+                                //     // 如果 A 移动是跨越 B 的，那么就需要计算偏移量了
+                                //     // 1. B 的右边到 B 的左边
+                                //     if (preFrom > from0 && preTo < from0) {
+                                //         from1 += preHowMany;
+                                //
+                                //         if (preTo < to0) {
+                                //             to1 += preHowMany;
+                                //         }
+                                //     }
+                                //     // 2. B 的左边到 B 的右边
+                                //     if (preFrom < from0 && preTo > from0) {
+                                //         from1 -= preHowMany;
+                                //
+                                //         if (preTo > to0) {
+                                //             to1 -= preHowMany;
+                                //         }
+                                //     }
+                                // });
 
                                 // 移动子节点
                                 var nodes = childNodeList.slice(from1, from1 + howMany);
@@ -217,11 +206,9 @@ module.exports = {
                     break;
             }
 
-            if (isArray) {
-                array.each(the.childScopeList, function (index, scope) {
-                    scope[the.indexName] = index;
-                });
-            }
+            array.each(the.childScopeList, function (index, scope) {
+                scope[the.indexName] = index;
+            });
         } else {
             collection.each(newVal, function (index, data) {
                 buildChildMVVM(the, index, data, {
