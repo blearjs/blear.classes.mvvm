@@ -66,7 +66,7 @@ it('@model checkbox multiple', function (done) {
     var input4El = input3El.nextElementSibling;
     var pEl = input4El.nextElementSibling;
 
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -104,9 +104,15 @@ it('@model checkbox multiple', function (done) {
             expect(input3El.checked).toBe(false);
             expect(input4El.checked).toBe(true);
             expect(pEl.innerHTML).toBe('4');
+            mvvm.destroy();
+            input3El.checked = true;
+            event.emit(input3El, 'change');
 
-            utils.removeDIV(el);
-            done();
+            time.nextTick(function () {
+                expect(pEl.innerHTML).toBe('4');
+                utils.removeDIV(el);
+                done();
+            });
         });
     });
 });

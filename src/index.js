@@ -14,6 +14,7 @@ var array = require('blear.utils.array');
 var typeis = require('blear.utils.typeis');
 var access = require('blear.utils.access');
 var fun = require('blear.utils.function');
+var random = require('blear.utils.random');
 
 var anchor = require('./utils/anchor');
 var ViewModel = require('./classes/view-model');
@@ -63,6 +64,11 @@ var MVVM = Events.extend({
             virtualDirective.destroy();
             virtualDirective = null;
         };
+    },
+    destroy: function () {
+        var the = this;
+
+        the[_vm].destroy();
     }
 });
 var _options = MVVM.sole();
@@ -74,6 +80,7 @@ var _definitions = MVVM.sole();
 var _initVM = MVVM.sole();
 var _computedWatchList = MVVM.sole();
 var _initWatch = MVVM.sole();
+var _mvvmID = MVVM.sole();
 var pro = MVVM.prototype;
 
 pro[_initScope] = function () {
@@ -144,6 +151,7 @@ pro[_initVM] = function () {
     the[_vm].setInstanceDefinitions(the[_definitions]);
     the[_vm].setStaticlDefinitions(definitions);
     the[_vm].run();
+    rootEl[_mvvmID] = random.guid();
     modification.insert(rootEl, anchorNode, 3);
 };
 

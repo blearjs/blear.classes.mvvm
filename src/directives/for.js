@@ -206,7 +206,7 @@ module.exports = {
                     var removeVMList = childVMList.splice(spliceIndex, spliceCount);
 
                     while (removeVMList.length) {
-                        removeVMList.pop().destroy();
+                        removeVMList.pop().destroy(true);
                     }
 
                     array.each(insertValue, function (index, data) {

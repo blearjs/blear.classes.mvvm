@@ -128,8 +128,9 @@ var ViewModel = Class.extend({
 
     /**
      * 销毁当前 VM
+     * @param removeEl {Boolean}
      */
-    destroy: function () {
+    destroy: function (removeEl) {
         var the = this;
 
         // 1、销毁管理的指令
@@ -147,17 +148,14 @@ var ViewModel = Class.extend({
         }
 
         // 3、删除 DOM 节点
-        modification.remove(the.el);
+        if (removeEl) {
+            modification.remove(the.el);
+        }
 
         // 4、删除父级对当前的引用
-        var foundIndex = -1;
-        array.each(the.parent.children, function (index, child) {
-            if (child === the) {
-                foundIndex = index;
-                return false;
-            }
-        });
-        the.parent.children.splice(foundIndex, 1);
+        if (the.parent) {
+            array.delete(the.parent.children, the);
+        }
 
         // 5、删除当前引用
         the.children = the.parent
