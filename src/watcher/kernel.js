@@ -16,16 +16,16 @@ var access = require('blear.utils.access');
 var Events = require('blear.classes.events');
 
 var Wire = require('./wire');
-var Bait = Events.extend({
-    className: 'Bait',
+var Linker = Events.extend({
+    className: 'Linker',
     constructor: function (data) {
         var the = this;
 
-        Bait.parent(the);
+        Linker.parent(the);
         the.wire = new Wire();
         the.guid = guid();
-        defineValue(data, BAIT_FLAG_NAME, the);
-        defineValue(data, BAIT_DATA_GUID_NAME, guid());
+        defineValue(data, LINKER_FLAG_NAME, the);
+        defineValue(data, LINKER_DATA_GUID_NAME, guid());
 
         if (isObject(data)) {
             observeObject(data);
@@ -34,32 +34,32 @@ var Bait = Events.extend({
         }
     }
 });
-var BAIT_FLAG_NAME = Bait.sole();
+var LINKER_FLAG_NAME = Linker.sole();
+var LINKER_DATA_GUID_NAME = Linker.sole();
 
 
 function linkStart(data) {
-    var bait = getBait(data);
+    var linker = getLinker(data);
 
-    if (bait === null || bait) {
-        return bait;
+    if (linker === null || linker) {
+        return linker;
     }
 
-    return new Bait(data);
+    return new Linker(data);
 }
 
 
-function getBait(data) {
+function getLinker(data) {
     if (!isData(data)) {
         return null;
     }
 
-    if (hasOwn(data, BAIT_FLAG_NAME)) {
-        return data[BAIT_FLAG_NAME];
+    if (hasOwn(data, LINKER_FLAG_NAME)) {
+        return data[LINKER_FLAG_NAME];
     }
 }
 
 
-var BAIT_DATA_GUID_NAME = guid();
 var ARRAY_POP = 'pop';
 var ARRAY_PUSH = 'push';
 var ARRAY_REVERSE = 'reverse';
@@ -105,13 +105,13 @@ function defineValue(obj, key, val) {
 function deepLinkArray(data) {
     if (isArray(data)) {
         array.each(data, function (index, item) {
-            var bait = getBait(item);
+            var linker = getLinker(item);
 
-            if (!bait) {
+            if (!linker) {
                 return;
             }
 
-            bait.wire.link();
+            linker.wire.link();
 
             deepLinkArray(item);
         });
@@ -131,13 +131,13 @@ function linking(obj, key) {
         enumerable: true,
         get: function () {
             var oldVal = preGet ? preGet.call(obj) : val;
-            var deepBait = getBait(oldVal);
+            var deepLinker = getLinker(oldVal);
 
             deepLinkArray(oldVal);
             wire.link();
 
-            if (deepBait) {
-                deepBait.wire.link();
+            if (deepLinker) {
+                deepLinker.wire.link();
             }
 
             return oldVal;
@@ -251,7 +251,7 @@ function observeArray(arr) {
                 newVal: arr
             };
 
-            getBait(arr).wire.pipe(signal);
+            getLinker(arr).wire.pipe(signal);
         });
     });
 

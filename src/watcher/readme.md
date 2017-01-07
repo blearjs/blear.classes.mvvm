@@ -1,11 +1,29 @@
 
 # 流程
-```$xslt
-data => bait => wire => vibrator -- 内部实现
-一个 data 的一个 key 关联一个 bait -- 内部实现
-一个 bait 关联多个 wire ------------ 内部实现
-一个 wire 关联多个 terminal -------- 内部实现
+
+- 一个 data 的一个 key 关联一个 wire
+- data 层级之前使用 linker 来关联
+- 一个 wire 关联多个 terminal
+
+
 ```
+data => wire => vibrator
+
+{ --> linker
+    obj: --> wire
+        { --> linker
+            a: --> wire    
+            b: --> wire    
+        }
+        
+    arr: --> wire
+        [ --> linker
+           1,
+           2
+        ]
+}
+```
+
 
 - 其中 `terminal` 需要调用者实现
 - `terminal` 需要实现 `.link` 方法，用来与 `wire` 进行关联

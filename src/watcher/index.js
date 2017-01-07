@@ -84,6 +84,11 @@ object.define(Watcher, 'terminal', {
         return linkingTerminal;
     },
     set: function (terminal) {
+        if (terminal === null) {
+            linkingTerminal = terminal;
+            return;
+        }
+
         if (terminal && isFunction(terminal.link) && isFunction(terminal.pipe)) {
             linkingTerminal = terminal;
             return;
