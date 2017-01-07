@@ -2,6 +2,7 @@
  * 数据观察者
  * @author ydr.me
  * @created 2016-12-31 02:36
+ * @updated 2017年01月07日15:27:12
  */
 
 
@@ -13,8 +14,8 @@ var object = require('blear.utils.object');
 var random = require('blear.utils.random');
 var typeis = require('blear.utils.typeis');
 
-var observe = require('./observe');
-var Agent = require('./agent');
+var kernel = require('./kernel');
+var Wire = require('./wire');
 
 var defaults = {
     keys: null
@@ -34,17 +35,17 @@ var Watcher = Events.extend({
 
         if (keys && typeis.Array(keys)) {
             array.each(keys, function (index, key) {
-                observe.key(data, key);
+                kernel.key(data, key);
             });
         } else {
-            observe.data(data, null, null);
+            kernel.data(data, null, null);
         }
     },
 
     link: function (agent) {
         var the = this;
 
-        if (agent && agent instanceof Agent) {
+        if (agent && agent instanceof Wire) {
             var map = the[_agentMap];
             var list = the[_agentList];
             var guid = agent.guid;
@@ -76,15 +77,34 @@ var Watcher = Events.extend({
 var _options = Watcher.sole();
 var _agentMap = Watcher.sole();
 var _agentList = Watcher.sole();
+var linkingTerminal = null;
 
-object.define(Watcher, 'response', {
+object.define(Watcher, 'terminal', {
     get: function () {
-        return Agent.response;
+        return linkingTerminal;
     },
-    set: function (response) {
-        Agent.response = response;
+    set: function (terminal) {
+        if (terminal && isFunction(terminal.link) && isFunction(terminal.pipe)) {
+            linkingTerminal = terminal;
+            return;
+        }
+
+        if (typeof DEBUG !== 'undefined' && DEBUG) {
+            throw new TypeError(
+                '当前数据 `watcher` 的 `terminal` 实现不正确。\n' +
+                '- `terminal.link(wire)` 用来与 `wire` 进行信号传输关联。\n' +
+                '- `terminal.pipe(signal)` 用来传递信号。\n' +
+                '- `terminal` 调用 `wire.unlink(terminal)` 用来断开关联关系。\n' +
+                '- 因此需要 `terminal` 自己来管理与多个 `wire` 之前的关系，如果有的话。'
+            );
+        }
     }
 });
 
-Agent.Watcher = Watcher;
+Wire.Watcher = Watcher;
 module.exports = Watcher;
+
+function isFunction(any) {
+    return typeis.Function(any);
+}
+

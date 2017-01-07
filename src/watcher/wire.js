@@ -31,7 +31,7 @@ var Wire = Events.extend({
     link: function () {
         var the = this;
         // 获取当前视图链接的终端
-        var terminal = Wire.terminal;
+        var terminal = Wire.Watcher.terminal;
 
         if (
             terminal &&
@@ -85,9 +85,7 @@ var Wire = Events.extend({
 var _terminalList = Wire.sole();
 var _terminalMap = Wire.sole();
 
-Wire.terminal = null;
 module.exports = Wire;
-
 
 function isFunction(any) {
     return typeis.Function(any);
