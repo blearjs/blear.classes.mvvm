@@ -88,7 +88,7 @@ module.exports = {
                 return;
             }
 
-            var ret = the.response.get(this, ev);
+            var ret = the.get(this, ev);
 
             if (filters['false']) {
                 return false;

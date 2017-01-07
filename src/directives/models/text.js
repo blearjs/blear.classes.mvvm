@@ -47,7 +47,7 @@ exports.init = function (directive) {
                 setVal = number.parseFloat(setVal);
             }
 
-            directive.response.set(setVal);
+            directive.set(setVal);
         }, 1);
     });
 };

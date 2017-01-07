@@ -29,7 +29,7 @@ exports.init = function (directive, newVal) {
 
 exports.update = function (directive, newVal) {
     var node = directive.node;
-    var val = directive.response.get();
+    var val = directive.get();
 
     if (changing === node) {
         changing = null;

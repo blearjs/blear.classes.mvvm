@@ -23,17 +23,16 @@ var configs = require('../configs');
 
 // var queue = new Queue();
 
-var Response = Events.extend({
-    className: 'Response',
+var Responder = Events.extend({
+    className: 'Responder',
     constructor: function (directive) {
         var the = this;
 
-        Response.parent(the);
+        Responder.parent(the);
         the.directive = directive;
         the.guid = random.guid();
-        the.respond = null;
-        the[_agentList] = [];
-        the[_agentMap] = {};
+        the[_wireList] = [];
+        the[_wireMap] = {};
         the.oldVal = undefined;
         the.newVal = undefined;
 
@@ -45,7 +44,7 @@ var Response = Events.extend({
             case 'event':
                 // 表达式解析需要在指令 init 之后
                 var executer = evtParser(exp);
-                the.get = function (el, ev) {
+                directive.get = function (el, ev) {
                     return executer(scope, el, ev);
                 };
                 break;
@@ -54,13 +53,13 @@ var Response = Events.extend({
             // 虚拟指令
             default:
                 if (directive.empty) {
-                    the.get = function () {
+                    directive.get = function () {
                         // empty
                     };
                 } else {
                     // 表达式解析需要在指令 init 之后
                     var getter = expParser(exp);
-                    the.get = function () {
+                    directive.get = function () {
                         return (the.newVal = getter(scope));
                     };
                 }
@@ -68,7 +67,7 @@ var Response = Events.extend({
         }
 
         if (directive.category === 'model') {
-            the.set = function (val) {
+            directive.set = function (val) {
                 object.set(scope, directive.modelName, val);
             };
         }
@@ -76,7 +75,7 @@ var Response = Events.extend({
         if (!directive.filters.once) {
             the.pipe = function (signal) {
                 the.beforeGet();
-                the.get();
+                directive.get();
 
                 // 但这里已经修正，在如下 DOM 结构里：
                 // <1 @for="list1 in list0">
@@ -125,6 +124,9 @@ var Response = Events.extend({
                 the.afterGet();
             };
         }
+
+        the.get = directive.get;
+        the.set = directive.set;
     },
 
     beforeGet: function () {
@@ -147,8 +149,8 @@ var Response = Events.extend({
     link: function (agent) {
         var the = this;
         var guid = agent.guid;
-        var map = the[_agentMap];
-        var list = the[_agentList];
+        var map = the[_wireMap];
+        var list = the[_wireList];
 
         if (map[guid]) {
             return;
@@ -161,21 +163,22 @@ var Response = Events.extend({
     unlink: function () {
         var the = this;
 
-        array.each(the[_agentList], function (index, agent) {
-            agent.unlink(the);
+        array.each(the[_wireList], function (index, wire) {
+            wire.unlink(the);
         });
 
         the.destroy();
-        the.pipe = null;
         the.unlinked = true;
-    }/*,
-
-    receive: function () {
-        var args = access.args(arguments);
-        queue.push(this, args);
-    }*/
+        the[_wireList]
+            = the[_wireMap]
+            = the.pipe
+            = the.directive
+            = the.get
+            = the.set
+            = null;
+    }
 });
-var _agentList = Response.sole();
-var _agentMap = Response.sole();
+var _wireList = Responder.sole();
+var _wireMap = Responder.sole();
 
-module.exports = Response;
+module.exports = Responder;

@@ -69,15 +69,15 @@ var Directive = Class.extend({
     bind: function () {
         var the = this;
         var definition = the.definition;
-        var response = the.response;
+        var responder = the.responder;
 
         if (the.category === 'event') {
             return;
         }
 
-        response.beforeGet();
-        fun.noop(definition.bind || definition.update).call(the, the.node, response.get());
-        response.afterGet();
+        responder.beforeGet();
+        fun.noop(definition.bind || definition.update).call(the, the.node, responder.get());
+        responder.afterGet();
         the.bound = true;
     },
 

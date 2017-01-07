@@ -1,7 +1,7 @@
 
 # 流程
 ```$xslt
-data => bait => wire => vibrator
+data => bait => wire => vibrator -- 内部实现
 一个 data 的一个 key 关联一个 bait -- 内部实现
 一个 bait 关联多个 wire ------------ 内部实现
 一个 wire 关联多个 terminal -------- 内部实现

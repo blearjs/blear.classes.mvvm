@@ -15,7 +15,7 @@ var Watcher = require('../watcher/index');
 
 var compile = require('../bootstrap/compile');
 var parse = require('../bootstrap/parse');
-var Response = require('./response');
+var Responder = require('./responder');
 
 var ViewModel = Class.extend({
     className: 'ViewModel',
@@ -93,7 +93,7 @@ var ViewModel = Class.extend({
         directive.scope = the.scope;
         directive.vm = the;
         directive.init();
-        directive.response = new Response(directive);
+        directive.responder = new Responder(directive);
 
         if (the.done) {
             directive.bind();
