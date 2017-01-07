@@ -9,6 +9,7 @@
 
 var event = require('blear.core.event');
 var time = require('blear.utils.time');
+var howdo = require('blear.utils.howdo');
 
 var MVVM = require('../../src/index');
 var utils = require('../utils');
@@ -21,22 +22,29 @@ it('@model input:text', function (done) {
     el.innerHTML = '<input @model="text"><p>{{text}}</p>';
     var inputEl = el.firstElementChild;
     var pEl = inputEl.nextElementSibling;
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
 
-    expect(inputEl.value).toBe('x');
-    expect(pEl.innerHTML).toBe('x');
-
-    inputEl.value = 'y';
-    event.emit(inputEl, 'input');
-
-    time.nextTick(function () {
-        event.emit(inputEl, 'change');
-
-        time.nextTick(function () {
+    howdo
+        .task(function (next) {
+            expect(inputEl.value).toBe('x');
+            expect(pEl.innerHTML).toBe('x');
+            inputEl.value = 'y';
+            next();
+        })
+        // 发送 input 事件
+        .task(function (next) {
+            event.emit(inputEl, 'input');
+            utils.wait(next);
+        })
+        // 发送 change 事件
+        .task(function (next) {
+            event.emit(inputEl, 'change');
+            utils.wait(next);
+        })
+        .task(function (next) {
             expect(data.text).toBe('y');
             expect(inputEl.value).toBe('y');
             expect(pEl.innerHTML).toBe('y');
@@ -45,10 +53,31 @@ it('@model input:text', function (done) {
             expect(inputEl.value).toBe('z');
             expect(pEl.innerHTML).toBe('z');
 
+            mvvm.destroy();
+            data.text = 'ooo';
+            expect(inputEl.value).toBe('z');
+            expect(pEl.innerHTML).toBe('z');
+
+            inputEl.value = 'ppp';
+            next();
+        })
+        // 发送 input 事件
+        .task(function (next) {
+            event.emit(inputEl, 'input');
+            utils.wait(next);
+        })
+        // 发送 change 事件
+        .task(function (next) {
+            event.emit(inputEl, 'change');
+            utils.wait(next);
+        })
+        .task(function (next) {
+            expect(pEl.innerHTML).toBe('z');
+            expect(data.text).toBe('ooo');
             utils.removeDIV(el);
-            done();
-        });
-    });
+            next();
+        })
+        .follow(done);
 });
 
 it('@model.trim input:text', function (done) {
@@ -65,16 +94,25 @@ it('@model.trim input:text', function (done) {
         data: data
     });
 
-    expect(inputEl.value).toBe('x');
-    expect(pEl.innerHTML).toBe('x');
+    howdo
+        .task(function (next) {
+            expect(inputEl.value).toBe('x');
+            expect(pEl.innerHTML).toBe('x');
 
-    inputEl.value = 'y    ';
-    event.emit(inputEl, 'input');
-
-    time.nextTick(function () {
-        event.emit(inputEl, 'change');
-
-        time.nextTick(function () {
+            inputEl.value = 'y    ';
+            next();
+        })
+        // 发送 input 事件
+        .task(function (next) {
+            event.emit(inputEl, 'input');
+            utils.wait(next);
+        })
+        // 发送 change 事件
+        .task(function (next) {
+            event.emit(inputEl, 'change');
+            utils.wait(next);
+        })
+        .task(function (next) {
             expect(data.text).toBe('y');
             expect(inputEl.value).toBe('y');
             expect(pEl.innerHTML).toBe('y');
@@ -84,9 +122,9 @@ it('@model.trim input:text', function (done) {
             expect(pEl.innerHTML).toBe('z');
 
             utils.removeDIV(el);
-            done();
-        });
-    });
+            next();
+        })
+        .follow(done);
 });
 
 it('@model.trim input:text', function (done) {
@@ -103,16 +141,25 @@ it('@model.trim input:text', function (done) {
         data: data
     });
 
-    expect(inputEl.value).toBe('1');
-    expect(pEl.innerHTML).toBe('1');
+    howdo
+        .task(function (next) {
+            expect(inputEl.value).toBe('1');
+            expect(pEl.innerHTML).toBe('1');
 
-    inputEl.value = '2    ';
-    event.emit(inputEl, 'input');
-
-    time.nextTick(function () {
-        event.emit(inputEl, 'change');
-
-        time.nextTick(function () {
+            inputEl.value = '2    ';
+            next();
+        })
+        // 发送 input 事件
+        .task(function (next) {
+            event.emit(inputEl, 'input');
+            utils.wait(next);
+        })
+        // 发送 change 事件
+        .task(function (next) {
+            event.emit(inputEl, 'change');
+            utils.wait(next);
+        })
+        .task(function (next) {
             expect(data.text).toBe(2);
             expect(inputEl.value).toBe('2');
             expect(pEl.innerHTML).toBe('2');
@@ -122,9 +169,9 @@ it('@model.trim input:text', function (done) {
             expect(pEl.innerHTML).toBe('3');
 
             utils.removeDIV(el);
-            done();
-        });
-    });
+            next();
+        })
+        .follow(done);
 });
 
 it('@model textarea', function (done) {
@@ -141,15 +188,25 @@ it('@model textarea', function (done) {
         data: data
     });
 
-    expect(inputEl.value).toBe('x');
-    expect(pEl.innerHTML).toBe('x');
+    howdo
+        .task(function (next) {
+            expect(inputEl.value).toBe('x');
+            expect(pEl.innerHTML).toBe('x');
 
-    inputEl.value = 'y';
-    event.emit(inputEl, 'input');
-    time.nextTick(function () {
-        event.emit(inputEl, 'change');
-
-        time.nextTick(function () {
+            inputEl.value = 'y';
+            next();
+        })
+        // 发送 input 事件
+        .task(function (next) {
+            event.emit(inputEl, 'input');
+            utils.wait(next);
+        })
+        // 发送 change 事件
+        .task(function (next) {
+            event.emit(inputEl, 'change');
+            utils.wait(next);
+        })
+        .task(function (next) {
             expect(data.text).toBe('y');
             expect(inputEl.value).toBe('y');
             expect(pEl.innerHTML).toBe('y');
@@ -159,9 +216,9 @@ it('@model textarea', function (done) {
             expect(pEl.innerHTML).toBe('z');
 
             utils.removeDIV(el);
-            done();
-        });
-    });
+            next();
+        })
+        .follow(done);
 });
 
 

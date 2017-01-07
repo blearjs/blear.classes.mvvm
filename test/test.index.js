@@ -8,6 +8,7 @@
 'use strict';
 
 window.DEBUG = false;
+window.UNIT_TEST = true;
 
 describe('指令', function () {
     // require('./directives/attr');
@@ -17,9 +18,9 @@ describe('指令', function () {
     // require('./directives/if');
     // require('./directives/if-for');
     require('./directives/model-checkbox');
-    // require('./directives/model-radio');
-    // require('./directives/model-select');
-    // require('./directives/model-text');
+    require('./directives/model-radio');
+    require('./directives/model-select');
+    require('./directives/model-text');
     // require('./directives/pre');
     // require('./directives/style');
     // require('./directives/text');

@@ -23,8 +23,7 @@ it('@model checkbox single', function (done) {
         '<p>{{checked}}</p>';
     var inputEl = el.firstElementChild;
     var pEl = inputEl.nextElementSibling;
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -43,9 +42,24 @@ it('@model checkbox single', function (done) {
         data.checked = true;
         expect(inputEl.checked).toBe(true);
         expect(pEl.innerHTML).toBe('true');
+        mvvm.destroy();
+        data.checked = false;
 
-        utils.removeDIV(el);
-        done();
+        time.nextTick(function () {
+            expect(inputEl.checked).toBe(true);
+            expect(pEl.innerHTML).toBe('true');
+
+            inputEl.checked = false;
+            event.emit(inputEl, 'change');
+
+            time.nextTick(function () {
+                expect(inputEl.checked).toBe(false);
+                expect(pEl.innerHTML).toBe('true');
+
+                utils.removeDIV(el);
+                done();
+            });
+        });
     });
 });
 
@@ -109,6 +123,8 @@ it('@model checkbox multiple', function (done) {
             event.emit(input3El, 'change');
 
             time.nextTick(function () {
+                expect(pEl.innerHTML).toBe('4');
+                data.checked = [1, 2, 3, 4];
                 expect(pEl.innerHTML).toBe('4');
                 utils.removeDIV(el);
                 done();

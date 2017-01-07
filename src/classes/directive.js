@@ -38,6 +38,12 @@ var Directive = Class.extend({
         }
 
         object.assign(the, definition);
+        // 删除 definition 带来的一些方法，
+        // 转而让原型方法去实现
+        delete(the.init);
+        delete(the.bind);
+        delete(the.update);
+        delete(the.destroy);
         the.category = category;
         the.name = name;
         the.guid = random.guid();

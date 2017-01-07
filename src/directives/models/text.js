@@ -70,6 +70,10 @@ exports.init = function (directive) {
     event.on(el, 'change', function () {
         inputing = null;
 
+        if (directive.destroyed) {
+            return;
+        }
+
         var newVal = directive.get();
 
         if (newVal !== node.value) {
@@ -103,6 +107,9 @@ exports.destroy = function (directive) {
     event.un(el, COMPOSITIONSTART_EVENT, directive[COMPOSITIONSTART_LISTENER]);
     event.un(el, COMPOSITIONEND_EVENT, directive[COMPOSITIONEND_LISTENER]);
     event.un(el, INPUT_EVENT, directive[INPUT_LISTENER]);
+    directive[COMPOSITIONSTART_LISTENER]
+        = directive[COMPOSITIONEND_LISTENER]
+        = directive[INPUT_LISTENER] = null;
 };
 
 

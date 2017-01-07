@@ -29,8 +29,7 @@ it('@model radio single', function (done) {
     var input3El = input2El.nextElementSibling;
     var input4El = input3El.nextElementSibling;
     var pEl = input4El.nextElementSibling;
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -58,8 +57,28 @@ it('@model radio single', function (done) {
         expect(input4El.checked).toBe(false);
         expect(pEl.innerHTML).toBe('2');
 
-        utils.removeDIV(el);
-        done();
+        mvvm.destroy();
+        data.checked = 3;
+        expect(input1El.checked).toBe(false);
+        expect(input2El.checked).toBe(true);
+        expect(input3El.checked).toBe(false);
+        expect(input4El.checked).toBe(false);
+        expect(pEl.innerHTML).toBe('2');
+
+        input4El.checked = true;
+        event.emit(input4El, 'change');
+
+        time.nextTick(function () {
+            expect(data.checked).toBe(3);
+            expect(input1El.checked).toBe(false);
+            expect(input2El.checked).toBe(false);
+            expect(input3El.checked).toBe(false);
+            expect(input4El.checked).toBe(true);
+            expect(pEl.innerHTML).toBe('2');
+
+            utils.removeDIV(el);
+            done();
+        });
     });
 });
 

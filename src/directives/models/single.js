@@ -47,6 +47,7 @@ exports.update = function (directive, newVal) {
 
 exports.destroy = function (directive) {
     event.un(directive.vm.el, CHANGE_EVENT, directive[CHANGE_LISTENER]);
+    directive[CHANGE_LISTENER] = null;
 };
 
 

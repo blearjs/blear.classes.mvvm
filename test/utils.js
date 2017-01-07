@@ -7,6 +7,7 @@
 
 'use strict';
 
+
 var id = function () {
     return 'r' + Math.random().toString(16).slice(2);
 };
@@ -20,6 +21,11 @@ exports.createDIV = function () {
 
 exports.removeDIV = function (el) {
     document.body.removeChild(el);
+};
+
+
+exports.wait = function (next) {
+    setTimeout(next, 1);
 };
 
 
