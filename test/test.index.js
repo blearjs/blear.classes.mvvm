@@ -10,11 +10,12 @@
 window.DEBUG = false;
 
 describe('指令', function () {
-    // require('./directives/attr');
+    require('./directives/attr');
     // require('./directives/class');
     // require('./directives/for');
     // require('./directives/html');
-    require('./directives/if');
+    // require('./directives/if');
+    // require('./directives/if-for');
     // require('./directives/model-checkbox');
     // require('./directives/model-radio');
     // require('./directives/model-select');

@@ -25,6 +25,7 @@ it('@html', function (done) {
     expect(el.innerHTML).toEqual('<p><b></b></p>');
     data.html = '<i></i>';
     expect(el.innerHTML).toEqual('<p><i></i></p>');
+
     utils.removeDIV(el);
     done();
 });

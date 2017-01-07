@@ -13,9 +13,9 @@ var attribute = require('blear.core.attribute');
 
 var varible = require('../utils/varible');
 var map = {
-    style: require('./attr/style'),
-    class: require('./attr/class'),
-    default: require('./attr/default')
+    style: require('./attrs/style'),
+    class: require('./attrs/class'),
+    default: require('./attrs/default')
 };
 
 
@@ -26,8 +26,6 @@ var groupRE = /\s*[,;]\s*/;
 var itemRE = /^(.*?)[:=](.*)$/;
 var arrRE = /^\[|]$/g;
 var strRE = /^["']/;
-var spaceRE = /\s+/;
-var className = varible();
 var TRUE_STR = 'true';
 var STYLE_STR = 'style';
 var CLASS_STR = 'class';

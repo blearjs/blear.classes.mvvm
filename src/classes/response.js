@@ -16,12 +16,12 @@ var typeis = require('blear.utils.typeis');
 var object = require('blear.utils.object');
 var Watcher = require('../watcher/index');
 
-var Queue = require('./queue');
+// var Queue = require('./queue');
 var expParser = require('../parsers/expression');
 var evtParser = require('../parsers/event');
 var configs = require('../configs');
 
-var queue = new Queue();
+// var queue = new Queue();
 
 var Response = Events.extend({
     className: 'Response',
@@ -168,12 +168,12 @@ var Response = Events.extend({
         the.destroy();
         the.respond = null;
         the.unlinked = true;
-    },
+    }/*,
 
     receive: function () {
         var args = access.args(arguments);
         queue.push(this, args);
-    }
+    }*/
 });
 var _agentList = Response.sole();
 var _agentMap = Response.sole();

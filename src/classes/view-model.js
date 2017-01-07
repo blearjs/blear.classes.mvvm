@@ -64,14 +64,23 @@ var ViewModel = Class.extend({
         });
 
         // 2、编译 + 解析
-        compile(the.el, the);
+        the.compile(the.el);
+        the.done = true;
 
         // 3、绑定指令、确定指令更新
         array.each(the.directives, function (index, directive) {
             directive.bind();
         });
+    },
 
-        the.done = true;
+    /**
+     * 编译内部指令，当内部新增、或者是懒编译的
+     * 内容出现时手动触发继续编译
+     * @param el
+     */
+    compile: function (el) {
+        // 编译 + 解析
+        compile(el, this);
     },
 
     /**

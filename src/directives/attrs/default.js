@@ -10,6 +10,8 @@
 var array = require('blear.utils.array');
 var attribute = require('blear.core.attribute');
 
+var strFlow = require('../../utils/string-flow');
+
 // 布尔属性
 // @link http://www.cnblogs.com/rubylouvre/p/4797187.html
 // checked: 其实所有表单元素都有此属性，但只有radio, checkbox能在图形上表现出勾选的效果，一旦勾选上，其name及value就能提交
@@ -32,10 +34,12 @@ exports.update = function (directive, newVal) {
     var name = directive.name;
     var isBooleanAttr = booleanAttrs[name];
 
-    if (isBooleanAttr) {
+    if (directive.filters.prop) {
+        node[name] = value;
+    } else if (isBooleanAttr) {
         node[name] = Boolean(value);
     } else {
-        attribute.attr(node, name, value);
+        attribute.attr(node, name, strFlow.to(value));
     }
 };
 
