@@ -26,7 +26,7 @@ var ARRAY_SORT = 'sort';
 var ARRAY_UNSHIFT = 'unshift';
 var ARRAY_SPLICE = 'splice';
 
-var buildChildMVVM = function (directive, index, data, operation) {
+var buildChildMVVM = function (directive, index, data, signal) {
     // 以 parentScope 创建一个实例，这个实例属性是空的，但原型指向 parentScope
     // 此时的 childScope 可以访问 parentScope 的属性
     var childScope = Object.create(directive.scope);
@@ -42,7 +42,7 @@ var buildChildMVVM = function (directive, index, data, operation) {
     var vm = directive.vm;
     var insertTarget;
     var insertPosition;
-    var method = operation.method;
+    var method = signal.method;
 
     switch (method) {
         case ARRAY_PUSH:
@@ -115,7 +115,7 @@ module.exports = {
         the.tplNode = node;
         modification.remove(node);
     },
-    update: function (node, newVal, oldVal, operation) {
+    update: function (node, newVal, oldVal, signal) {
         var the = this;
         var childScopeList = the.childScopeList;
         var childNodeList = the.childNodeList;
@@ -128,19 +128,19 @@ module.exports = {
                 return;
             }
 
-            oldVal = oldVal || operation.oldVal;
-            var spliceIndex = operation.spliceIndex;
-            var spliceCount = operation.spliceCount;
-            var insertValue = operation.insertValue;
+            oldVal = oldVal || signal.oldVal;
+            var spliceIndex = signal.spliceIndex;
+            var spliceCount = signal.spliceCount;
+            var insertValue = signal.insertValue;
 
             // object set 操作
-            if (operation.method === 'set') {
+            if (signal.method === 'set') {
                 spliceIndex = 0;
                 spliceCount = oldVal.length;
                 insertValue = newVal;
             }
 
-            switch (operation.method) {
+            switch (signal.method) {
                 case ARRAY_SORT:
                     var diffs = arrayDiff(oldVal, newVal);
                     array.each(diffs, function (index, diff) {

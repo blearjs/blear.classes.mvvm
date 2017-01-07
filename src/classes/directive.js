@@ -86,9 +86,9 @@ var Directive = Class.extend({
      * @param node
      * @param newVal
      * @param oldVal
-     * @param operation
+     * @param signal
      */
-    update: function (node, newVal, oldVal, operation) {
+    update: function (node, newVal, oldVal, signal) {
         var the = this;
         var definition = the.definition;
 

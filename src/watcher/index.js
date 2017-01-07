@@ -35,10 +35,10 @@ var Watcher = Events.extend({
 
         if (keys && typeis.Array(keys)) {
             array.each(keys, function (index, key) {
-                kernel.key(data, key);
+                kernel.linking(data, key);
             });
         } else {
-            kernel.data(data, null, null);
+            kernel.linkStart(data);
         }
     },
 
@@ -91,11 +91,12 @@ object.define(Watcher, 'terminal', {
 
         if (typeof DEBUG !== 'undefined' && DEBUG) {
             throw new TypeError(
-                '当前数据 `watcher` 的 `terminal` 实现不正确。\n' +
+                '\n\n' +
+                '当前 `watcher` 的 `terminal` 实现不正确：\n' +
                 '- `terminal.link(wire)` 用来与 `wire` 进行信号传输关联。\n' +
                 '- `terminal.pipe(signal)` 用来传递信号。\n' +
                 '- `terminal` 调用 `wire.unlink(terminal)` 用来断开关联关系。\n' +
-                '- 因此需要 `terminal` 自己来管理与多个 `wire` 之前的关系，如果有的话。'
+                '- 因此需要 `terminal` 自己来管理与多个 `wire` 之前的关系，如果有的话。\n'
             );
         }
     }

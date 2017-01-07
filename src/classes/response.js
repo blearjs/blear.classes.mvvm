@@ -74,7 +74,7 @@ var Response = Events.extend({
         }
 
         if (!directive.filters.once) {
-            the.respond = function (operation) {
+            the.pipe = function (signal) {
                 the.beforeGet();
                 the.get();
 
@@ -93,22 +93,22 @@ var Response = Events.extend({
                 var isForDirective = directive.category === 'for';
 
                 // for 变化的不是同一个数组（多维数组）
-                var notSameOrigin = isForDirective && the.newVal !== operation.parent;
+                var notSameOrigin = isForDirective && the.newVal !== signal.parent;
 
                 // set 的是 for 指定的字段 abc.list = [1, 2, 3];
-                var setSameKey = isForDirective && operation.method === 'set' && operation.key === directive.exp;
+                var setSameKey = isForDirective && signal.method === 'set' && signal.key === directive.exp;
 
                 if (notSameOrigin && !setSameKey) {
-                    // 如果是计算属性的话，当做 set 来处理，重写 operation
+                    // 如果是计算属性的话，当做 set 来处理，重写 signal
                     if (the.newVal[configs.computedFlagName]) {
-                        operation = object.filter(operation, [
+                        signal = object.filter(signal, [
                             'newVal',
                             'oldVal',
                             'parent',
                             'type',
                             'insertValue'
                         ]);
-                        operation.method = 'set';
+                        signal.method = 'set';
                     }
                     // 其他变化都忽略
                     else {
@@ -119,7 +119,7 @@ var Response = Events.extend({
 
                 // for 指令数组变化同源 && 已经变化
                 if (the.newVal !== the.oldVal) {
-                    directive.update(directive.node, the.newVal, the.oldVal, operation);
+                    directive.update(directive.node, the.newVal, the.oldVal, signal);
                 }
 
                 the.afterGet();
@@ -128,11 +128,11 @@ var Response = Events.extend({
     },
 
     beforeGet: function () {
-        Watcher.response = this;
+        Watcher.terminal = this;
     },
 
     afterGet: function () {
-        Watcher.response = null;
+        Watcher.terminal = null;
 
         var the = this;
         var newVal = the.newVal;
@@ -166,7 +166,7 @@ var Response = Events.extend({
         });
 
         the.destroy();
-        the.respond = null;
+        the.pipe = null;
         the.unlinked = true;
     }/*,
 

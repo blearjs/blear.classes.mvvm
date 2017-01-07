@@ -51,9 +51,9 @@ var MVVM = Events.extend({
         options = object.assign({}, the[_options].watchDefaults, options);
         var virtualDirective = new Directive({
             exp: exp,
-            update: function (node, newVal, oldVal, operation) {
+            update: function (node, newVal, oldVal, signal) {
                 if (this.bound || options.immediate && !this.bound) {
-                    callback.call(the.scope, newVal, oldVal, operation);
+                    callback.call(the.scope, newVal, oldVal, signal);
                 }
             }
         });

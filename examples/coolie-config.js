@@ -1,5 +1,5 @@
 coolie.config({
-    mainModulesDir: '/example/',
+    mainModulesDir: '/examples/',
     nodeModulesDir: '/node_modules/',
     nodeModuleMainPath: 'src/index.js'
 }).use();
