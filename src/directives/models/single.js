@@ -15,13 +15,15 @@ var varible = require('../../utils/varible');
 var configs = require('../../configs');
 
 var changing;
+var CHANGE_EVENT = 'change';
+var CHANGE_LISTENER = varible();
 
 exports.init = function (directive, newVal) {
     var node = directive.node;
     var modelName = directive.modelName;
     var vm = directive.vm;
 
-    event.on(vm.el, 'change', node, directive.listener = function (ev) {
+    event.on(vm.el, CHANGE_EVENT, node, directive[CHANGE_LISTENER] = function (ev) {
         changing = node;
         directive.scope[modelName] = node.value;
     });
@@ -41,6 +43,10 @@ exports.update = function (directive, newVal) {
     } else {
         node.value = val;
     }
+};
+
+exports.destroy = function (directive) {
+    event.un(directive.vm.el, CHANGE_EVENT, directive[CHANGE_LISTENER]);
 };
 
 

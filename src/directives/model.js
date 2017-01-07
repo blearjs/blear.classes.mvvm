@@ -57,15 +57,13 @@ module.exports = {
     },
     update: function (node, newVal, oldVal) {
         var the = this;
+
         cateMap[the.modelCate].update(the, newVal);
     },
     destroy: function () {
         var the = this;
-        var node = the.node;
 
-        event.on(node, 'input', the.listener);
-        event.on(node, 'compositionstart', the.compositionstart);
-        event.on(node, 'compositionend', the.compositionend);
+        cateMap[the.modelCate].destroy(the);
     }
 };
 

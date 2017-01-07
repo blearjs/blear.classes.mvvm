@@ -20,12 +20,14 @@ var getOptionVal = function (el) {
     return el.value || el.textContent;
 };
 var changing;
+var CHANGE_EVENT = 'change';
+var CHANGE_LISTENER = varible();
 
 exports.init = function (directive, newVal) {
     var node = directive.node;
     var vm = directive.vm;
 
-    event.on(vm.el, 'change', node, directive.listener = function (ev) {
+    event.on(vm.el, CHANGE_EVENT, node, directive[CHANGE_LISTENER] = function (ev) {
         changing = node;
         var children = selector.children(node);
         array.each(children, function (index, optionEl) {
@@ -55,6 +57,10 @@ exports.update = function (directive, newVal) {
         var optionVal = getOptionVal(optionEl);
         optionEl.selected = arrFlow.fd(val, optionVal) > -1;
     });
+};
+
+exports.destroy = function (directive) {
+    event.un(directive.vm.el, CHANGE_EVENT, directive[CHANGE_LISTENER]);
 };
 
 

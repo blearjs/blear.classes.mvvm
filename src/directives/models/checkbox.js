@@ -8,25 +8,22 @@
 'use strict';
 
 var typeis = require('blear.utils.typeis');
-var time = require('blear.utils.time');
 var event = require('blear.core.event');
 
 var varible = require('../../utils/varible');
 var configs = require('../../configs');
 var arrFlow = require('../../utils/array-flow');
 
-var checking = varible();
+var CHANGE_EVENT = 'change';
+var CHANGE_LISTENER = varible();
 
 exports.init = function (directive, newVal) {
     var node = directive.node;
     var vm = directive.vm;
-    var el = vm.el;
 
-    event.on(el, 'change', node, directive.listener = function (ev) {
+    event.on(vm.el, CHANGE_EVENT, node, directive[CHANGE_LISTENER] = function (ev) {
         var val = directive.get();
         var nodeVal = node.value;
-
-        vm[checking] = node;
 
         if (typeis.Boolean(val)) {
             directive.set(!val);
@@ -49,4 +46,8 @@ exports.update = function (directive, newVal) {
     } else {
         node.checked = arrFlow.fd(newVal, nodeVal) > -1;
     }
+};
+
+exports.destroy = function (directive) {
+    event.un(directive.vm.el, CHANGE_EVENT, directive[CHANGE_LISTENER]);
 };

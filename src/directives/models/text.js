@@ -15,8 +15,13 @@ var configs = require('../../configs');
 var varible = require('../../utils/varible');
 
 var inputTimer;
-var updateTimer;
 var inputing;
+var COMPOSITIONSTART_EVENT = 'compositionstart';
+var COMPOSITIONEND_EVENT = 'compositionend';
+var INPUT_EVENT = 'input';
+var COMPOSITIONSTART_LISTENER = varible();
+var COMPOSITIONEND_LISTENER = varible();
+var INPUT_LISTENER = varible();
 
 exports.init = function (directive) {
     var vm = directive.vm;
@@ -24,19 +29,18 @@ exports.init = function (directive) {
     var el = vm.el;
     var compositionstart = false;
 
-    event.on(el, 'compositionstart', node, directive.compositionstart = function () {
+    event.on(el, COMPOSITIONSTART_EVENT, node, directive[COMPOSITIONSTART_LISTENER] = function () {
         /* istanbul ignore next */
         compositionstart = true;
     });
 
-    event.on(el, 'compositionend', node, directive.compositionend = function () {
+    event.on(el, COMPOSITIONEND_EVENT, node, directive[COMPOSITIONEND_LISTENER] = function () {
         /* istanbul ignore next */
         compositionstart = false;
     });
 
-    event.on(el, 'input', node, directive.listener = function (ev) {
+    event.on(el, INPUT_EVENT, node, directive[INPUT_LISTENER] = function (ev) {
         inputing = node;
-        clearTimeout(updateTimer);
         clearTimeout(inputTimer);
         inputTimer = setTimeout(function () {
             /* istanbul ignore next */
@@ -88,6 +92,17 @@ exports.update = function (directive, newVal) {
     if (newVal !== node.value) {
         node.value = newVal;
     }
+};
+
+exports.destroy = function (directive) {
+    var el = directive.vm.el;
+
+    clearTimeout(inputTimer);
+    inputTimer = null;
+    inputing = null;
+    event.un(el, COMPOSITIONSTART_EVENT, directive[COMPOSITIONSTART_LISTENER]);
+    event.un(el, COMPOSITIONEND_EVENT, directive[COMPOSITIONEND_LISTENER]);
+    event.un(el, INPUT_EVENT, directive[INPUT_LISTENER]);
 };
 
 
