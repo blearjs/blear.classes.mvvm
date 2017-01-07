@@ -9,15 +9,15 @@
 ```
 data => wire => vibrator
 
-{ --> linker
-    obj: --> wire
-        { --> linker
-            a: --> wire    
-            b: --> wire    
+{ --> linker --> wire --> [terminal1, terminal2]
+    obj: --> wire --> [terminal1, terminal2]
+        { --> linker --> wire --> [terminal1, terminal2]
+            a: --> wire --> [terminal1, terminal2]
+            b: --> wire --> [terminal1, terminal2]
         }
         
-    arr: --> wire
-        [ --> linker
+    arr: --> wire --> [terminal1, terminal2]
+        [ --> linker --> wire --> [terminal1, terminal2]
            1,
            2
         ]
