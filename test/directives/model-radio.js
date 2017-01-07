@@ -9,6 +9,7 @@
 
 var event = require('blear.core.event');
 var time = require('blear.utils.time');
+var howdo = require('blear.utils.howdo');
 
 var MVVM = require('../../src/index');
 var utils = require('../utils');
@@ -34,41 +35,51 @@ it('@model radio single', function (done) {
         data: data
     });
 
-    expect(input1El.checked).toBe(true);
-    expect(input2El.checked).toBe(false);
-    expect(input3El.checked).toBe(false);
-    expect(input4El.checked).toBe(false);
-    expect(pEl.innerHTML).toBe('1');
+    howdo
+        .task(function (next) {
+            expect(input1El.checked).toBe(true);
+            expect(input2El.checked).toBe(false);
+            expect(input3El.checked).toBe(false);
+            expect(input4El.checked).toBe(false);
+            expect(pEl.innerHTML).toBe('1');
 
-    input3El.checked = true;
-    event.emit(input3El, 'change');
+            next();
+        })
+        .task(function (next) {
+            input3El.checked = true;
+            event.emit(input3El, 'change');
+            utils.wait(next);
+        })
+        .task(function (next) {
+            expect(input1El.checked).toBe(false);
+            expect(input2El.checked).toBe(false);
+            expect(input3El.checked).toBe(true);
+            expect(input4El.checked).toBe(false);
+            expect(pEl.innerHTML).toBe('3');
 
-    time.nextTick(function () {
-        expect(input1El.checked).toBe(false);
-        expect(input2El.checked).toBe(false);
-        expect(input3El.checked).toBe(true);
-        expect(input4El.checked).toBe(false);
-        expect(pEl.innerHTML).toBe('3');
+            data.checked = 2;
+            expect(input1El.checked).toBe(false);
+            expect(input2El.checked).toBe(true);
+            expect(input3El.checked).toBe(false);
+            expect(input4El.checked).toBe(false);
+            expect(pEl.innerHTML).toBe('2');
 
-        data.checked = 2;
-        expect(input1El.checked).toBe(false);
-        expect(input2El.checked).toBe(true);
-        expect(input3El.checked).toBe(false);
-        expect(input4El.checked).toBe(false);
-        expect(pEl.innerHTML).toBe('2');
+            mvvm.destroy();
+            data.checked = 3;
+            expect(input1El.checked).toBe(false);
+            expect(input2El.checked).toBe(true);
+            expect(input3El.checked).toBe(false);
+            expect(input4El.checked).toBe(false);
+            expect(pEl.innerHTML).toBe('2');
 
-        mvvm.destroy();
-        data.checked = 3;
-        expect(input1El.checked).toBe(false);
-        expect(input2El.checked).toBe(true);
-        expect(input3El.checked).toBe(false);
-        expect(input4El.checked).toBe(false);
-        expect(pEl.innerHTML).toBe('2');
-
-        input4El.checked = true;
-        event.emit(input4El, 'change');
-
-        time.nextTick(function () {
+            next();
+        })
+        .task(function (next) {
+            input4El.checked = true;
+            event.emit(input4El, 'change');
+            utils.wait(next);
+        })
+        .task(function (next) {
             expect(data.checked).toBe(3);
             expect(input1El.checked).toBe(false);
             expect(input2El.checked).toBe(false);
@@ -77,9 +88,9 @@ it('@model radio single', function (done) {
             expect(pEl.innerHTML).toBe('2');
 
             utils.removeDIV(el);
-            done();
-        });
-    });
+            next();
+        })
+        .follow(done);
 });
 
 
