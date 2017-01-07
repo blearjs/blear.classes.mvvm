@@ -15,15 +15,15 @@ var access = require('blear.utils.access');
 var Class = require('blear.classes.class');
 
 var Agent = require('./agent');
-var Distributor = Class.extend({
-    className: 'Distributor',
+var Bait = Class.extend({
+    className: 'Bait',
     constructor: function (data) {
         var the = this;
 
         the.agent = new Agent();
         the.guid = guid();
-        defineValue(data, DISTRIBUTOR_KEY, the);
-        defineValue(data, DATA_GUID, guid());
+        defineValue(data, BAIT_FLAG_NAME, the);
+        defineValue(data, BAIT_DATA_GUID_NAME, guid());
 
         if (isObject(data)) {
             observeObject(data);
@@ -32,41 +32,32 @@ var Distributor = Class.extend({
         }
     }
 });
-var DISTRIBUTOR_KEY = Distributor.sole();
+var BAIT_FLAG_NAME = Bait.sole();
 
 
-function createDistributor(data) {
-    var distributor = getDistributor(data);
+function linkStart(data) {
+    var bait = getBait(data);
 
-    if (distributor === null || distributor) {
-        return distributor;
+    if (bait === null || bait) {
+        return bait;
     }
 
-    return new Distributor(data);
+    return new Bait(data);
 }
 
 
-function getDistributor(data) {
+function getBait(data) {
     if (!isData(data)) {
         return null;
     }
 
-    if (hasOwn(data, DISTRIBUTOR_KEY)) {
-        return data[DISTRIBUTOR_KEY];
+    if (hasOwn(data, BAIT_FLAG_NAME)) {
+        return data[BAIT_FLAG_NAME];
     }
 }
 
 
-var WATCH_FLAG = guid();
-var AGENT_KEY = guid();
-var AGENT_GUID = guid();
-var AGENT_ARRAY = guid();
-var AGENT_LIST = guid();
-var AGENT_MAP = guid();
-var DATA_GUID = guid();
-var DATA_PARENT = guid();
-var DATA_GET_GUID = guid();
-var DATA_SET_GUID = guid();
+var BAIT_DATA_GUID_NAME = guid();
 var ARRAY_POP = 'pop';
 var ARRAY_PUSH = 'push';
 var ARRAY_REVERSE = 'reverse';
@@ -81,16 +72,6 @@ var OVERRIDE_ARRAY_METHODS = [
     ARRAY_POP, ARRAY_PUSH, ARRAY_REVERSE, ARRAY_SHIFT,
     ARRAY_SORT, ARRAY_UNSHIFT, ARRAY_SPLICE
 ];
-
-if (typeof DEBUG !== 'undefined' && DEBUG) {
-    AGENT_KEY = '__AGENT_KEY__';
-    AGENT_ARRAY = '__AGENT_ARRAY__';
-    AGENT_LIST = '__AGENT_LIST__';
-    AGENT_MAP = '__AGENT_MAP__';
-    AGENT_GUID = '__AGENT_GUID__';
-    DATA_GUID = '__DATA_GUID__';
-    DATA_PARENT = '__DATA_PARENT__';
-}
 
 function guid() {
     return random.guid();
@@ -122,40 +103,39 @@ function defineValue(obj, key, val) {
 function deepLinkArray(data) {
     if (isArray(data)) {
         array.each(data, function (index, item) {
-            var distributor = getDistributor(item);
+            var bait = getBait(item);
 
-            if (!distributor) {
+            if (!bait) {
                 return;
             }
 
-            distributor.agent.link();
+            bait.agent.link();
 
             deepLinkArray(item);
         });
     }
 }
 
-function observeObjectWithKeyAndVal(obj, key) {
+function linking(obj, key) {
     var descriptor = Object.getOwnPropertyDescriptor(obj, key);
     // 预先设置的 get/set
     var preGet = descriptor && descriptor.get;
     var preSet = descriptor && descriptor.set;
     var val = obj[key];
     var agent = new Agent();
-    var childDistributor;
 
     // 1、先深度遍历
     object.define(obj, key, {
         enumerable: true,
         get: function () {
             var oldVal = preGet ? preGet.call(obj) : val;
+            var deepBait = getBait(oldVal);
 
-            childDistributor = getDistributor(oldVal);
             deepLinkArray(oldVal);
             agent.link();
 
-            if (childDistributor) {
-                childDistributor.agent.link();
+            if (deepBait) {
+                deepBait.agent.link();
             }
 
             return oldVal;
@@ -182,13 +162,13 @@ function observeObjectWithKeyAndVal(obj, key) {
                 newVal: setVal
             };
 
-            createDistributor(setVal);
+            linkStart(setVal);
             agent.react(operation);
         }
     });
 
     // 2、再广度遍历
-    createDistributor(val);
+    linkStart(val);
 }
 
 function observeObject(obj) {
@@ -197,7 +177,7 @@ function observeObject(obj) {
             return;
         }
 
-        observeObjectWithKeyAndVal(obj, key);
+        linking(obj, key);
     });
 }
 
@@ -251,7 +231,7 @@ function observeArray(arr) {
 
             if (insertValue) {
                 array.each(insertValue, function (index, insertValue) {
-                    createDistributor(insertValue);
+                    linkStart(insertValue);
                 });
             }
 
@@ -266,7 +246,7 @@ function observeArray(arr) {
                 newVal: arr
             };
 
-            getDistributor(arr).agent.react(operation);
+            getBait(arr).agent.react(operation);
         });
     });
 
@@ -287,12 +267,12 @@ function observeArray(arr) {
     });
 
     array.each(arr, function (index, val) {
-        createDistributor(val);
+        linkStart(val);
     });
 }
 
 
 // ===================================
 
-exports.data = createDistributor;
-exports.key = observeObjectWithKeyAndVal;
+exports.linkStart = linkStart;
+exports.linking = linking;

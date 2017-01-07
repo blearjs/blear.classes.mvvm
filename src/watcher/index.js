@@ -87,9 +87,4 @@ object.define(Watcher, 'response', {
 });
 
 Agent.Watcher = Watcher;
-
-Watcher.getParent = function (data) {
-    return data[observe.DATA_PARENT];
-};
-
 module.exports = Watcher;
