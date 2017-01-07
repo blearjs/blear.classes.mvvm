@@ -25,10 +25,10 @@ var Queue = Events.extend({
         the[_timer] = null;
     },
 
-    push: function (response, args) {
+    push: function (responder, args) {
         var the = this;
         var options = the[_options];
-        var guid = response.guid;
+        var guid = responder.guid;
         var foundIndex = the[_map][guid];
 
         // 同一个响应只运行添加一次
@@ -41,7 +41,7 @@ var Queue = Events.extend({
         }
 
         the[_map][guid] = the[_list].length;
-        the[_list].push([response, args]);
+        the[_list].push([responder, args]);
         clearTimeout(the[_timer]);
         the[_timer] = setTimeout(function () {
             var queues = the[_list].slice();
@@ -51,12 +51,12 @@ var Queue = Events.extend({
                 var res = combin[0];
                 var args = combin[1];
 
-                // response 已经断开
+                // responder 已经断开
                 if (res.unlinked) {
                     return;
                 }
 
-                res.respond.apply(res, args);
+                res.speak.apply(res, args);
             });
         }, options.tick);
     }

@@ -108,14 +108,17 @@ var Directive = Class.extend({
         var the = this;
         var definition = the.definition;
 
-        the.response.unlink();
+        the.responder.unlink();
         fun.noop(definition.destroy).apply(the, arguments);
         // 响应者
-        the.response =
+        the.responder
             // 指令定义
-            the.definition =
-                // 对前一个指令的引用
-                the.prev = null;
+            = the.definition
+            // 对前一个指令的引用
+            = the.prev
+            = the.get
+            = the.set
+            = null;
 
         if (the.refPrev) {
             // 前一个指令对自己的引用

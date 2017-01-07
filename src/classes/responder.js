@@ -1,5 +1,5 @@
 /**
- * 文件描述
+ * 响应器
  * @author ydr.me
  * @created 2017-01-01 11:17
  */
@@ -176,6 +176,13 @@ var Responder = Events.extend({
             = the.get
             = the.set
             = null;
+    },
+
+    /**
+     * @todo 用于队列管理之后的发声，目前未实现
+     */
+    speak: function () {
+        //
     }
 });
 var _wireList = Responder.sole();
