@@ -42,26 +42,6 @@ var Watcher = Events.extend({
         }
     },
 
-    link: function (agent) {
-        var the = this;
-
-        if (agent && agent instanceof Wire) {
-            var map = the[_agentMap];
-            var list = the[_agentList];
-            var guid = agent.guid;
-
-            if (map[guid]) {
-                return;
-            }
-
-            map[guid] = true;
-            list.push(agent);
-        }
-    },
-
-    dispath: function () {
-        //
-    },
 
     destroy: function () {
         var the = this;
