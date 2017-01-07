@@ -9,6 +9,7 @@
 
 var event = require('blear.core.event');
 var time = require('blear.utils.time');
+var howdo = require('blear.utils.howdo');
 
 var MVVM = require('../../src/index');
 var utils = require('../utils');
@@ -28,39 +29,46 @@ it('@model checkbox single', function (done) {
         data: data
     });
 
-    expect(inputEl.checked).toBe(true);
-    expect(pEl.innerHTML).toBe('true');
-
-    inputEl.checked = false;
-    event.emit(inputEl, 'change');
-
-    time.nextTick(function () {
-        data.checked = false;
-        expect(inputEl.checked).toBe(false);
-        expect(pEl.innerHTML).toBe('false');
-
-        data.checked = true;
-        expect(inputEl.checked).toBe(true);
-        expect(pEl.innerHTML).toBe('true');
-        mvvm.destroy();
-        data.checked = false;
-
-        time.nextTick(function () {
+    howdo
+        .task(function (next) {
             expect(inputEl.checked).toBe(true);
             expect(pEl.innerHTML).toBe('true');
 
             inputEl.checked = false;
+            next();
+        })
+        .task(function (next) {
             event.emit(inputEl, 'change');
+            utils.wait(next);
+        })
+        .task(function (next) {
+            data.checked = false;
+            expect(inputEl.checked).toBe(false);
+            expect(pEl.innerHTML).toBe('false');
 
-            time.nextTick(function () {
-                expect(inputEl.checked).toBe(false);
-                expect(pEl.innerHTML).toBe('true');
+            data.checked = true;
+            expect(inputEl.checked).toBe(true);
+            expect(pEl.innerHTML).toBe('true');
+            mvvm.destroy();
+            data.checked = false;
+            expect(inputEl.checked).toBe(true);
+            expect(pEl.innerHTML).toBe('true');
 
-                utils.removeDIV(el);
-                done();
-            });
-        });
-    });
+            inputEl.checked = false;
+            next();
+        })
+        .task(function (next) {
+            event.emit(inputEl, 'change');
+            utils.wait(next);
+        })
+        .task(function (next) {
+            expect(inputEl.checked).toBe(false);
+            expect(pEl.innerHTML).toBe('true');
+
+            utils.removeDIV(el);
+            next();
+        })
+        .follow(done);
 });
 
 it('@model checkbox multiple', function (done) {
@@ -85,52 +93,64 @@ it('@model checkbox multiple', function (done) {
         data: data
     });
 
-    expect(input1El.checked).toBe(true);
-    expect(input2El.checked).toBe(false);
-    expect(input3El.checked).toBe(false);
-    expect(input4El.checked).toBe(false);
-    expect(pEl.innerHTML).toBe('1');
+    howdo
+        .task(function (next) {
+            expect(input1El.checked).toBe(true);
+            expect(input2El.checked).toBe(false);
+            expect(input3El.checked).toBe(false);
+            expect(input4El.checked).toBe(false);
+            expect(pEl.innerHTML).toBe('1');
 
-    input3El.checked = true;
-    event.emit(input3El, 'change');
+            next();
+        })
+        .task(function (next) {
+            input3El.checked = true;
+            event.emit(input3El, 'change');
+            utils.wait(next);
+        })
+        .task(function (next) {
+            expect(input1El.checked).toBe(true);
+            expect(input2El.checked).toBe(false);
+            expect(input3El.checked).toBe(true);
+            expect(input4El.checked).toBe(false);
+            expect(pEl.innerHTML).toBe('1,3');
 
-    time.nextTick(function () {
-        expect(input1El.checked).toBe(true);
-        expect(input2El.checked).toBe(false);
-        expect(input3El.checked).toBe(true);
-        expect(input4El.checked).toBe(false);
-        expect(pEl.innerHTML).toBe('1,3');
-
-        data.checked.shift();
-        data.checked.push(4);
-        expect(input1El.checked).toBe(false);
-        expect(input2El.checked).toBe(false);
-        expect(input3El.checked).toBe(true);
-        expect(input4El.checked).toBe(true);
-        expect(pEl.innerHTML).toBe('3,4');
-
-        input3El.checked = false;
-        event.emit(input3El, 'change');
-
-        time.nextTick(function () {
+            data.checked.shift();
+            data.checked.push(4);
+            expect(input1El.checked).toBe(false);
+            expect(input2El.checked).toBe(false);
+            expect(input3El.checked).toBe(true);
+            expect(input4El.checked).toBe(true);
+            expect(pEl.innerHTML).toBe('3,4');
+            next();
+        })
+        .task(function (next) {
+            input3El.checked = false;
+            event.emit(input3El, 'change');
+            utils.wait(next);
+        })
+        .task(function (next) {
             expect(input1El.checked).toBe(false);
             expect(input2El.checked).toBe(false);
             expect(input3El.checked).toBe(false);
             expect(input4El.checked).toBe(true);
             expect(pEl.innerHTML).toBe('4');
             mvvm.destroy();
+            next();
+        })
+        .task(function (next) {
             input3El.checked = true;
             event.emit(input3El, 'change');
-
-            time.nextTick(function () {
-                expect(pEl.innerHTML).toBe('4');
-                data.checked = [1, 2, 3, 4];
-                expect(pEl.innerHTML).toBe('4');
-                utils.removeDIV(el);
-                done();
-            });
-        });
-    });
+            utils.wait(next);
+        })
+        .task(function (next) {
+            expect(pEl.innerHTML).toBe('4');
+            data.checked = [1, 2, 3, 4];
+            expect(pEl.innerHTML).toBe('4');
+            utils.removeDIV(el);
+            next();
+        })
+        .follow(done);
 });
 
 
