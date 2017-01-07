@@ -1,7 +1,8 @@
 /**
- * 观察与响应的代理
+ * 导线
  * @author ydr.me
  * @created 2016-12-30 13:30
+ * @updated 2017年01月07日15:10:21
  */
 
 
@@ -20,8 +21,8 @@ var Wire = Events.extend({
 
         Wire.parent(the);
         the.guid = random.guid();
-        the[_responseList] = [];
-        the[_responseMap] = {};
+        the[_terminalList] = [];
+        the[_terminalMap] = {};
     },
 
     /**
@@ -29,34 +30,38 @@ var Wire = Events.extend({
      */
     link: function () {
         var the = this;
-        var response = Wire.response;
+        // 获取当前视图链接的终端
+        var terminal = Wire.terminal;
 
-        if (response &&
+        if (
+            terminal &&
             // 用来接收变化
-            isFunction(response.receive) &&
+            isFunction(terminal.pipe) &&
             // 用来关联代理
-            isFunction(response.link)) {
-            var guid = response.guid;
-            var map = the[_responseMap];
-            var list = the[_responseList];
+            isFunction(terminal.link)
+        ) {
+            var guid = terminal.guid;
+            var map = the[_terminalMap];
+            var list = the[_terminalList];
 
             if (map[guid]) {
                 return;
             }
 
             map[guid] = true;
-            list.push(response);
-            response.link(the);
+            list.push(terminal);
+            terminal.link(the);
         }
     },
 
     /**
-     * 销毁：取消与响应者的管理
+     * 切断与某个终端的关联
+     * @param terminal
      */
-    unlink: function (response) {
+    unlink: function (terminal) {
         var the = this;
 
-        array.delete(the[_responseList], response);
+        array.delete(the[_terminalList], terminal);
         the.unlinked = true;
     },
 
@@ -67,20 +72,20 @@ var Wire = Events.extend({
         var the = this;
         var args = access.args(arguments);
 
-        array.each(the[_responseList].slice(), function (index, response) {
-            // 如果已经被销毁的 response
-            if (!response || !response.respond) {
+        array.each(the[_terminalList].slice(), function (index, terminal) {
+            // 如果已经被销毁的 terminal
+            if (!terminal || !isFunction(terminal.pipe)) {
                 return;
             }
 
-            response.pipe.apply(response, args);
+            terminal.pipe.apply(terminal, args);
         });
     }
 });
-var _responseList = Wire.sole();
-var _responseMap = Wire.sole();
+var _terminalList = Wire.sole();
+var _terminalMap = Wire.sole();
 
-Wire.response = null;
+Wire.terminal = null;
 module.exports = Wire;
 
 

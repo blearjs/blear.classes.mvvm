@@ -1,7 +1,8 @@
 /**
- * 观察 object
+ * 核心
  * @author ydr.me
  * @created 2016-12-30 12:38
+ * @updated 2017年01月07日15:10:08
  */
 
 
@@ -14,14 +15,14 @@ var typeis = require('blear.utils.typeis');
 var access = require('blear.utils.access');
 var Events = require('blear.classes.events');
 
-var Agent = require('./agent');
+var Wire = require('./wire');
 var Bait = Events.extend({
     className: 'Bait',
     constructor: function (data) {
         var the = this;
 
         Bait.parent(the);
-        the.agent = new Agent();
+        the.wire = new Wire();
         the.guid = guid();
         defineValue(data, BAIT_FLAG_NAME, the);
         defineValue(data, BAIT_DATA_GUID_NAME, guid());
@@ -110,7 +111,7 @@ function deepLinkArray(data) {
                 return;
             }
 
-            bait.agent.link();
+            bait.wire.link();
 
             deepLinkArray(item);
         });
@@ -123,7 +124,7 @@ function linking(obj, key) {
     var preGet = descriptor && descriptor.get;
     var preSet = descriptor && descriptor.set;
     var val = obj[key];
-    var agent = new Agent();
+    var wire = new Wire();
 
     // 1、先深度遍历
     object.define(obj, key, {
@@ -133,10 +134,10 @@ function linking(obj, key) {
             var deepBait = getBait(oldVal);
 
             deepLinkArray(oldVal);
-            agent.link();
+            wire.link();
 
             if (deepBait) {
-                deepBait.agent.link();
+                deepBait.wire.link();
             }
 
             return oldVal;
@@ -154,7 +155,7 @@ function linking(obj, key) {
                 val = setVal;
             }
 
-            var operation = {
+            var signal = {
                 type: 'object',
                 parent: obj,
                 key: key,
@@ -164,7 +165,7 @@ function linking(obj, key) {
             };
 
             linkStart(setVal);
-            agent.react(operation);
+            wire.pipe(signal);
         }
     });
 
@@ -185,14 +186,17 @@ function observeObject(obj) {
 function observeArray(arr) {
     array.each(OVERRIDE_ARRAY_METHODS, function (index, method) {
         var original = Array.prototype[method];
+
         defineValue(arr, method, function () {
             var args = access.args(arguments);
             var oldLength = arr.length;
             var spliceIndex = 0;
             var spliceCount = 0;
             var oldVal = arr;
-            original.apply(arr, args);
             var insertValue = [];
+
+            // 先执行原始方法
+            original.apply(arr, args);
 
             switch (method) {
                 // [1, 2, 3].push(4, 5, 6);
@@ -236,7 +240,7 @@ function observeArray(arr) {
                 });
             }
 
-            var operation = {
+            var signal = {
                 type: 'array',
                 parent: arr,
                 method: method,
@@ -247,7 +251,7 @@ function observeArray(arr) {
                 newVal: arr
             };
 
-            getBait(arr).agent.react(operation);
+            getBait(arr).wire.pipe(signal);
         });
     });
 
