@@ -9,7 +9,7 @@
 
 var event = require('blear.core.event');
 var time = require('blear.utils.time');
-var howdo = require('blear.utils.howdo');
+var plan = require('blear.utils.plan');
 
 var MVVM = require('../../src/index');
 var utils = require('../utils');
@@ -34,7 +34,7 @@ it('@model select single', function (done) {
         data: data
     });
 
-    howdo
+    plan
         .task(function (next) {
             expect(selectEl.value).toBe('2');
             expect(selectEl.selectedOptions.length).toBe(1);
@@ -85,7 +85,7 @@ it('@model select single', function (done) {
             utils.removeDIV(el);
             next();
         })
-        .follow(done);
+        .serial(done);
 });
 
 it('@model select multiple', function (done) {
@@ -108,7 +108,7 @@ it('@model select multiple', function (done) {
         data: data
     });
 
-    howdo
+    plan
         .task(function (next) {
             expect(selectEl.value).toBe('2');
             expect(selectEl.selectedOptions.length).toBe(2);
@@ -160,6 +160,6 @@ it('@model select multiple', function (done) {
             utils.removeDIV(el);
             next();
         })
-        .follow(done);
+        .serial(done);
 });
 

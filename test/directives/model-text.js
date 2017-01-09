@@ -9,7 +9,7 @@
 
 var event = require('blear.core.event');
 var time = require('blear.utils.time');
-var howdo = require('blear.utils.howdo');
+var plan = require('blear.utils.plan');
 
 var MVVM = require('../../src/index');
 var utils = require('../utils');
@@ -27,7 +27,7 @@ it('@model input:text', function (done) {
         data: data
     });
 
-    howdo
+    plan
         .task(function (next) {
             expect(inputEl.value).toBe('x');
             expect(pEl.innerHTML).toBe('x');
@@ -77,7 +77,7 @@ it('@model input:text', function (done) {
             utils.removeDIV(el);
             next();
         })
-        .follow(done);
+        .serial(done);
 });
 
 it('@model.trim input:text', function (done) {
@@ -93,7 +93,7 @@ it('@model.trim input:text', function (done) {
         data: data
     });
 
-    howdo
+    plan
         .task(function (next) {
             expect(inputEl.value).toBe('x');
             expect(pEl.innerHTML).toBe('x');
@@ -124,7 +124,7 @@ it('@model.trim input:text', function (done) {
             utils.removeDIV(el);
             next();
         })
-        .follow(done);
+        .serial(done);
 });
 
 it('@model.trim input:text', function (done) {
@@ -140,7 +140,7 @@ it('@model.trim input:text', function (done) {
         data: data
     });
 
-    howdo
+    plan
         .task(function (next) {
             expect(inputEl.value).toBe('1');
             expect(pEl.innerHTML).toBe('1');
@@ -171,7 +171,7 @@ it('@model.trim input:text', function (done) {
             utils.removeDIV(el);
             next();
         })
-        .follow(done);
+        .serial(done);
 });
 
 it('@model textarea', function (done) {
@@ -187,7 +187,7 @@ it('@model textarea', function (done) {
         data: data
     });
 
-    howdo
+    plan
         .task(function (next) {
             expect(inputEl.value).toBe('x');
             expect(pEl.innerHTML).toBe('x');
@@ -218,7 +218,7 @@ it('@model textarea', function (done) {
             utils.removeDIV(el);
             next();
         })
-        .follow(done);
+        .serial(done);
 });
 
 

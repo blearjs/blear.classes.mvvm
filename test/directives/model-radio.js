@@ -9,7 +9,7 @@
 
 var event = require('blear.core.event');
 var time = require('blear.utils.time');
-var howdo = require('blear.utils.howdo');
+var plan = require('blear.utils.plan');
 
 var MVVM = require('../../src/index');
 var utils = require('../utils');
@@ -35,7 +35,7 @@ it('@model radio single', function (done) {
         data: data
     });
 
-    howdo
+    plan
         .task(function (next) {
             expect(input1El.checked).toBe(true);
             expect(input2El.checked).toBe(false);
@@ -90,7 +90,7 @@ it('@model radio single', function (done) {
             utils.removeDIV(el);
             next();
         })
-        .follow(done);
+        .serial(done);
 });
 
 

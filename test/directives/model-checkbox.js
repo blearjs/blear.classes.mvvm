@@ -9,7 +9,7 @@
 
 var event = require('blear.core.event');
 var time = require('blear.utils.time');
-var howdo = require('blear.utils.howdo');
+var plan = require('blear.utils.plan');
 
 var MVVM = require('../../src/index');
 var utils = require('../utils');
@@ -29,7 +29,7 @@ it('@model checkbox single', function (done) {
         data: data
     });
 
-    howdo
+    plan
         .task(function (next) {
             expect(inputEl.checked).toBe(true);
             expect(pEl.innerHTML).toBe('true');
@@ -68,7 +68,7 @@ it('@model checkbox single', function (done) {
             utils.removeDIV(el);
             next();
         })
-        .follow(done);
+        .serial(done);
 });
 
 it('@model checkbox multiple', function (done) {
@@ -93,7 +93,7 @@ it('@model checkbox multiple', function (done) {
         data: data
     });
 
-    howdo
+    plan
         .task(function (next) {
             expect(input1El.checked).toBe(true);
             expect(input2El.checked).toBe(false);
@@ -150,7 +150,7 @@ it('@model checkbox multiple', function (done) {
             utils.removeDIV(el);
             next();
         })
-        .follow(done);
+        .serial(done);
 });
 
 
