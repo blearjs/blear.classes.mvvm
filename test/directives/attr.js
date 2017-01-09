@@ -19,8 +19,7 @@ it(':attr', function (done) {
     };
     el.innerHTML = '<p :abc="abc" :def.prop="def" :hidden="xyz"></p>';
     var childEl = el.firstChild;
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -36,6 +35,7 @@ it(':attr', function (done) {
     expect(childEl.def).toBe(456);
     expect(childEl.hidden).toBe(true);
 
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });

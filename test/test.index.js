@@ -28,22 +28,24 @@ describe('指令', function () {
     require('./directives/text');
 });
 
-describe('参数', function () {
+describe('实例', function () {
     // @todo
-    // computed
-    // watch
+    require('./instance/computed');
+    require('./instance/watch');
     // methods
     // directive
-});
-
-describe('实例方法', function () {
-    // @todo
     // #watch
     // #destroy
 });
 
-describe('静态方法', function () {
+describe('静态', function () {
     // @todo
     // .directive
+});
+
+describe('边界', function () {
+    // @todo
+    // mvvm 嵌套
+    // data 共享
 });
 

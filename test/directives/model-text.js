@@ -88,8 +88,7 @@ it('@model.trim input:text', function (done) {
     el.innerHTML = '<input @model.trim="text"><p>{{text}}</p>';
     var inputEl = el.firstElementChild;
     var pEl = inputEl.nextElementSibling;
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -121,6 +120,7 @@ it('@model.trim input:text', function (done) {
             expect(inputEl.value).toBe('z');
             expect(pEl.innerHTML).toBe('z');
 
+            mvvm.destroy();
             utils.removeDIV(el);
             next();
         })
@@ -135,8 +135,7 @@ it('@model.trim input:text', function (done) {
     el.innerHTML = '<input @model.trim.number="text"><p>{{text}}</p>';
     var inputEl = el.firstElementChild;
     var pEl = inputEl.nextElementSibling;
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -168,6 +167,7 @@ it('@model.trim input:text', function (done) {
             expect(inputEl.value).toBe('3');
             expect(pEl.innerHTML).toBe('3');
 
+            mvvm.destroy();
             utils.removeDIV(el);
             next();
         })
@@ -182,8 +182,7 @@ it('@model textarea', function (done) {
     el.innerHTML = '<textarea @model="text"></textarea><p>{{text}}</p>';
     var inputEl = el.firstElementChild;
     var pEl = inputEl.nextElementSibling;
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -215,6 +214,7 @@ it('@model textarea', function (done) {
             expect(inputEl.value).toBe('z');
             expect(pEl.innerHTML).toBe('z');
 
+            mvvm.destroy();
             utils.removeDIV(el);
             next();
         })

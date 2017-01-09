@@ -36,8 +36,7 @@ it(':class 对象表示', function (done) {
     };
     el.innerHTML = '<p class="o" :class="{abc: abc, def: def}"></p>';
     var childEl = el.firstChild;
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -62,6 +61,7 @@ it(':class 对象表示', function (done) {
         )
     ).toBe(true);
 
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });
@@ -74,8 +74,7 @@ it(':class 数组表示', function (done) {
     };
     el.innerHTML = '<p :class="[abc, def]"></p>';
     var childEl = el.firstChild;
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -101,6 +100,7 @@ it(':class 数组表示', function (done) {
         )
     ).toBe(true);
 
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });
@@ -115,8 +115,7 @@ it(':class 组合表示', function (done) {
     };
     el.innerHTML = '<p :class="[abc, def, {opq: opq, xyz: xyz}]"></p>';
     var childEl = el.firstChild;
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -153,6 +152,7 @@ it(':class 组合表示', function (done) {
         )
     ).toBe(true);
 
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });

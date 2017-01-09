@@ -19,8 +19,7 @@ it('@if 懒编译特性', function (done) {
     el.innerHTML = '<p @if="bool">{{text}}</p><span @if="!bool">{{text}}</span>';
     var pEl = el.firstElementChild;
     var spanEl = pEl.nextElementSibling;
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -34,6 +33,7 @@ it('@if 懒编译特性', function (done) {
     expect(pEl.innerHTML).toBe('a');
     expect(spanEl.innerHTML).toBe('a');
 
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });
@@ -53,8 +53,7 @@ it('@if 嵌套 @if', function (done) {
     var divEl = el.firstElementChild;
     var p1El = divEl.firstElementChild;
     var p2El = p1El.nextElementSibling;
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -95,6 +94,7 @@ it('@if 嵌套 @if', function (done) {
     expect(divEl.hasAttribute('@if')).toBe(false);
     expect(p2El.hasAttribute('@if')).toBe(false);
 
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });
@@ -105,8 +105,7 @@ it('@if', function (done) {
         bool: true
     };
     el.innerHTML = '<p @if="bool">1</p>';
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -115,6 +114,7 @@ it('@if', function (done) {
     data.bool = false;
     expect(el.innerHTML).toEqual('');
 
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });
@@ -126,7 +126,7 @@ it('@if + @else', function (done) {
     };
     el.innerHTML = '<p @if="bool">1</p><p @else>2</p>';
 
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -135,6 +135,7 @@ it('@if + @else', function (done) {
     data.bool = false;
     expect(el.innerHTML).toEqual('<p>2</p>');
 
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });
@@ -147,7 +148,7 @@ it('@if + @else-if', function (done) {
     };
     el.innerHTML = '<p @if="bool1">1</p><p @else-if="bool2">2</p>';
 
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -156,6 +157,7 @@ it('@if + @else-if', function (done) {
     data.bool1 = true;
     expect(el.innerHTML).toEqual('<p>1</p>');
 
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });
@@ -172,7 +174,7 @@ it('@if + @else-if + @else', function (done) {
         '<p @else>3</p>' +
         '';
 
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -184,6 +186,7 @@ it('@if + @else-if + @else', function (done) {
     data.bool2 = true;
     expect(el.innerHTML).toEqual('<p>2</p>');
 
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });

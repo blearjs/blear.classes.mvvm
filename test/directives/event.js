@@ -20,8 +20,7 @@ it('@click($el $ev)', function (done) {
     };
     el.innerHTML = '<p @click="onClick($el, $ev)"></p>';
     var pEl = el.firstElementChild;
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data,
         methods: {
@@ -32,6 +31,7 @@ it('@click($el $ev)', function (done) {
                 expect($ev.type).toBe('click');
                 expect($ev.target).toBe(pEl);
 
+                mvvm.destroy();
                 utils.removeDIV(el);
                 done();
             }
@@ -50,13 +50,14 @@ it('@click.prevent', function (done) {
     el.innerHTML = '<a :href="\'#\' + hash" @click.prevent="onClick"></a>';
     var pEl = el.firstElementChild;
     var preHash = location.hash;
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data,
         methods: {
             onClick: function () {
                 expect(location.hash).toBe(preHash);
+
+                mvvm.destroy();
                 utils.removeDIV(el);
                 done();
             }
@@ -78,14 +79,15 @@ it('@click.stop', function (done) {
     event.on(el, 'click', function () {
         bubbled = true;
     });
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data,
         methods: {
             onClick: function () {
                 setTimeout(function () {
                     expect(bubbled).toBe(false);
+
+                    mvvm.destroy();
                     utils.removeDIV(el);
                     done();
                 }, 10);
@@ -111,7 +113,7 @@ it('@click.false', function (done) {
         bubbled = true;
     });
 
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data,
         methods: {
@@ -120,6 +122,7 @@ it('@click.false', function (done) {
                 setTimeout(function () {
                     expect(bubbled).toBe(false);
 
+                    mvvm.destroy();
                     utils.removeDIV(el);
                     done();
                 }, 10);
@@ -136,8 +139,7 @@ it('@keyup.enter', function (done) {
     el.innerHTML = '<input @keyup.enter="onEnter($ev)">';
     var inputEl = el.firstElementChild;
     var triggerTimes = 0;
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data,
         methods: {
@@ -148,6 +150,7 @@ it('@keyup.enter', function (done) {
 
                 setTimeout(function () {
                     expect(triggerTimes).toBe(1);
+                    mvvm.destroy();
                     utils.removeDIV(el);
                     done();
                 }, 10);

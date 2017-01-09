@@ -24,7 +24,7 @@ it('@for 1 维数组', function (done) {
     el.innerHTML =
         '<p @for="item in list">{{item}}</p>';
 
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -115,6 +115,7 @@ it('@for 1 维数组', function (done) {
     );
 
     utils.removeDIV(el);
+    mvvm.destroy();
     done();
 });
 
@@ -131,7 +132,7 @@ it('@for sort', function (done) {
         data.list.push(random.number(1, 1000));
     }
 
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -148,6 +149,7 @@ it('@for sort', function (done) {
         });
     }
 
+    mvvm.destroy();
     done();
 });
 
@@ -160,7 +162,7 @@ it('@for 1 维数组对象', function (done) {
     };
 
     el.innerHTML = '<div @for="user in users">{{user.name}}</div>';
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -187,6 +189,7 @@ it('@for 1 维数组对象', function (done) {
         '<div>c</div>'
     );
 
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });
@@ -211,7 +214,7 @@ it('@for 1 维数组对象嵌套 1 维数组', function (done) {
         /****//****/'{{student.name}}' +
         /****/'</p>' +
         '</div>';
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -267,6 +270,7 @@ it('@for 1 维数组对象嵌套 1 维数组', function (done) {
         '</div>'
     );
 
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });
@@ -286,7 +290,7 @@ it('@for 2 维数组', function (done) {
         /****/'<span @for="n in item">{{n}}</span>' +
         '</p>';
 
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -417,6 +421,7 @@ it('@for 2 维数组', function (done) {
         '</p>'
     );
 
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });
@@ -440,7 +445,7 @@ it('@for 3 维数组', function (done) {
         /****/'</span>' +
         '</p>';
 
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -519,6 +524,7 @@ it('@for 3 维数组', function (done) {
         '</p>'
     );
 
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });
@@ -549,7 +555,7 @@ it('@for 4 维数组', function (done) {
         /****/'</b>' +
         '</a>'
     ;
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -588,6 +594,7 @@ it('@for 4 维数组', function (done) {
         '</a>'
     );
 
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });

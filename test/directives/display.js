@@ -21,8 +21,7 @@ it('@show @hide', function (done) {
         '<b @hide="bool">{{text}}</b>';
     var aEl = el.firstElementChild;
     var bEl = aEl.nextElementSibling;
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -38,6 +37,7 @@ it('@show @hide', function (done) {
     expect(aEl.style.display).toBe('none');
     expect(bEl.style.display).toBe('block');
 
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });

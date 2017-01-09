@@ -16,8 +16,7 @@ it('@html', function (done) {
         html: '<b></b>'
     };
     el.innerHTML = '<p @html="html"></p>';
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -26,6 +25,7 @@ it('@html', function (done) {
     data.html = '<i></i>';
     expect(el.innerHTML).toEqual('<p><i></i></p>');
 
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });

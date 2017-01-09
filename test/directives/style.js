@@ -19,8 +19,7 @@ it(':style', function (done) {
     el.innerHTML = '<p style="width:1px;" ' +
         ':style="{height: \'2px\', border-left-width: borderWidth,paddingLeft:paddingLeft}"></p>';
     var firstEl = el.firstElementChild;
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -43,7 +42,8 @@ it(':style', function (done) {
     expect(firstEl.style.borderLeftWidth).toEqual('');
     expect(firstEl.style.paddingLeft).toEqual('5px');
 
-
+    mvvm.destroy();
+    utils.removeDIV(el);
     done();
 });
 

@@ -19,8 +19,7 @@ it('@if 嵌套 @for，初始为 false', function (done) {
     el.innerHTML =
         '<p @if="bool" @for="item in list">{{item}}</p>';
     var pEl = el.firstElementChild;
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -39,6 +38,7 @@ it('@if 嵌套 @for，初始为 false', function (done) {
     expect(pEl.hasAttribute('@for')).toBe(false);
     expect(pEl.innerHTML).toBe('{{item}}');
 
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });
@@ -51,8 +51,7 @@ it('@if 嵌套 @for，初始为 true', function (done) {
     el.innerHTML =
         '<p @if="list.length" @for="item in list">{{item}}</p>';
     var pEl = el.firstElementChild;
-
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -65,6 +64,7 @@ it('@if 嵌套 @for，初始为 true', function (done) {
     expect(pEl.hasAttribute('@for')).toBe(false);
     expect(pEl.innerHTML).toBe('{{item}}');
 
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });

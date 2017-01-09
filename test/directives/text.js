@@ -17,7 +17,7 @@ it('插值', function (done) {
     };
     el.innerHTML = '{{text}}';
 
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -25,6 +25,29 @@ it('插值', function (done) {
     expect(el.innerHTML).toEqual('1');
     data.text = 2;
     expect(el.innerHTML).toEqual('2');
+
+    mvvm.destroy();
+    utils.removeDIV(el);
+    done();
+});
+
+it('* 插值', function (done) {
+    var el = utils.createDIV();
+    var data = {
+        text: '1'
+    };
+    el.innerHTML = '{{ * text }}-{{text}}';
+
+    var mvvm = new MVVM({
+        el: el,
+        data: data
+    });
+
+    expect(el.innerHTML).toEqual('1-1');
+    data.text = 2;
+    expect(el.innerHTML).toEqual('1-2');
+
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });
@@ -36,7 +59,7 @@ it('@text', function (done) {
     };
     el.innerHTML = '<p @text="text"></p>';
 
-    new MVVM({
+    var mvvm = new MVVM({
         el: el,
         data: data
     });
@@ -44,6 +67,34 @@ it('@text', function (done) {
     expect(el.innerHTML).toEqual('<p>1</p>');
     data.text = 2;
     expect(el.innerHTML).toEqual('<p>2</p>');
+
+    mvvm.destroy();
+    utils.removeDIV(el);
+    done();
+});
+
+it('@text.once', function (done) {
+    var el = utils.createDIV();
+    var data = {
+        text: '1'
+    };
+    el.innerHTML = '<p @text="text"></p><p @text.once="text"></p>';
+    var p1El = el.firstElementChild;
+    var p2El = p1El.nextElementSibling;
+
+    var mvvm = new MVVM({
+        el: el,
+        data: data
+    });
+
+    expect(p1El.innerHTML).toBe('1');
+    expect(p2El.innerHTML).toBe('1');
+
+    data.text = 2;
+    expect(p1El.innerHTML).toBe('2');
+    expect(p2El.innerHTML).toBe('1');
+
+    mvvm.destroy();
     utils.removeDIV(el);
     done();
 });
