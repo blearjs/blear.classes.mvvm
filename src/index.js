@@ -27,6 +27,7 @@ var defaults = {
     computed: {},
     watch: {},
     methods: {},
+    directives: {},
     watchDefaults: {
         // immediately
         imme: false,
@@ -135,7 +136,7 @@ pro[_initDirectives] = function () {
     var the = this;
     var options = the[_options];
 
-    the[_definitions] = options.directives || {};
+    the[_definitions] = options.directives;
 };
 
 // 编译

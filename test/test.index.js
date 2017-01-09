@@ -32,9 +32,8 @@ describe('实例', function () {
     // @todo
     require('./instance/computed');
     require('./instance/watch');
-    // methods
-    // directive
-    // #watch
+    require('./instance/methods');
+    require('./instance/directives');
     // #destroy
 });
 

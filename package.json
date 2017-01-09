@@ -51,7 +51,7 @@
     "blear.utils.collection": "^1.0.4",
     "blear.utils.function": "^1.0.4",
     "blear.utils.number": "^1.0.2",
-    "blear.utils.object": "^1.0.10",
+    "blear.utils.object": "^1.0.11",
     "blear.utils.random": "^1.0.2",
     "blear.utils.string": "^1.0.7",
     "blear.utils.time": "^1.0.4",
