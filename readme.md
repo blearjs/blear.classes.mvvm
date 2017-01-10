@@ -36,3 +36,17 @@ var mvvm = new MVVM({
 <div id="app">hello blear</div>
 ```
 
+# Options
+## el
+## data
+## methods
+## watch
+## directives
+
+
+# api
+# #directive(name, definition)
+# #watch(expOrFn, callback, [options])
+# #destroy()
+# .directive(name, definition)
+
