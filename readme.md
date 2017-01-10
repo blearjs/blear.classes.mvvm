@@ -19,7 +19,7 @@
 <div id="app">{{message}}</div>
 ```
 
-\+
+<div style="text-align: center;font-size: 2em;">+</div>
 
 ```js
 var mvvm = new MVVM({
@@ -30,7 +30,7 @@ var mvvm = new MVVM({
 });
 ```
 
-\= 
+<div style="text-align: center;font-size: 2em;">=</div> 
 
 ```html
 <div id="app">Hello blear</div>
