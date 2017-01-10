@@ -45,5 +45,5 @@ describe('性能', function () {
 
 describe('边界', function () {
     require('./marginal/mvvm');
+    // table
 });
-
