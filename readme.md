@@ -30,10 +30,10 @@ var mvvm = new MVVM({
 });
 ```
 
-= 
+\= 
 
 ```html
-<div id="app">hello blear</div>
+<div id="app">Hello blear</div>
 ```
 
 # Options
