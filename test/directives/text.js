@@ -7,6 +7,8 @@
 
 'use strict';
 
+var plan = require('blear.utils.plan');
+
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
@@ -22,13 +24,19 @@ it('插值', function (done) {
         data: data
     });
 
-    expect(el.innerHTML).toEqual('1');
-    data.text = 2;
-    expect(el.innerHTML).toEqual('2');
+    plan
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual('1');
+            data.text = 2;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual('2');
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 it('* 插值', function (done) {
@@ -43,13 +51,19 @@ it('* 插值', function (done) {
         data: data
     });
 
-    expect(el.innerHTML).toEqual('1-1');
-    data.text = 2;
-    expect(el.innerHTML).toEqual('1-2');
+    plan
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual('1-1');
+            data.text = 2;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual('1-2');
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 it('@text', function (done) {
@@ -64,13 +78,19 @@ it('@text', function (done) {
         data: data
     });
 
-    expect(el.innerHTML).toEqual('<p>1</p>');
-    data.text = 2;
-    expect(el.innerHTML).toEqual('<p>2</p>');
+    plan
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual('<p>1</p>');
+            data.text = 2;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual('<p>2</p>');
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 it('@text.once', function (done) {
@@ -87,16 +107,22 @@ it('@text.once', function (done) {
         data: data
     });
 
-    expect(p1El.innerHTML).toBe('1');
-    expect(p2El.innerHTML).toBe('1');
+    plan
+        .taskSync(function () {
+            expect(p1El.innerHTML).toBe('1');
+            expect(p2El.innerHTML).toBe('1');
 
-    data.text = 2;
-    expect(p1El.innerHTML).toBe('2');
-    expect(p2El.innerHTML).toBe('1');
+            data.text = 2;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(p1El.innerHTML).toBe('2');
+            expect(p2El.innerHTML).toBe('1');
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 

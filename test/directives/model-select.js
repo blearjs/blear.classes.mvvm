@@ -35,20 +35,18 @@ it('@model select single', function (done) {
     });
 
     plan
-        .task(function (next) {
+        .taskSync(function () {
             expect(selectEl.value).toBe('2');
             expect(selectEl.selectedOptions.length).toBe(1);
             expect(selectEl.selectedOptions[0].value).toBe('2');
             expect(pEl.innerHTML).toBe('2');
-
-            next();
         })
-        .task(function (next) {
+        .taskSync(function () {
             selectEl.options[2].selected = true;
             event.emit(selectEl, 'change');
-            utils.wait(next);
         })
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             expect(selectEl.value).toBe('3');
             expect(selectEl.selectedOptions.length).toBe(1);
             expect(selectEl.selectedOptions[0].value).toBe('3');
@@ -56,6 +54,9 @@ it('@model select single', function (done) {
             expect(data.selected).toBe('3');
 
             data.selected = 1;
+        })
+        .wait(10)
+        .taskSync(function () {
             expect(selectEl.value).toBe('1');
             expect(selectEl.selectedOptions.length).toBe(1);
             expect(selectEl.selectedOptions[0].value).toBe('1');
@@ -63,19 +64,20 @@ it('@model select single', function (done) {
 
             mvvm.destroy();
             data.selected = 2;
+        })
+        .wait(10)
+        .taskSync(function () {
             expect(selectEl.value).toBe('1');
             expect(selectEl.selectedOptions.length).toBe(1);
             expect(selectEl.selectedOptions[0].value).toBe('1');
             expect(pEl.innerHTML).toBe('1');
-
-            next();
         })
-        .task(function (next) {
+        .taskSync(function () {
             selectEl.options[3].selected = true;
             event.emit(selectEl, 'change');
-            utils.wait(next);
         })
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             expect(selectEl.value).toBe('4');
             expect(selectEl.selectedOptions.length).toBe(1);
             expect(selectEl.selectedOptions[0].value).toBe('4');
@@ -83,7 +85,6 @@ it('@model select single', function (done) {
             expect(data.selected).toBe(2);
 
             utils.removeDIV(el);
-            next();
         })
         .serial(done);
 });
@@ -109,21 +110,19 @@ it('@model select multiple', function (done) {
     });
 
     plan
-        .task(function (next) {
+        .taskSync(function () {
             expect(selectEl.value).toBe('2');
             expect(selectEl.selectedOptions.length).toBe(2);
             expect(selectEl.selectedOptions[0].value).toBe('2');
             expect(selectEl.selectedOptions[1].value).toBe('4');
             expect(pEl.innerHTML).toBe('2,4');
-
-            next();
         })
-        .task(function (next) {
+        .taskSync(function () {
             selectEl.options[0].selected = true;
             event.emit(selectEl, 'change');
-            utils.wait(next);
         })
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             expect(selectEl.selectedOptions.length).toBe(3);
             expect(selectEl.selectedOptions[0].value).toBe('1');
             expect(selectEl.selectedOptions[1].value).toBe('2');
@@ -131,20 +130,20 @@ it('@model select multiple', function (done) {
             expect(pEl.innerHTML).toBe('2,4,1');
 
             data.selected = [];
+        })
+        .wait(10)
+        .taskSync(function () {
             expect(selectEl.value).toBe('');
             expect(selectEl.selectedOptions.length).toBe(0);
             expect(pEl.innerHTML).toBe('');
 
             mvvm.destroy();
-            next();
-        })
-        .task(function (next) {
             selectEl.options[2].selected = true;
             selectEl.options[3].selected = true;
             event.emit(selectEl, 'change');
-            utils.wait(next);
         })
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             expect(selectEl.selectedOptions.length).toBe(2);
             expect(selectEl.selectedOptions[0].value).toBe('3');
             expect(selectEl.selectedOptions[1].value).toBe('4');
@@ -152,13 +151,15 @@ it('@model select multiple', function (done) {
             expect(data.selected).toEqual([]);
 
             data.selected = [1, 2, 3, 4];
+        })
+        .wait(10)
+        .taskSync(function () {
             expect(selectEl.selectedOptions.length).toBe(2);
             expect(selectEl.selectedOptions[0].value).toBe('3');
             expect(selectEl.selectedOptions[1].value).toBe('4');
             expect(pEl.innerHTML).toBe('');
 
             utils.removeDIV(el);
-            next();
         })
         .serial(done);
 });

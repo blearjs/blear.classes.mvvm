@@ -7,6 +7,8 @@
 
 'use strict';
 
+var plan = require('blear.utils.plan');
+
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
@@ -24,27 +26,36 @@ it(':style', function (done) {
         data: data
     });
 
-    expect(firstEl.style.width).toEqual('1px');
-    expect(firstEl.style.height).toEqual('2px');
-    expect(firstEl.style.borderLeftWidth).toEqual('3px');
-    expect(firstEl.style.paddingLeft).toEqual('4px');
-    expect(firstEl.style.length).toEqual(4);
+    plan
+        .taskSync(function () {
+            expect(firstEl.style.width).toEqual('1px');
+            expect(firstEl.style.height).toEqual('2px');
+            expect(firstEl.style.borderLeftWidth).toEqual('3px');
+            expect(firstEl.style.paddingLeft).toEqual('4px');
+            expect(firstEl.style.length).toEqual(4);
 
-    data.paddingLeft += 1;
-    expect(firstEl.style.width).toEqual('1px');
-    expect(firstEl.style.height).toEqual('2px');
-    expect(firstEl.style.borderLeftWidth).toEqual('3px');
-    expect(firstEl.style.paddingLeft).toEqual('5px');
+            data.paddingLeft += 1;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(firstEl.style.width).toEqual('1px');
+            expect(firstEl.style.height).toEqual('2px');
+            expect(firstEl.style.borderLeftWidth).toEqual('3px');
+            expect(firstEl.style.paddingLeft).toEqual('5px');
 
-    data.borderWidth = null;
-    expect(firstEl.style.width).toEqual('1px');
-    expect(firstEl.style.height).toEqual('2px');
-    expect(firstEl.style.borderLeftWidth).toEqual('');
-    expect(firstEl.style.paddingLeft).toEqual('5px');
+            data.borderWidth = null;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(firstEl.style.width).toEqual('1px');
+            expect(firstEl.style.height).toEqual('2px');
+            expect(firstEl.style.borderLeftWidth).toEqual('');
+            expect(firstEl.style.paddingLeft).toEqual('5px');
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 
