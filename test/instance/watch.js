@@ -39,7 +39,7 @@ it('>watch', function (done) {
         })
         .wait(10)
         .taskSync(function () {
-            expect(stack).toEqual(['b', 'c', 'd', 'e']);
+            expect(stack).toEqual(['e']);
             mvvm.destroy();
             utils.removeDIV(el);
         })
@@ -75,7 +75,7 @@ it('>watch', function (done) {
         })
         .wait(10)
         .taskSync(function () {
-            expect(stack).toEqual(['a', 'b', 'c', 'd', 'e']);
+            expect(stack).toEqual(['a', 'e']);
             mvvm.destroy();
             utils.removeDIV(el);
         })
@@ -112,7 +112,7 @@ it('#watch', function (done) {
         })
         .wait(10)
         .taskSync(function () {
-            expect(stack).toEqual(['b', 'c']);
+            expect(stack).toEqual(['c']);
             mvvm.destroy();
             utils.removeDIV(el);
         })

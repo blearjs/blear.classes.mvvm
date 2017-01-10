@@ -31,13 +31,20 @@ it('>computed get', function (done) {
         computed: computed
     });
 
-    expect(el.innerHTML).toBe('a b');
-    data.firstName = 'aa';
-    expect(el.innerHTML).toBe('aa b');
+    plan
+        .taskSync(function () {
+            expect(el.innerHTML).toBe('a b');
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            data.firstName = 'aa';
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toBe('aa b');
+
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 it('>computed get + set', function (done) {
@@ -67,23 +74,35 @@ it('>computed get + set', function (done) {
         computed: computed
     });
 
-    expect(el.innerHTML).toBe('a b');
-    data.firstName = 'aa';
-    expect(el.innerHTML).toBe('aa b');
+    plan
+        .taskSync(function () {
+            expect(el.innerHTML).toBe('a b');
+            data.firstName = 'aa';
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toBe('aa b');
 
-    data.fullName = 'x';
-    expect(data.firstName).toBe('x');
-    expect(data.lastName).toBe('');
-    expect(el.innerHTML).toBe('x');
+            data.fullName = 'x';
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(data.firstName).toBe('x');
+            expect(data.lastName).toBe('');
+            expect(el.innerHTML).toBe('x');
 
-    data.fullName = 'x y z';
-    expect(data.firstName).toBe('x');
-    expect(data.lastName).toBe('y z');
-    expect(el.innerHTML).toBe('x y z');
+            data.fullName = 'x y z';
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(data.firstName).toBe('x');
+            expect(data.lastName).toBe('y z');
+            expect(el.innerHTML).toBe('x y z');
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 it('>computed get object', function (done) {

@@ -84,11 +84,13 @@ it('静态指令 def', function (done) {
             expect(stack).toEqual(['a']);
             data.a = 'b';
         })
+        .wait(10)
         .taskSync(function () {
             expect(stack).toEqual(['a', 'b']);
             mvvm.destroy();
             data.a = 'c';
         })
+        .wait(10)
         .taskSync(function () {
             expect(stack).toEqual(['a', 'b']);
             utils.removeDIV(el);

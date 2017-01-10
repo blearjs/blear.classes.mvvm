@@ -28,16 +28,16 @@ describe('指令', function () {
     require('./directives/text');
 });
 
-// describe('实例', function () {
-//     require('./instance/computed');
-//     require('./instance/watch');
-//     require('./instance/methods');
-//     require('./instance/directives');
-// });
-//
-// describe('静态', function () {
-//     require('./statical/directive');
-// });
+describe('实例', function () {
+    require('./instance/computed');
+    require('./instance/watch');
+    require('./instance/methods');
+    require('./instance/directives');
+});
+
+describe('静态', function () {
+    require('./statical/directive');
+});
 
 describe('性能', function () {
     require('./performance/directive');
