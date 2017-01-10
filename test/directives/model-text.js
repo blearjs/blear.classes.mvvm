@@ -28,54 +28,48 @@ it('@model input:text', function (done) {
     });
 
     plan
-        .task(function (next) {
+        .taskSync(function () {
             expect(inputEl.value).toBe('x');
             expect(pEl.innerHTML).toBe('x');
             inputEl.value = 'y';
-            next();
-        })
-        // 发送 input 事件
-        .task(function (next) {
             event.emit(inputEl, 'input');
-            utils.wait(next);
         })
-        // 发送 change 事件
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             event.emit(inputEl, 'change');
-            utils.wait(next);
         })
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             expect(data.text).toBe('y');
             expect(inputEl.value).toBe('y');
             expect(pEl.innerHTML).toBe('y');
-
             data.text = 'z';
+        })
+        .wait(10)
+        .taskSync(function () {
             expect(inputEl.value).toBe('z');
             expect(pEl.innerHTML).toBe('z');
 
             mvvm.destroy();
             data.text = 'ooo';
+        })
+        .wait(10)
+        .taskSync(function () {
             expect(inputEl.value).toBe('z');
             expect(pEl.innerHTML).toBe('z');
 
             inputEl.value = 'ppp';
-            next();
-        })
-        // 发送 input 事件
-        .task(function (next) {
             event.emit(inputEl, 'input');
-            utils.wait(next);
         })
-        // 发送 change 事件
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             event.emit(inputEl, 'change');
-            utils.wait(next);
         })
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             expect(pEl.innerHTML).toBe('z');
             expect(data.text).toBe('ooo');
             utils.removeDIV(el);
-            next();
         })
         .serial(done);
 });
@@ -94,35 +88,32 @@ it('@model.trim input:text', function (done) {
     });
 
     plan
-        .task(function (next) {
+        .taskSync(function () {
             expect(inputEl.value).toBe('x');
             expect(pEl.innerHTML).toBe('x');
 
             inputEl.value = 'y    ';
-            next();
-        })
-        // 发送 input 事件
-        .task(function (next) {
             event.emit(inputEl, 'input');
-            utils.wait(next);
         })
-        // 发送 change 事件
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             event.emit(inputEl, 'change');
-            utils.wait(next);
         })
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             expect(data.text).toBe('y');
             expect(inputEl.value).toBe('y');
             expect(pEl.innerHTML).toBe('y');
 
             data.text = 'z';
+        })
+        .wait(10)
+        .taskSync(function () {
             expect(inputEl.value).toBe('z');
             expect(pEl.innerHTML).toBe('z');
 
             mvvm.destroy();
             utils.removeDIV(el);
-            next();
         })
         .serial(done);
 });
@@ -141,35 +132,32 @@ it('@model.trim input:text', function (done) {
     });
 
     plan
-        .task(function (next) {
+        .taskSync(function () {
             expect(inputEl.value).toBe('1');
             expect(pEl.innerHTML).toBe('1');
 
             inputEl.value = '2    ';
-            next();
-        })
-        // 发送 input 事件
-        .task(function (next) {
             event.emit(inputEl, 'input');
-            utils.wait(next);
         })
-        // 发送 change 事件
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             event.emit(inputEl, 'change');
-            utils.wait(next);
         })
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             expect(data.text).toBe(2);
             expect(inputEl.value).toBe('2');
             expect(pEl.innerHTML).toBe('2');
 
             data.text = 3;
+        })
+        .wait(10)
+        .taskSync(function () {
             expect(inputEl.value).toBe('3');
             expect(pEl.innerHTML).toBe('3');
 
             mvvm.destroy();
             utils.removeDIV(el);
-            next();
         })
         .serial(done);
 });
@@ -188,35 +176,32 @@ it('@model textarea', function (done) {
     });
 
     plan
-        .task(function (next) {
+        .taskSync(function () {
             expect(inputEl.value).toBe('x');
             expect(pEl.innerHTML).toBe('x');
 
             inputEl.value = 'y';
-            next();
-        })
-        // 发送 input 事件
-        .task(function (next) {
             event.emit(inputEl, 'input');
-            utils.wait(next);
         })
-        // 发送 change 事件
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             event.emit(inputEl, 'change');
-            utils.wait(next);
         })
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             expect(data.text).toBe('y');
             expect(inputEl.value).toBe('y');
             expect(pEl.innerHTML).toBe('y');
 
             data.text = 'z';
+        })
+        .wait(10)
+        .taskSync(function () {
             expect(inputEl.value).toBe('z');
             expect(pEl.innerHTML).toBe('z');
 
             mvvm.destroy();
             utils.removeDIV(el);
-            next();
         })
         .serial(done);
 });

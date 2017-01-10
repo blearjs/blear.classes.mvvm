@@ -7,6 +7,8 @@
 
 'use strict';
 
+var plan = require('blear.utils.plan');
+
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
@@ -24,18 +26,24 @@ it('@if 懒编译特性', function (done) {
         data: data
     });
 
-    expect(el.innerHTML).toBe('<span>a</span>');
-    expect(pEl.innerHTML).toBe('{{text}}');
-    expect(spanEl.innerHTML).toBe('a');
+    plan
+        .taskSync(function () {
+            expect(el.innerHTML).toBe('<span>a</span>');
+            expect(pEl.innerHTML).toBe('{{text}}');
+            expect(spanEl.innerHTML).toBe('a');
 
-    data.bool = true;
-    expect(el.innerHTML).toBe('<p>a</p>');
-    expect(pEl.innerHTML).toBe('a');
-    expect(spanEl.innerHTML).toBe('a');
+            data.bool = true;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toBe('<p>a</p>');
+            expect(pEl.innerHTML).toBe('a');
+            expect(spanEl.innerHTML).toBe('a');
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 it('@if 嵌套 @if', function (done) {
@@ -58,45 +66,57 @@ it('@if 嵌套 @if', function (done) {
         data: data
     });
 
-    expect(el.innerHTML).toBe('');
-    expect(p1El.innerHTML).toBe('{{text}}');
-    expect(p2El.innerHTML).toBe('{{text}}');
-    expect(divEl.hasAttribute('@if')).toBe(false);
-    expect(p2El.hasAttribute('@if')).toBe(true);
+    plan
+        .taskSync(function () {
+            expect(el.innerHTML).toBe('');
+            expect(p1El.innerHTML).toBe('{{text}}');
+            expect(p2El.innerHTML).toBe('{{text}}');
+            expect(divEl.hasAttribute('@if')).toBe(false);
+            expect(p2El.hasAttribute('@if')).toBe(true);
 
-    data.bool1 = true;
-    expect(el.innerHTML).toBe(
-        '<div>' +
-        /****/'<p>a</p>' +
-        '</div>'
-    );
-    expect(p1El.innerHTML).toBe('a');
-    expect(p2El.innerHTML).toBe('{{text}}');
-    expect(divEl.hasAttribute('@if')).toBe(false);
-    expect(p2El.hasAttribute('@if')).toBe(false);
+            data.bool1 = true;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toBe(
+                '<div>' +
+                /****/'<p>a</p>' +
+                '</div>'
+            );
+            expect(p1El.innerHTML).toBe('a');
+            expect(p2El.innerHTML).toBe('{{text}}');
+            expect(divEl.hasAttribute('@if')).toBe(false);
+            expect(p2El.hasAttribute('@if')).toBe(false);
 
-    data.bool2 = true;
-    expect(el.innerHTML).toBe(
-        '<div>' +
-        /****/'<p>a</p>' +
-        /****/'<p>a</p>' +
-        '</div>'
-    );
-    expect(p1El.innerHTML).toBe('a');
-    expect(p2El.innerHTML).toBe('a');
-    expect(divEl.hasAttribute('@if')).toBe(false);
-    expect(p2El.hasAttribute('@if')).toBe(false);
+            data.bool2 = true;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toBe(
+                '<div>' +
+                /****/'<p>a</p>' +
+                /****/'<p>a</p>' +
+                '</div>'
+            );
+            expect(p1El.innerHTML).toBe('a');
+            expect(p2El.innerHTML).toBe('a');
+            expect(divEl.hasAttribute('@if')).toBe(false);
+            expect(p2El.hasAttribute('@if')).toBe(false);
 
-    data.bool1 = false;
-    expect(el.innerHTML).toBe('');
-    expect(p1El.innerHTML).toBe('a');
-    expect(p2El.innerHTML).toBe('a');
-    expect(divEl.hasAttribute('@if')).toBe(false);
-    expect(p2El.hasAttribute('@if')).toBe(false);
+            data.bool1 = false;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toBe('');
+            expect(p1El.innerHTML).toBe('a');
+            expect(p2El.innerHTML).toBe('a');
+            expect(divEl.hasAttribute('@if')).toBe(false);
+            expect(p2El.hasAttribute('@if')).toBe(false);
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 it('@if', function (done) {
@@ -110,13 +130,19 @@ it('@if', function (done) {
         data: data
     });
 
-    expect(el.innerHTML).toEqual('<p>1</p>');
-    data.bool = false;
-    expect(el.innerHTML).toEqual('');
+    plan
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual('<p>1</p>');
+            data.bool = false;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual('');
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 it('@if + @else', function (done) {
@@ -131,13 +157,19 @@ it('@if + @else', function (done) {
         data: data
     });
 
-    expect(el.innerHTML).toEqual('<p>1</p>');
-    data.bool = false;
-    expect(el.innerHTML).toEqual('<p>2</p>');
+    plan
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual('<p>1</p>');
+            data.bool = false;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual('<p>2</p>');
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 it('@if + @else-if', function (done) {
@@ -153,13 +185,19 @@ it('@if + @else-if', function (done) {
         data: data
     });
 
-    expect(el.innerHTML).toEqual('<p>2</p>');
-    data.bool1 = true;
-    expect(el.innerHTML).toEqual('<p>1</p>');
+    plan
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual('<p>2</p>');
+            data.bool1 = true;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual('<p>1</p>');
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 it('@if + @else-if + @else', function (done) {
@@ -179,16 +217,27 @@ it('@if + @else-if + @else', function (done) {
         data: data
     });
 
-    expect(el.innerHTML).toEqual('<p>3</p>');
-    data.bool1 = true;
-    expect(el.innerHTML).toEqual('<p>1</p>');
-    data.bool1 = false;
-    data.bool2 = true;
-    expect(el.innerHTML).toEqual('<p>2</p>');
+    plan
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual('<p>3</p>');
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            data.bool1 = true;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual('<p>1</p>');
+
+            data.bool1 = false;
+            data.bool2 = true;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual('<p>2</p>');
+
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 

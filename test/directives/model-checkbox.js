@@ -30,43 +30,45 @@ it('@model checkbox single', function (done) {
     });
 
     plan
-        .task(function (next) {
+        .taskSync(function () {
             expect(inputEl.checked).toBe(true);
             expect(pEl.innerHTML).toBe('true');
 
             inputEl.checked = false;
-            next();
-        })
-        .task(function (next) {
             event.emit(inputEl, 'change');
-            utils.wait(next);
         })
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             data.checked = false;
+        })
+        .wait(10)
+        .taskSync(function () {
             expect(inputEl.checked).toBe(false);
             expect(pEl.innerHTML).toBe('false');
 
             data.checked = true;
+        })
+        .wait(10)
+        .taskSync(function () {
             expect(inputEl.checked).toBe(true);
             expect(pEl.innerHTML).toBe('true');
             mvvm.destroy();
             data.checked = false;
+        })
+        .wait(10)
+        .taskSync(function () {
             expect(inputEl.checked).toBe(true);
             expect(pEl.innerHTML).toBe('true');
 
             inputEl.checked = false;
-            next();
-        })
-        .task(function (next) {
             event.emit(inputEl, 'change');
-            utils.wait(next);
         })
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             expect(inputEl.checked).toBe(false);
             expect(pEl.innerHTML).toBe('true');
 
             utils.removeDIV(el);
-            next();
         })
         .serial(done);
 });
@@ -94,21 +96,19 @@ it('@model checkbox multiple', function (done) {
     });
 
     plan
-        .task(function (next) {
+        .taskSync(function () {
             expect(input1El.checked).toBe(true);
             expect(input2El.checked).toBe(false);
             expect(input3El.checked).toBe(false);
             expect(input4El.checked).toBe(false);
             expect(pEl.innerHTML).toBe('1');
-
-            next();
         })
-        .task(function (next) {
+        .taskSync(function () {
             input3El.checked = true;
             event.emit(input3El, 'change');
-            utils.wait(next);
         })
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             expect(input1El.checked).toBe(true);
             expect(input2El.checked).toBe(false);
             expect(input3El.checked).toBe(true);
@@ -117,38 +117,40 @@ it('@model checkbox multiple', function (done) {
 
             data.checked.shift();
             data.checked.push(4);
+        })
+        .wait(10)
+        .taskSync(function () {
             expect(input1El.checked).toBe(false);
             expect(input2El.checked).toBe(false);
             expect(input3El.checked).toBe(true);
             expect(input4El.checked).toBe(true);
             expect(pEl.innerHTML).toBe('3,4');
-            next();
-        })
-        .task(function (next) {
+
             input3El.checked = false;
             event.emit(input3El, 'change');
-            utils.wait(next);
         })
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             expect(input1El.checked).toBe(false);
             expect(input2El.checked).toBe(false);
             expect(input3El.checked).toBe(false);
             expect(input4El.checked).toBe(true);
             expect(pEl.innerHTML).toBe('4');
             mvvm.destroy();
-            next();
         })
-        .task(function (next) {
+        .taskSync(function () {
             input3El.checked = true;
             event.emit(input3El, 'change');
-            utils.wait(next);
         })
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             expect(pEl.innerHTML).toBe('4');
             data.checked = [1, 2, 3, 4];
+        })
+        .wait(10)
+        .taskSync(function () {
             expect(pEl.innerHTML).toBe('4');
             utils.removeDIV(el);
-            next();
         })
         .serial(done);
 });

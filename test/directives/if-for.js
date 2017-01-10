@@ -7,6 +7,8 @@
 
 'use strict';
 
+var plan = require('blear.utils.plan');
+
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
@@ -24,23 +26,29 @@ it('@if 嵌套 @for，初始为 false', function (done) {
         data: data
     });
 
-    expect(el.innerHTML).toBe('');
-    expect(pEl.hasAttribute('@if')).toBe(false);
-    expect(pEl.hasAttribute('@for')).toBe(true);
-    expect(pEl.innerHTML).toBe('{{item}}');
+    plan
+        .taskSync(function () {
+            expect(el.innerHTML).toBe('');
+            expect(pEl.hasAttribute('@if')).toBe(false);
+            expect(pEl.hasAttribute('@for')).toBe(true);
+            expect(pEl.innerHTML).toBe('{{item}}');
 
-    data.bool = 1;
-    expect(el.innerHTML).toBe(
-        '<p>1</p>' +
-        '<p>2</p>'
-    );
-    expect(pEl.hasAttribute('@if')).toBe(false);
-    expect(pEl.hasAttribute('@for')).toBe(false);
-    expect(pEl.innerHTML).toBe('{{item}}');
+            data.bool = 1;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toBe(
+                '<p>1</p>' +
+                '<p>2</p>'
+            );
+            expect(pEl.hasAttribute('@if')).toBe(false);
+            expect(pEl.hasAttribute('@for')).toBe(false);
+            expect(pEl.innerHTML).toBe('{{item}}');
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 it('@if 嵌套 @for，初始为 true', function (done) {
@@ -56,17 +64,20 @@ it('@if 嵌套 @for，初始为 true', function (done) {
         data: data
     });
 
-    expect(el.innerHTML).toBe(
-        '<p>1</p>' +
-        '<p>2</p>'
-    );
-    expect(pEl.hasAttribute('@if')).toBe(false);
-    expect(pEl.hasAttribute('@for')).toBe(false);
-    expect(pEl.innerHTML).toBe('{{item}}');
+    plan
+        .taskSync(function () {
+            expect(el.innerHTML).toBe(
+                '<p>1</p>' +
+                '<p>2</p>'
+            );
+            expect(pEl.hasAttribute('@if')).toBe(false);
+            expect(pEl.hasAttribute('@for')).toBe(false);
+            expect(pEl.innerHTML).toBe('{{item}}');
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 

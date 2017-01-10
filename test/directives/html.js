@@ -7,6 +7,8 @@
 
 'use strict';
 
+var plan = require('blear.utils.plan');
+
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
@@ -21,13 +23,19 @@ it('@html', function (done) {
         data: data
     });
 
-    expect(el.innerHTML).toEqual('<p><b></b></p>');
-    data.html = '<i></i>';
-    expect(el.innerHTML).toEqual('<p><i></i></p>');
+    plan
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual('<p><b></b></p>');
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            data.html = '<i></i>';
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual('<p><i></i></p>');
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 
