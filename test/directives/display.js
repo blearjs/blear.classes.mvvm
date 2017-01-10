@@ -7,6 +7,8 @@
 
 'use strict';
 
+var plan = require('blear.utils.plan');
+
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
@@ -26,20 +28,24 @@ it('@show @hide', function (done) {
         data: data
     });
 
-    expect(aEl.innerHTML).toBe('a');
-    expect(bEl.innerHTML).toBe('a');
-    expect(aEl.style.display).toBe('block');
-    expect(bEl.style.display).toBe('none');
-
-    data.bool = false;
-    expect(aEl.innerHTML).toBe('a');
-    expect(bEl.innerHTML).toBe('a');
-    expect(aEl.style.display).toBe('none');
-    expect(bEl.style.display).toBe('block');
-
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+    plan
+        .taskSync(function () {
+            expect(aEl.innerHTML).toBe('a');
+            expect(bEl.innerHTML).toBe('a');
+            expect(aEl.style.display).toBe('block');
+            expect(bEl.style.display).toBe('none');
+            data.bool = false;
+        })
+        .wait()
+        .taskSync(function () {
+            expect(aEl.innerHTML).toBe('a');
+            expect(bEl.innerHTML).toBe('a');
+            expect(aEl.style.display).toBe('none');
+            expect(bEl.style.display).toBe('block');
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 

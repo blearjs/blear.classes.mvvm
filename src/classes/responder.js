@@ -16,12 +16,12 @@ var typeis = require('blear.utils.typeis');
 var object = require('blear.utils.object');
 var Watcher = require('../watcher/index');
 
-// var Queue = require('./queue');
+var Queue = require('./queue');
 var expParser = require('../parsers/expression');
 var evtParser = require('../parsers/event');
 var configs = require('../configs');
 
-// var queue = new Queue();
+var queue = new Queue();
 window.responderList = [];
 
 var Responder = Events.extend({
@@ -76,54 +76,8 @@ var Responder = Events.extend({
 
         if (!directive.filters.once) {
             the.pipe = function (signal) {
-                the.beforeGet();
-                directive.get();
-
-                // 但这里已经修正，在如下 DOM 结构里：
-                // <1 @for="list1 in list0">
-                //     <2 @for="list2 in list1">
-                //         <3 @for="list3 in list2">
-                //             {{list0}}    <= 这里对 list0 的引用，当超过两级数组，新建的数据就对此不会生效
-                //             [[[1]]]      <= 第 1 次加的
-                //             [[[1, 2]]]   <= 第 2 次加的，新的列表里有两项，但历史数据没有被更新
-                //         </3>
-                //     </2>
-                // </1>
-                // 不是同一个数据源 => 取消后续操作
-
-                var isForDirective = directive.category === 'for';
-
-                // for 变化的不是同一个数组（多维数组）
-                var notSameOrigin = isForDirective && the.newVal !== signal.parent;
-
-                // set 的是 for 指定的字段 abc.list = [1, 2, 3];
-                var setSameKey = isForDirective && signal.method === 'set' && signal.key === directive.exp;
-
-                if (notSameOrigin && !setSameKey) {
-                    // 如果是计算属性的话，当做 set 来处理，重写 signal
-                    if (the.newVal[configs.computedFlagName]) {
-                        signal = object.filter(signal, [
-                            'newVal',
-                            'oldVal',
-                            'parent',
-                            'type',
-                            'insertValue'
-                        ]);
-                        signal.method = 'set';
-                    }
-                    // 其他变化都忽略
-                    else {
-                        the.afterGet();
-                        return;
-                    }
-                }
-
-                // for 指令数组变化同源 && 已经变化
-                if (the.newVal !== the.oldVal) {
-                    directive.update(directive.node, the.newVal, the.oldVal, signal);
-                }
-
-                the.afterGet();
+                // 推入队列，待下一次事件循环后再进行 DOM 更新
+                queue.push(the, signal);
             };
         }
 
@@ -181,10 +135,61 @@ var Responder = Events.extend({
     },
 
     /**
-     * @todo 用于队列管理之后的发声，目前未实现
+     * 发声，响应 DOM 变化
+     * @param signal
      */
-    speak: function () {
-        //
+    speak: function (signal) {
+        var the = this;
+        var directive = the.directive;
+
+        the.beforeGet();
+        directive.get();
+
+        // 但这里已经修正，在如下 DOM 结构里：
+        // <1 @for="list1 in list0">
+        //     <2 @for="list2 in list1">
+        //         <3 @for="list3 in list2">
+        //             {{list0}}    <= 这里对 list0 的引用，当超过两级数组，新建的数据就对此不会生效
+        //             [[[1]]]      <= 第 1 次加的
+        //             [[[1, 2]]]   <= 第 2 次加的，新的列表里有两项，但历史数据没有被更新
+        //         </3>
+        //     </2>
+        // </1>
+        // 不是同一个数据源 => 取消后续操作
+
+        var isForDirective = directive.category === 'for';
+
+        // for 变化的不是同一个数组（多维数组）
+        var notSameOrigin = isForDirective && the.newVal !== signal.parent;
+
+        // set 的是 for 指定的字段 abc.list = [1, 2, 3];
+        var setSameKey = isForDirective && signal.method === 'set' && signal.key === directive.exp;
+
+        if (notSameOrigin && !setSameKey) {
+            // 如果是计算属性的话，当做 set 来处理，重写 signal
+            if (the.newVal[configs.computedFlagName]) {
+                signal = object.filter(signal, [
+                    'newVal',
+                    'oldVal',
+                    'parent',
+                    'type',
+                    'insertValue'
+                ]);
+                signal.method = 'set';
+            }
+            // 其他变化都忽略
+            else {
+                the.afterGet();
+                return;
+            }
+        }
+
+        // for 指令数组变化同源 && 已经变化
+        if (the.newVal !== the.oldVal) {
+            directive.update(directive.node, the.newVal, the.oldVal, signal);
+        }
+
+        the.afterGet();
     }
 });
 var _wireList = Responder.sole();

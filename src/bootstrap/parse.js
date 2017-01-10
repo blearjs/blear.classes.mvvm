@@ -102,16 +102,17 @@ exports.attr = function (vm, node, attr) {
     }
 
 
-    if (!directive) {
-
-        if (typeof DEBUG !== 'undefined' && DEBUG) {
-            console.error('未匹配到', category, '指令：');
-            console.error('attrName: ', attrName);
-            console.error('attrValue: ', attrValue);
-        }
-
-        return;
-    }
+    // 未定义的指令都归位事件了
+    // if (!directive) {
+    //
+    //     if (typeof DEBUG !== 'undefined' && DEBUG) {
+    //         console.error('未匹配到', category, '指令：');
+    //         console.error('attrName: ', attrName);
+    //         console.error('attrValue: ', attrValue);
+    //     }
+    //
+    //     return;
+    // }
 
     array.reduce(delimiters, function (prevVal, nowVal) {
         prevVal[nowVal] = true;
@@ -155,14 +156,8 @@ exports.text = function (vm, node) {
         textNodes.push(modification.insert(textNode, node, 0));
     });
 
-    if (typeof DEBUG !== 'undefined' && DEBUG) {
-        // debug 模式，使用注释替换
-        var commentNode = modification.create('#comment', node.textContent);
-        modification.replace(commentNode, node);
-    } else {
-        // 移除原始节点
-        modification.remove(node);
-    }
+    // 移除原始节点
+    modification.remove(node);
 
     // 2、然后再处理指令，否则会重复处理
     array.each(tokens, function (index, token) {

@@ -7,6 +7,8 @@
 
 'use strict';
 
+var plan = require('blear.utils.plan');
+
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
@@ -24,20 +26,30 @@ it(':attr', function (done) {
         data: data
     });
 
-    expect(childEl.getAttribute('abc')).toBe('123');
-    data.abc = 456;
-    expect(childEl.getAttribute('abc')).toBe('456');
-    data.abc = true;
-    expect(childEl.getAttribute('abc')).toBe('true');
-    data.abc = null;
-    expect(childEl.getAttribute('abc')).toBe('');
-
-    expect(childEl.def).toBe(456);
-    expect(childEl.hidden).toBe(true);
-
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+    plan
+        .taskSync(function () {
+            expect(childEl.getAttribute('abc')).toBe('123');
+            data.abc = 456;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(childEl.getAttribute('abc')).toBe('456');
+            data.abc = true;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(childEl.getAttribute('abc')).toBe('true');
+            data.abc = null;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(childEl.getAttribute('abc')).toBe('');
+            expect(childEl.def).toBe(456);
+            expect(childEl.hidden).toBe(true);
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 

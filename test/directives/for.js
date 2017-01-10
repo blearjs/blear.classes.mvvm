@@ -9,6 +9,7 @@
 
 var array = require('blear.utils.array');
 var random = require('blear.utils.random');
+var plan = require('blear.utils.plan');
 
 var MVVM = require('../../src/index');
 var utils = require('../utils');
@@ -29,94 +30,136 @@ it('@for 1 维数组', function (done) {
         data: data
     });
 
-    expect(el.innerHTML).toEqual(
-        '<p>1</p>' +
-        '<p>2</p>'
-    );
+    plan
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>1</p>' +
+                '<p>2</p>'
+            );
 
-    data.list.push(3);
-    expect(el.innerHTML).toEqual(
-        '<p>1</p>' +
-        '<p>2</p>' +
-        '<p>3</p>'
-    );
+            data.list.push(3);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>1</p>' +
+                '<p>2</p>' +
+                '<p>3</p>'
+            );
 
-    data.list.pop();
-    expect(el.innerHTML).toEqual(
-        '<p>1</p>' +
-        '<p>2</p>'
-    );
+            data.list.pop();
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>1</p>' +
+                '<p>2</p>'
+            );
 
-    data.list.unshift(4);
-    expect(el.innerHTML).toEqual(
-        '<p>4</p>' +
-        '<p>1</p>' +
-        '<p>2</p>'
-    );
+            data.list.unshift(4);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>4</p>' +
+                '<p>1</p>' +
+                '<p>2</p>'
+            );
 
-    data.list.shift();
-    expect(el.innerHTML).toEqual(
-        '<p>1</p>' +
-        '<p>2</p>'
-    );
+            data.list.shift();
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>1</p>' +
+                '<p>2</p>'
+            );
 
-    data.list.sort(function (a, b) {
-        return b - a;
-    });
-    expect(el.innerHTML).toEqual(
-        '<p>2</p>' +
-        '<p>1</p>'
-    );
+            data.list.sort(function (a, b) {
+                return b - a;
+            });
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>2</p>' +
+                '<p>1</p>'
+            );
 
-    data.list.splice(0, 0, 5);
-    expect(el.innerHTML).toEqual(
-        '<p>5</p>' +
-        '<p>2</p>' +
-        '<p>1</p>'
-    );
+            data.list.splice(0, 0, 5);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>5</p>' +
+                '<p>2</p>' +
+                '<p>1</p>'
+            );
 
-    data.list.splice(1, 2, 6);
-    expect(el.innerHTML).toEqual(
-        '<p>5</p>' +
-        '<p>6</p>'
-    );
+            data.list.splice(1, 2, 6);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>5</p>' +
+                '<p>6</p>'
+            );
 
-    data.list.set(0, 7);
-    expect(el.innerHTML).toEqual(
-        '<p>7</p>' +
-        '<p>6</p>'
-    );
+            data.list.set(0, 7);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>7</p>' +
+                '<p>6</p>'
+            );
 
-    data.list.remove(1);
-    expect(el.innerHTML).toEqual(
-        '<p>7</p>'
-    );
+            data.list.remove(1);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>7</p>'
+            );
 
-    data.list.delete(7);
-    expect(el.innerHTML).toEqual('');
+            data.list.delete(7);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual('');
 
-    data.list = [8, 9];
-    expect(el.innerHTML).toEqual(
-        '<p>8</p>' +
-        '<p>9</p>'
-    );
+            data.list = [8, 9];
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>8</p>' +
+                '<p>9</p>'
+            );
 
-    data.list = [10, 11];
-    expect(el.innerHTML).toEqual(
-        '<p>10</p>' +
-        '<p>11</p>'
-    );
+            data.list = [10, 11];
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>10</p>' +
+                '<p>11</p>'
+            );
 
-    data.list.push(12);
-    expect(el.innerHTML).toEqual(
-        '<p>10</p>' +
-        '<p>11</p>' +
-        '<p>12</p>'
-    );
+            data.list.push(12);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>10</p>' +
+                '<p>11</p>' +
+                '<p>12</p>'
+            );
 
-    utils.removeDIV(el);
-    mvvm.destroy();
-    done();
+            utils.removeDIV(el);
+            mvvm.destroy();
+        })
+        .serial(done);
 });
 
 it('@for sort', function (done) {
@@ -137,20 +180,23 @@ it('@for sort', function (done) {
         data: data
     });
 
-    length = 30;
-
-    while (length--) {
-        data.list.sort(function () {
-            return Math.random() - 0.5;
-        });
-
-        array.each(el.children, function (index, childEl) {
-            expect(childEl.innerHTML).toBe(data.list[index] + '');
-        });
-    }
-
-    mvvm.destroy();
-    done();
+    plan
+        .taskSync(function () {
+            data.list.sort(function () {
+                return Math.random() - 0.5;
+            });
+        })
+        .wait(1)
+        .taskSync(function () {
+            array.each(el.children, function (index, childEl) {
+                expect(childEl.innerHTML).toBe(data.list[index] + '');
+            });
+        })
+        .taskSync(function () {
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 it('@for 1 维数组对象', function (done) {
@@ -166,32 +212,45 @@ it('@for 1 维数组对象', function (done) {
         el: el,
         data: data
     });
+    var user0El;
 
-    expect(el.innerHTML).toBe(
-        '<div>a</div>'
-    );
+    plan
+        .taskSync(function () {
+            expect(el.innerHTML).toBe(
+                '<div>a</div>'
+            );
 
-    data.users[0].name = 'b';
-    expect(el.innerHTML).toBe(
-        '<div>b</div>'
-    );
+            data.users[0].name = 'b';
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toBe(
+                '<div>b</div>'
+            );
+            user0El = el.firstElementChild;
 
-    var user0El = el.firstElementChild;
-    data.users.set(0, {name: 'c'});
-    expect(el.innerHTML).toBe(
-        '<div>c</div>'
-    );
-    expect(el.firstElementChild).not.toBe(user0El);
+            data.users.set(0, {name: 'c'});
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toBe(
+                '<div>c</div>'
+            );
+            expect(el.firstElementChild).not.toBe(user0El);
 
-    data.users.unshift({name: 'd'});
-    expect(el.innerHTML).toBe(
-        '<div>d</div>' +
-        '<div>c</div>'
-    );
+            data.users.unshift({name: 'd'});
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toBe(
+                '<div>d</div>' +
+                '<div>c</div>'
+            );
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 it('@for 1 维数组对象嵌套 1 维数组', function (done) {
@@ -219,60 +278,75 @@ it('@for 1 维数组对象嵌套 1 维数组', function (done) {
         data: data
     });
 
-    expect(el.innerHTML).toBe(
-        '<div>' +
-        /****/'<p>0A0a</p>' +
-        '</div>'
-    );
+    plan
+        .taskSync(function () {
+            expect(el.innerHTML).toBe(
+                '<div>' +
+                /****/'<p>0A0a</p>' +
+                '</div>'
+            );
 
-    data.teachers[0].students.push({name: 'b'});
-    expect(el.innerHTML).toBe(
-        '<div>' +
-        /****/'<p>0A0a</p>' +
-        /****/'<p>0A1b</p>' +
-        '</div>'
-    );
+            data.teachers[0].students.push({name: 'b'});
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toBe(
+                '<div>' +
+                /****/'<p>0A0a</p>' +
+                /****/'<p>0A1b</p>' +
+                '</div>'
+            );
 
-    data.teachers[0].students.unshift({name: 'c'});
-    expect(el.innerHTML).toBe(
-        '<div>' +
-        /****/'<p>0A0c</p>' +
-        /****/'<p>0A1a</p>' +
-        /****/'<p>0A2b</p>' +
-        '</div>'
-    );
+            data.teachers[0].students.unshift({name: 'c'});
+        })
+        .wait(100)
+        .taskSync(function () {
+            expect(el.innerHTML).toBe(
+                '<div>' +
+                /****/'<p>0A0c</p>' +
+                /****/'<p>0A1a</p>' +
+                /****/'<p>0A2b</p>' +
+                '</div>'
+            );
 
-    data.teachers.unshift({
-        name: 'B',
-        students: []
-    });
-    expect(el.innerHTML).toBe(
-        '<div>' +
-        '</div>' +
-        '<div>' +
-        /****/'<p>1A0c</p>' +
-        /****/'<p>1A1a</p>' +
-        /****/'<p>1A2b</p>' +
-        '</div>'
-    );
+            data.teachers.unshift({
+                name: 'B',
+                students: []
+            });
+        })
+        .wait(100)
+        .taskSync(function () {
+            expect(el.innerHTML).toBe(
+                '<div>' +
+                '</div>' +
+                '<div>' +
+                /****/'<p>1A0c</p>' +
+                /****/'<p>1A1a</p>' +
+                /****/'<p>1A2b</p>' +
+                '</div>'
+            );
 
-    data.teachers[0].students.unshift({
-        name: 'a'
-    });
-    expect(el.innerHTML).toBe(
-        '<div>' +
-        /****/'<p>0B0a</p>' +
-        '</div>' +
-        '<div>' +
-        /****/'<p>1A0c</p>' +
-        /****/'<p>1A1a</p>' +
-        /****/'<p>1A2b</p>' +
-        '</div>'
-    );
+            data.teachers[0].students.unshift({
+                name: 'a'
+            });
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toBe(
+                '<div>' +
+                /****/'<p>0B0a</p>' +
+                '</div>' +
+                '<div>' +
+                /****/'<p>1A0c</p>' +
+                /****/'<p>1A1a</p>' +
+                /****/'<p>1A2b</p>' +
+                '</div>'
+            );
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 it('@for 2 维数组', function (done) {
@@ -295,135 +369,180 @@ it('@for 2 维数组', function (done) {
         data: data
     });
 
-    expect(el.innerHTML).toEqual(
-        '<p>' +
-        /****/'<span>1</span>' +
-        /****/'<span>2</span>' +
-        '</p>'
-    );
+    plan
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>' +
+                /****/'<span>1</span>' +
+                /****/'<span>2</span>' +
+                '</p>'
+            );
 
-    data.list[0].push(3);
-    expect(el.innerHTML).toEqual(
-        '<p>' +
-        /****/'<span>1</span>' +
-        /****/'<span>2</span>' +
-        /****/'<span>3</span>' +
-        '</p>'
-    );
+            data.list[0].push(3);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>' +
+                /****/'<span>1</span>' +
+                /****/'<span>2</span>' +
+                /****/'<span>3</span>' +
+                '</p>'
+            );
 
-    data.list[0].pop();
-    expect(el.innerHTML).toEqual(
-        '<p>' +
-        /****/'<span>1</span>' +
-        /****/'<span>2</span>' +
-        '</p>'
-    );
+            data.list[0].pop();
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>' +
+                /****/'<span>1</span>' +
+                /****/'<span>2</span>' +
+                '</p>'
+            );
 
-    data.list[0].unshift(4);
-    expect(el.innerHTML).toEqual(
-        '<p>' +
-        /****/'<span>4</span>' +
-        /****/'<span>1</span>' +
-        /****/'<span>2</span>' +
-        '</p>'
-    );
+            data.list[0].unshift(4);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>' +
+                /****/'<span>4</span>' +
+                /****/'<span>1</span>' +
+                /****/'<span>2</span>' +
+                '</p>'
+            );
 
-    data.list[0].shift();
-    expect(el.innerHTML).toEqual(
-        '<p>' +
-        /****/'<span>1</span>' +
-        /****/'<span>2</span>' +
-        '</p>'
-    );
+            data.list[0].shift();
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>' +
+                /****/'<span>1</span>' +
+                /****/'<span>2</span>' +
+                '</p>'
+            );
 
-    data.list[0].sort(function (a, b) {
-        return b - a;
-    });
-    expect(el.innerHTML).toEqual(
-        '<p>' +
-        /****/'<span>2</span>' +
-        /****/'<span>1</span>' +
-        '</p>'
-    );
+            data.list[0].sort(function (a, b) {
+                return b - a;
+            });
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>' +
+                /****/'<span>2</span>' +
+                /****/'<span>1</span>' +
+                '</p>'
+            );
 
-    data.list[0].splice(0, 0, 5);
-    expect(el.innerHTML).toEqual(
-        '<p>' +
-        /****/'<span>5</span>' +
-        /****/'<span>2</span>' +
-        /****/'<span>1</span>' +
-        '</p>'
-    );
+            data.list[0].splice(0, 0, 5);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>' +
+                /****/'<span>5</span>' +
+                /****/'<span>2</span>' +
+                /****/'<span>1</span>' +
+                '</p>'
+            );
 
-    data.list[0].splice(1, 2, 6);
-    expect(el.innerHTML).toEqual(
-        '<p>' +
-        /****/'<span>5</span>' +
-        /****/'<span>6</span>' +
-        '</p>'
-    );
+            data.list[0].splice(1, 2, 6);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>' +
+                /****/'<span>5</span>' +
+                /****/'<span>6</span>' +
+                '</p>'
+            );
 
-    data.list[0].set(0, 7);
-    expect(el.innerHTML).toEqual(
-        '<p>' +
-        /****/'<span>7</span>' +
-        /****/'<span>6</span>' +
-        '</p>'
-    );
+            data.list[0].set(0, 7);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>' +
+                /****/'<span>7</span>' +
+                /****/'<span>6</span>' +
+                '</p>'
+            );
 
-    data.list[0].remove(1);
-    expect(el.innerHTML).toEqual(
-        '<p>' +
-        /****/'<span>7</span>' +
-        '</p>'
-    );
+            data.list[0].remove(1);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>' +
+                /****/'<span>7</span>' +
+                '</p>'
+            );
 
-    data.list[0].delete(7);
-    expect(el.innerHTML).toEqual(
-        '<p>' +
-        '</p>'
-    );
+            data.list[0].delete(7);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>' +
+                '</p>'
+            );
 
-    data.list = [[8, 9]];
-    expect(el.innerHTML).toEqual(
-        '<p>' +
-        '<span>8</span>' +
-        '<span>9</span>' +
-        '</p>'
-    );
+            data.list = [[8, 9]];
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>' +
+                '<span>8</span>' +
+                '<span>9</span>' +
+                '</p>'
+            );
 
-    data.list = [[10, 11]];
-    expect(el.innerHTML).toEqual(
-        '<p>' +
-        '<span>10</span>' +
-        '<span>11</span>' +
-        '</p>'
-    );
+            data.list = [[10, 11]];
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>' +
+                '<span>10</span>' +
+                '<span>11</span>' +
+                '</p>'
+            );
 
-    data.list[0].push(12);
-    expect(el.innerHTML).toEqual(
-        '<p>' +
-        '<span>10</span>' +
-        '<span>11</span>' +
-        '<span>12</span>' +
-        '</p>'
-    );
+            data.list[0].push(12);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>' +
+                '<span>10</span>' +
+                '<span>11</span>' +
+                '<span>12</span>' +
+                '</p>'
+            );
 
-    data.list.push([13]);
-    expect(el.innerHTML).toEqual(
-        '<p>' +
-        /****/'<span>10</span>' +
-        /****/'<span>11</span>' +
-        /****/'<span>12</span>' +
-        '</p>' +
-        '<p>' +
-        /****/'<span>13</span>' +
-        '</p>'
-    );
+            data.list.push([13]);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>' +
+                /****/'<span>10</span>' +
+                /****/'<span>11</span>' +
+                /****/'<span>12</span>' +
+                '</p>' +
+                '<p>' +
+                /****/'<span>13</span>' +
+                '</p>'
+            );
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 it('@for 3 维数组', function (done) {
@@ -450,83 +569,98 @@ it('@for 3 维数组', function (done) {
         data: data
     });
 
-    // [[[1, 2]]]
-    expect(el.innerHTML).toEqual(
-        '<p>' +
-        /****/'<span>' +
-        /****//****/'<em>1</em>' +
-        /****//****/'<em>2</em>' +
-        /****/'</span>' +
-        '</p>'
-    );
+    plan
+        .taskSync(function () {
+            // [[[1, 2]]]
+            expect(el.innerHTML).toEqual(
+                '<p>' +
+                /****/'<span>' +
+                /****//****/'<em>1</em>' +
+                /****//****/'<em>2</em>' +
+                /****/'</span>' +
+                '</p>'
+            );
 
-    // [[[1, 2, 3]]]
-    data.list[0][0].push(3);
-    expect(el.innerHTML).toEqual(
-        '<p>' +
-        /****/'<span>' +
-        /****//****/'<em>1</em>' +
-        /****//****/'<em>2</em>' +
-        /****//****/'<em>3</em>' +
-        /****/'</span>' +
-        '</p>'
-    );
+            // [[[1, 2, 3]]]
+            data.list[0][0].push(3);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>' +
+                /****/'<span>' +
+                /****//****/'<em>1</em>' +
+                /****//****/'<em>2</em>' +
+                /****//****/'<em>3</em>' +
+                /****/'</span>' +
+                '</p>'
+            );
 
-    // [[[1, 2, 3], [4]]]
-    data.list[0].push([4]);
-    expect(el.innerHTML).toEqual(
-        '<p>' +
-        /****/'<span>' +
-        /****//****/'<em>1</em>' +
-        /****//****/'<em>2</em>' +
-        /****//****/'<em>3</em>' +
-        /****/'</span>' +
-        /****/'<span>' +
-        /****//****/'<em>4</em>' +
-        /****/'</span>' +
-        '</p>'
-    );
+            // [[[1, 2, 3], [4]]]
+            data.list[0].push([4]);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>' +
+                /****/'<span>' +
+                /****//****/'<em>1</em>' +
+                /****//****/'<em>2</em>' +
+                /****//****/'<em>3</em>' +
+                /****/'</span>' +
+                /****/'<span>' +
+                /****//****/'<em>4</em>' +
+                /****/'</span>' +
+                '</p>'
+            );
 
-    // [[[1, 2, 3], [4, 5]]]
-    data.list[0][1].push(5);
-    expect(el.innerHTML).toEqual(
-        '<p>' +
-        /****/'<span>' +
-        /****//****/'<em>1</em>' +
-        /****//****/'<em>2</em>' +
-        /****//****/'<em>3</em>' +
-        /****/'</span>' +
-        /****/'<span>' +
-        /****//****/'<em>4</em>' +
-        /****//****/'<em>5</em>' +
-        /****/'</span>' +
-        '</p>'
-    );
+            // [[[1, 2, 3], [4, 5]]]
+            data.list[0][1].push(5);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>' +
+                /****/'<span>' +
+                /****//****/'<em>1</em>' +
+                /****//****/'<em>2</em>' +
+                /****//****/'<em>3</em>' +
+                /****/'</span>' +
+                /****/'<span>' +
+                /****//****/'<em>4</em>' +
+                /****//****/'<em>5</em>' +
+                /****/'</span>' +
+                '</p>'
+            );
 
-    // [[[1, 2, 3], [4, 5]], [[6]]]
-    data.list.push([[6]]);
-    expect(el.innerHTML).toEqual(
-        '<p>' +
-        /****/'<span>' +
-        /****//****/'<em>1</em>' +
-        /****//****/'<em>2</em>' +
-        /****//****/'<em>3</em>' +
-        /****/'</span>' +
-        /****/'<span>' +
-        /****//****/'<em>4</em>' +
-        /****//****/'<em>5</em>' +
-        /****/'</span>' +
-        '</p>' +
-        '<p>' +
-        /****/'<span>' +
-        /****//****/'<em>6</em>' +
-        /****/'</span>' +
-        '</p>'
-    );
+            // [[[1, 2, 3], [4, 5]], [[6]]]
+            data.list.push([[6]]);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toEqual(
+                '<p>' +
+                /****/'<span>' +
+                /****//****/'<em>1</em>' +
+                /****//****/'<em>2</em>' +
+                /****//****/'<em>3</em>' +
+                /****/'</span>' +
+                /****/'<span>' +
+                /****//****/'<em>4</em>' +
+                /****//****/'<em>5</em>' +
+                /****/'</span>' +
+                '</p>' +
+                '<p>' +
+                /****/'<span>' +
+                /****//****/'<em>6</em>' +
+                /****/'</span>' +
+                '</p>'
+            );
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done)
 });
 
 it('@for 4 维数组', function (done) {
@@ -560,41 +694,47 @@ it('@for 4 维数组', function (done) {
         data: data
     });
 
-    expect(el.innerHTML).toBe(
-        '<a>' +
-        /****/'<b>' +
-        /****//****/'<c>' +
-        /****//****//****/'<d>' +
-        /****//****//****//****/'[[[[1,2]]]]' +
-        /****//****//****/'</d>' +
-        /****//****//****/'<d>' +
-        /****//****//****//****/'[[[[1,2]]]]' +
-        /****//****//****/'</d>' +
-        /****//****/'</c>' +
-        /****/'</b>' +
-        '</a>'
-    );
+    plan
+        .taskSync(function () {
+            expect(el.innerHTML).toBe(
+                '<a>' +
+                /****/'<b>' +
+                /****//****/'<c>' +
+                /****//****//****/'<d>' +
+                /****//****//****//****/'[[[[1,2]]]]' +
+                /****//****//****/'</d>' +
+                /****//****//****/'<d>' +
+                /****//****//****//****/'[[[[1,2]]]]' +
+                /****//****//****/'</d>' +
+                /****//****/'</c>' +
+                /****/'</b>' +
+                '</a>'
+            );
 
-    data.list[0][0][0].push(3);
-    expect(el.innerHTML).toBe(
-        '<a>' +
-        /****/'<b>' +
-        /****//****/'<c>' +
-        /****//****//****/'<d>' +
-        /****//****//****//****/'[[[[1,2,3]]]]' +
-        /****//****//****/'</d>' +
-        /****//****//****/'<d>' +
-        /****//****//****//****/'[[[[1,2,3]]]]' +
-        /****//****//****/'</d>' +
-        /****//****//****/'<d>' +
-        /****//****//****//****/'[[[[1,2,3]]]]' +
-        /****//****//****/'</d>' +
-        /****//****/'</c>' +
-        /****/'</b>' +
-        '</a>'
-    );
+            data.list[0][0][0].push(3);
+        })
+        .wait(1)
+        .taskSync(function () {
+            expect(el.innerHTML).toBe(
+                '<a>' +
+                /****/'<b>' +
+                /****//****/'<c>' +
+                /****//****//****/'<d>' +
+                /****//****//****//****/'[[[[1,2,3]]]]' +
+                /****//****//****/'</d>' +
+                /****//****//****/'<d>' +
+                /****//****//****//****/'[[[[1,2,3]]]]' +
+                /****//****//****/'</d>' +
+                /****//****//****/'<d>' +
+                /****//****//****//****/'[[[[1,2,3]]]]' +
+                /****//****//****/'</d>' +
+                /****//****/'</c>' +
+                /****/'</b>' +
+                '</a>'
+            );
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });

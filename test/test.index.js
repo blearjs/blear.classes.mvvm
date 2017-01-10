@@ -16,28 +16,31 @@ describe('指令', function () {
     require('./directives/display');
     require('./directives/event');
     require('./directives/for');
-    require('./directives/html');
-    require('./directives/if');
-    require('./directives/if-for');
-    require('./directives/model-checkbox');
-    require('./directives/model-radio');
-    require('./directives/model-select');
-    require('./directives/model-text');
-    require('./directives/pre');
-    require('./directives/style');
-    require('./directives/text');
+    // require('./directives/html');
+    // require('./directives/if');
+    // require('./directives/if-for');
+    // require('./directives/model-checkbox');
+    // require('./directives/model-radio');
+    // require('./directives/model-select');
+    // require('./directives/model-text');
+    // require('./directives/pre');
+    // require('./directives/style');
+    // require('./directives/text');
 });
 
-describe('实例', function () {
-    // @todo
-    require('./instance/computed');
-    require('./instance/watch');
-    require('./instance/methods');
-    require('./instance/directives');
-});
+// describe('实例', function () {
+//     require('./instance/computed');
+//     require('./instance/watch');
+//     require('./instance/methods');
+//     require('./instance/directives');
+// });
+//
+// describe('静态', function () {
+//     require('./statical/directive');
+// });
 
-describe('静态', function () {
-    require('./statical/directive');
+describe('性能', function () {
+    require('./performance/directive');
 });
 
 describe('边界', function () {

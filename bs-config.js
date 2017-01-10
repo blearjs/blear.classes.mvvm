@@ -25,7 +25,7 @@ module.exports = {
         }
     },
     "files": [
-        './example/**'
+        './examples/**'
     ],
     "watchOptions": {},
     "server": {

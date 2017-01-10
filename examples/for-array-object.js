@@ -33,7 +33,7 @@ new MVVM({
     data: data,
     methods: {
         onPush: function () {
-            data.students.push({
+            data.students.unshift({
                 name: rs(),
                 tags: ra()
             });

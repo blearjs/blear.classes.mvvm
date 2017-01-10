@@ -7,6 +7,8 @@
 
 'use strict';
 
+var plan = require('blear.utils.plan');
+
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 var arrCompare = require('../../src/utils/array-compare');
@@ -41,29 +43,34 @@ it(':class 对象表示', function (done) {
         data: data
     });
 
-    expect(childEl.classList.contains('abc')).toBe(true);
-    expect(childEl.classList.contains('def')).toBe(false);
-    expect(
-        matchClass(
-            childEl.className.trim(),
-            'o abc'
-        )
-    ).toBe(true);
+    plan
+        .taskSync(function () {
+            expect(childEl.classList.contains('abc')).toBe(true);
+            expect(childEl.classList.contains('def')).toBe(false);
+            expect(
+                matchClass(
+                    childEl.className.trim(),
+                    'o abc'
+                )
+            ).toBe(true);
+            data.abc = 0;
+            data.def = 123;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(childEl.classList.contains('abc')).toBe(false);
+            expect(childEl.classList.contains('def')).toBe(true);
+            expect(
+                matchClass(
+                    childEl.className.trim(),
+                    'o def'
+                )
+            ).toBe(true);
 
-    data.abc = 0;
-    data.def = 123;
-    expect(childEl.classList.contains('abc')).toBe(false);
-    expect(childEl.classList.contains('def')).toBe(true);
-    expect(
-        matchClass(
-            childEl.className.trim(),
-            'o def'
-        )
-    ).toBe(true);
-
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 it(':class 数组表示', function (done) {
@@ -79,30 +86,39 @@ it(':class 数组表示', function (done) {
         data: data
     });
 
-    expect(childEl.classList.contains('123')).toBe(true);
-    expect(childEl.className.trim()).toBe('123');
+    plan
+        .taskSync(function () {
+            expect(childEl.classList.contains('123')).toBe(true);
+            expect(childEl.className.trim()).toBe('123');
 
-    data.abc = 0;
-    data.def = 123;
-    expect(
-        matchClass(
-            childEl.className.trim(),
-            '123'
-        )
-    ).toBe(true);
+            data.abc = 0;
+            data.def = 123;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(
+                matchClass(
+                    childEl.className.trim(),
+                    '123'
+                )
+            ).toBe(true);
 
-    data.abc = 'hao';
-    data.def = 'ren';
-    expect(
-        matchClass(
-            childEl.className.trim(),
-            'hao ren'
-        )
-    ).toBe(true);
+            data.abc = 'hao';
+            data.def = 'ren';
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(
+                matchClass(
+                    childEl.className.trim(),
+                    'hao ren'
+                )
+            ).toBe(true);
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 it(':class 组合表示', function (done) {
@@ -120,41 +136,53 @@ it(':class 组合表示', function (done) {
         data: data
     });
 
-    expect(childEl.classList.contains('123')).toBe(true);
-    expect(childEl.classList.contains('opq')).toBe(true);
-    expect(
-        matchClass(
-            childEl.className.trim(),
-            '123 opq'
-        )
-    ).toBe(true);
+    plan
+        .taskSync(function () {
+            expect(childEl.classList.contains('123')).toBe(true);
+            expect(childEl.classList.contains('opq')).toBe(true);
+            expect(
+                matchClass(
+                    childEl.className.trim(),
+                    '123 opq'
+                )
+            ).toBe(true);
 
-    data.abc = 0;
-    data.def = 123;
-    expect(matchClass(
-        childEl.className.trim(),
-        '123 opq'
-        )
-    ).toBe(true);
+            data.abc = 0;
+            data.def = 123;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(matchClass(
+                childEl.className.trim(),
+                '123 opq'
+                )
+            ).toBe(true);
 
-    data.abc = 'hao';
-    data.def = 'ren';
-    expect(matchClass(
-        childEl.className.trim(),
-        'hao ren opq'
-        )
-    ).toBe(true);
+            data.abc = 'hao';
+            data.def = 'ren';
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(matchClass(
+                childEl.className.trim(),
+                'hao ren opq'
+                )
+            ).toBe(true);
 
-    data.xyz = true;
-    expect(matchClass(
-        childEl.className.trim(),
-        'hao ren opq xyz'
-        )
-    ).toBe(true);
+            data.xyz = true;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(matchClass(
+                childEl.className.trim(),
+                'hao ren opq xyz'
+                )
+            ).toBe(true);
 
-    mvvm.destroy();
-    utils.removeDIV(el);
-    done();
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
 
 

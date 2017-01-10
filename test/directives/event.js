@@ -9,6 +9,7 @@
 
 var event = require('blear.core.event');
 var random = require('blear.utils.random');
+var plan = require('blear.utils.plan');
 
 var MVVM = require('../../src/index');
 var utils = require('../utils');
@@ -188,9 +189,11 @@ it('@click destroy', function (done) {
     mvvm.destroy();
     buttonEl.click();
 
-    setTimeout(function () {
-        expect(times).toBe(1);
-        utils.removeDIV(el);
-        done();
-    }, 10);
+    plan
+        .wait()
+        .taskSync(function () {
+            expect(times).toBe(1);
+            utils.removeDIV(el);
+        })
+        .serial(done);
 });
