@@ -9,6 +9,9 @@
 
 exports.createDIV = function () {
     var el = document.createElement('div');
+    el.style.padding = '10px';
+    el.style.border = '1px solid #bdbdbd';
+    el.style.background = '#eee';
     document.body.appendChild(el);
     return el;
 };

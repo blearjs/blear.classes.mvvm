@@ -35,10 +35,6 @@ var ViewModel = Class.extend({
         the.directives = [];
         the[_instanceDefinitions] = {};
         the[_staticalDefinitions] = {};
-
-        if (typeof DEBUG !== 'undefined' && DEBUG) {
-            el.vm = the;
-        }
     },
 
     setInstanceDefinitions: function (definitions) {

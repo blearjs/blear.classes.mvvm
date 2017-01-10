@@ -14,7 +14,7 @@ var MVVM = require('../../src/index');
 var utils = require('../utils');
 
 
-it('数据连续 DOM 变动只更新一次', function (done) {
+it('数据连续更新 DOM 变动只更新一次', function (done) {
     var el = utils.createDIV();
     var data = {text: ''};
     el.innerHTML = '<div :data-text="text"></div>';

@@ -44,8 +44,6 @@ describe('性能', function () {
 });
 
 describe('边界', function () {
-    // @todo
-    // mvvm 嵌套
-    // data 共享
+    require('./marginal/mvvm');
 });
 
