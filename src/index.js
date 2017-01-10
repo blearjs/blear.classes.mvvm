@@ -62,7 +62,7 @@ var MVVM = Events.extend({
         });
         the[_vm].add(virtualDirective);
         return function unwatch() {
-            virtualDirective.destroy();
+            the[_vm].un(virtualDirective);
             virtualDirective = null;
         };
     },
@@ -168,7 +168,9 @@ pro[_initWatch] = function () {
 
         the.watch(computedGet, function (newVal) {
             scope[key] = newVal
-        }, true);
+        }, {
+            imme: true
+        });
     });
     the[_computedWatchList] = null;
 
@@ -193,12 +195,6 @@ pro[_initWatch] = function () {
 
 MVVM.directives = definitions;
 MVVM.directive = function (name, definition) {
-    var args = access.args(arguments);
-
-    if (args.length === 1) {
-        return definitions[name];
-    }
-
     definitions[name] = definition;
 };
 

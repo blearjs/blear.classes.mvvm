@@ -94,11 +94,10 @@ var ViewModel = Class.extend({
         directive.vm = the;
         directive.init();
         directive.responder = new Responder(directive);
+        the.directives.push(directive);
 
         if (the.done) {
             directive.bind();
-        } else {
-            the.directives.push(directive);
         }
     },
 
@@ -124,6 +123,17 @@ var ViewModel = Class.extend({
         child[_staticalDefinitions] = parent[_staticalDefinitions];
         child.run();
         return child;
+    },
+
+    /**
+     * 移除指定的指令
+     * @param directive
+     */
+    un: function (directive) {
+        var the = this;
+
+        directive.destroy();
+        array.delete(the.directives, directive);
     },
 
     /**

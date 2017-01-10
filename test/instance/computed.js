@@ -7,10 +7,12 @@
 
 'use strict';
 
+var plan = require('blear.utils.plan');
+
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
-it('>computed get', function (done) {
+xit('>computed get', function (done) {
     var el = utils.createDIV();
     var data = {
         firstName: 'a',
@@ -38,7 +40,7 @@ it('>computed get', function (done) {
     done();
 });
 
-it('>computed get + set', function (done) {
+xit('>computed get + set', function (done) {
     var el = utils.createDIV();
     var data = {
         firstName: 'a',
@@ -84,4 +86,51 @@ it('>computed get + set', function (done) {
     done();
 });
 
+it('>computed get object', function (done) {
+    var el = utils.createDIV();
+    var data = {
+        todos: [
+            {name: '1', complete: false},
+            {name: '2', complete: true}
+        ]
+    };
+    var mvvm = new MVVM({
+        el: el,
+        data: data,
+        computed: {
+            completedTodos: function () {
+                return this.todos.filter(function (todo) {
+                    return todo.complete;
+                });
+            }
+        }
+    });
 
+    plan
+        .taskSync(function () {
+            expect(data.completedTodos).toEqual([{name: '2', complete: true}]);
+            data.todos.push({name: '3', complete: true});
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(data.completedTodos).toEqual(
+                [
+                    {name: '2', complete: true},
+                    {name: '3', complete: true}
+                ]
+            );
+            mvvm.destroy();
+            data.todos.push({name: '4', complete: true});
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(data.completedTodos).toEqual(
+                [
+                    {name: '2', complete: true},
+                    {name: '3', complete: true}
+                ]
+            );
+            utils.removeDIV(el);
+        })
+        .serial(done);
+});
