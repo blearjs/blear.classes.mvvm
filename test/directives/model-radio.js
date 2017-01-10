@@ -36,21 +36,19 @@ it('@model radio single', function (done) {
     });
 
     plan
-        .task(function (next) {
+        .taskSync(function () {
             expect(input1El.checked).toBe(true);
             expect(input2El.checked).toBe(false);
             expect(input3El.checked).toBe(false);
             expect(input4El.checked).toBe(false);
             expect(pEl.innerHTML).toBe('1');
-
-            next();
         })
-        .task(function (next) {
+        .taskSync(function () {
             input3El.checked = true;
             event.emit(input3El, 'change');
-            utils.wait(next);
         })
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             expect(input1El.checked).toBe(false);
             expect(input2El.checked).toBe(false);
             expect(input3El.checked).toBe(true);
@@ -58,6 +56,9 @@ it('@model radio single', function (done) {
             expect(pEl.innerHTML).toBe('3');
 
             data.checked = 2;
+        })
+        .wait(10)
+        .taskSync(function () {
             expect(input1El.checked).toBe(false);
             expect(input2El.checked).toBe(true);
             expect(input3El.checked).toBe(false);
@@ -66,20 +67,23 @@ it('@model radio single', function (done) {
 
             mvvm.destroy();
             data.checked = 3;
+        })
+        .wait(10)
+        .taskSync(function () {
             expect(input1El.checked).toBe(false);
             expect(input2El.checked).toBe(true);
             expect(input3El.checked).toBe(false);
             expect(input4El.checked).toBe(false);
             expect(pEl.innerHTML).toBe('2');
 
-            next();
         })
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             input4El.checked = true;
             event.emit(input4El, 'change');
-            utils.wait(next);
         })
-        .task(function (next) {
+        .wait(10)
+        .taskSync(function () {
             expect(data.checked).toBe(3);
             expect(input1El.checked).toBe(false);
             expect(input2El.checked).toBe(false);
@@ -88,7 +92,6 @@ it('@model radio single', function (done) {
             expect(pEl.innerHTML).toBe('2');
 
             utils.removeDIV(el);
-            next();
         })
         .serial(done);
 });
