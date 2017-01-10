@@ -13,3 +13,26 @@
 [coveralls-img]: https://img.shields.io/coveralls/blearjs/blear.classes.mvvm/master.svg?style=flat-square
 [coveralls-url]: https://coveralls.io/github/blearjs/blear.classes.mvvm?branch=master
 
+
+# usage
+```html
+<div id="app">{{message}}</div>
+```
+
+\+
+
+```js
+var mvvm = new MVVM({
+    el: '#app',
+    data: {
+        message: 'Hello blear'
+    }
+});
+```
+
+= 
+
+```html
+<div id="app">hello blear</div>
+```
+
