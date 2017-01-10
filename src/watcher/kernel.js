@@ -22,7 +22,7 @@ var Linker = Events.extend({
         var the = this;
 
         Linker.parent(the);
-        the.wire = new Wire();
+        the.wire = new Wire(data);
         the.guid = guid();
         defineValue(data, LINKER_FLAG_NAME, the);
         defineValue(data, LINKER_DATA_GUID_NAME, guid());
@@ -124,7 +124,7 @@ function linking(obj, key) {
     var preGet = descriptor && descriptor.get;
     var preSet = descriptor && descriptor.set;
     var val = obj[key];
-    var wire = new Wire();
+    var wire = new Wire(obj, key);
 
     // 1、先深度遍历
     object.define(obj, key, {

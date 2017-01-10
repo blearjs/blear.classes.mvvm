@@ -12,7 +12,7 @@ var plan = require('blear.utils.plan');
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
-xit('>computed get', function (done) {
+it('>computed get', function (done) {
     var el = utils.createDIV();
     var data = {
         firstName: 'a',
@@ -40,7 +40,7 @@ xit('>computed get', function (done) {
     done();
 });
 
-xit('>computed get + set', function (done) {
+it('>computed get + set', function (done) {
     var el = utils.createDIV();
     var data = {
         firstName: 'a',
@@ -124,10 +124,14 @@ it('>computed get object', function (done) {
         })
         .wait(10)
         .taskSync(function () {
+            // 因为是计算属性，相当于是 data 的属性
+            // 只是添加了 get 方法，所以数据获取的时候
+            // 肯定是最新的
             expect(data.completedTodos).toEqual(
                 [
                     {name: '2', complete: true},
-                    {name: '3', complete: true}
+                    {name: '3', complete: true},
+                    {name: '4', complete: true}
                 ]
             );
             utils.removeDIV(el);

@@ -14,11 +14,16 @@ var array = require('blear.utils.array');
 var access = require('blear.utils.access');
 var typeis = require('blear.utils.typeis');
 
+window.wireList = [];
+
 var Wire = Events.extend({
     className: 'Wire',
-    constructor: function () {
+    constructor: function (data, key) {
         var the = this;
 
+        the[_data] = data;
+        the[_key] = key;
+        wireList.push(the);
         Wire.parent(the);
         the.guid = random.guid();
         the[_terminalList] = [];
@@ -62,7 +67,6 @@ var Wire = Events.extend({
         var the = this;
 
         array.delete(the[_terminalList], terminal);
-        the.unlinked = true;
     },
 
     /**
@@ -84,6 +88,8 @@ var Wire = Events.extend({
 });
 var _terminalList = Wire.sole();
 var _terminalMap = Wire.sole();
+var _data = Wire.sole();
+var _key = Wire.sole();
 
 module.exports = Wire;
 
