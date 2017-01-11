@@ -8,6 +8,8 @@
 'use strict';
 
 var plan = require('blear.utils.plan');
+var random = require('blear.utils.random');
+var selector = require('blear.core.selector');
 
 var MVVM = require('../../src/index');
 var utils = require('../utils');
@@ -167,3 +169,64 @@ it('DOM 游离', function (done) {
         .serial(done);
 });
 
+it('table', function (done) {
+    var el = utils.createDIV();
+    var data = {
+        showMark: true,
+        users: [
+            {name: 'a', mark: 'A'},
+            {name: 'b', mark: 'B'},
+            {name: 'c', mark: 'C'}
+        ]
+    };
+    var thMarkClass = '_' + random.guid();
+    var tdMarkClass = '_' + random.guid();
+
+    el.innerHTML =
+        '<table>' +
+        /****/'<thead>' +
+        /****//****/'<th>' +
+        /****//****//****/'<td>' +
+        /****//****//****//****/'name' +
+        /****//****//****/'</td>' +
+        /****//****//****/'<td @if="showMark" class="' + thMarkClass + '">' +
+        /****//****//****//****/'mark' +
+        /****//****//****/'</td>' +
+        /****//****/'</th>' +
+        /****/'</thead>' +
+        /****/'<tbody>' +
+        /****//****/'<tr @for="user in users">' +
+        /****//****//****/'<td>' +
+        /****//****//****//****/ '{{user.name}}' +
+        /****//****//****/'</td>' +
+        /****//****//****/'<td @if="showMark" class="' + tdMarkClass + '">' +
+        /****//****//****//****/ '{{user.mark}}' +
+        /****//****//****/'</td>' +
+        /****//****/'</th>' +
+        /****/'</tbody>' +
+        '</table>';
+
+    var mvvm = new MVVM({
+        el: el,
+        data: data
+    });
+
+
+    plan
+        .taskSync(function () {
+            expect(selector.query('.' + thMarkClass).length).toBe(1);
+            expect(selector.query('.' + tdMarkClass).length).toBe(3);
+
+            data.showMark = false;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(selector.query('.' + thMarkClass).length).toBe(0);
+            expect(selector.query('.' + tdMarkClass).length).toBe(0);
+        })
+        .taskSync(function () {
+            utils.removeDIV(el);
+            mvvm.destroy();
+        })
+        .serial(done);
+});

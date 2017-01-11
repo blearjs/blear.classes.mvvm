@@ -22,14 +22,12 @@ var evtParser = require('../parsers/event');
 var configs = require('../configs');
 
 var queue = new Queue();
-window.responderList = [];
 
 var Responder = Events.extend({
     className: 'Responder',
     constructor: function (directive) {
         var the = this;
 
-        responderList.push(the);
         Responder.parent(the);
         the.directive = directive;
         the.guid = random.guid();

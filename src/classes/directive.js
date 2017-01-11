@@ -18,14 +18,12 @@ var access = require('blear.utils.access');
 
 var definitionMap = require('../directives/index');
 
-window.directiveList = [];
-
 var Directive = Class.extend({
     className: 'Directive',
     constructor: function (category, name, definition) {
         var the = this;
         var args = access.args(arguments);
-        directiveList.push(the);
+
         // 虚拟指令
         if (args.length === 1) {
             definition = args[0];
