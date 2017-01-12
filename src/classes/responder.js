@@ -118,6 +118,9 @@ var Responder = Terminal.extend({
         // set 的是 for 指定的字段 abc.list = [1, 2, 3];
         var setSameKey = isForDirective && signal.method === 'set' && signal.key === directive.exp;
 
+        // 比如：
+        // 原始数组 todos = [...]
+        // 计算数组 filteredTodos = todos.filter(...)
         if (notSameOrigin && !setSameKey) {
             // 如果是计算属性的话，当做 set 来处理，重写 signal
             if (newVal[configs.computedFlagName]) {

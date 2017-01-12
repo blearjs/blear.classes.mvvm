@@ -23,7 +23,7 @@ module.exports = {
 
         the.exp = booleanStart + the.exp + booleanEnd;
         the.childVM = the.childNode = the.childScope = null;
-        the.anchor = anchor(the.node, the.name);
+        the.anchor = anchor(the.node);
 
         // 如果是 else、else-if，则需要向前
         // 查找 if、else-if 表达式

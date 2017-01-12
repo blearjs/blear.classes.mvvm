@@ -91,11 +91,6 @@ var Directive = Class.extend({
         var the = this;
         var definition = the.definition;
 
-        // 如果指令被销毁了，则取消后续操作
-        if (!definition) {
-            return;
-        }
-
         fun.noop(definition.update).apply(the, arguments);
         the.updated = true;
     },
@@ -149,14 +144,6 @@ Directive.create = function (category, name, vm) {
 
     // 2、然后使用内置指令
     definition = definitionMap[category];
-
-    if (!definition) {
-        if (typeof DEBUG !== 'undefined' && DEBUG) {
-            throw new TypeError('未找到`' + category + '`类型指令');
-        }
-
-        return;
-    }
 
     return new Directive(category, name, definition);
 };

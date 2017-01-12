@@ -104,8 +104,8 @@ module.exports = {
         the.childScopeList = [];
         the.childNodeList = [];
         the.childVMList = [];
-        the.anchorStart = anchor(node, '@for-start');
-        the.anchorEnd = anchor(node, '@for-end');
+        the.anchorStart = anchor(node);
+        the.anchorEnd = anchor(node);
         the.tplNode = node;
         modification.remove(node);
     },

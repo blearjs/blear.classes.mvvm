@@ -738,3 +738,66 @@ it('@for 4 维数组', function (done) {
         })
         .serial(done);
 });
+
+it('@for 计算属性', function (done) {
+    var el = utils.createDIV();
+    var data = {
+        todos: [
+            {name: '1', complete: false},
+            {name: '2', complete: true}
+        ]
+    };
+    el.innerHTML = '' +
+        '<p @for="todo in completedTodos">{{todo.name}}</p>';
+    var mvvm = new MVVM({
+        el: el,
+        data: data,
+        computed: {
+            completedTodos: function () {
+                return this.todos.filter(function (todo) {
+                    return todo.complete;
+                });
+            }
+        }
+    });
+
+    plan
+        .taskSync(function () {
+            expect(el.childElementCount).toBe(1);
+            expect(el.children[0].innerHTML).toBe('2');
+            expect(data.completedTodos).toEqual([{name: '2', complete: true}]);
+            data.todos.push({name: '3', complete: true});
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(data.completedTodos).toEqual(
+                [
+                    {name: '2', complete: true},
+                    {name: '3', complete: true}
+                ]
+            );
+            expect(el.childElementCount).toBe(2);
+            expect(el.children[0].innerHTML).toBe('2');
+            expect(el.children[1].innerHTML).toBe('3');
+            mvvm.destroy();
+            data.todos.push({name: '4', complete: true});
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.childElementCount).toBe(2);
+            expect(el.children[0].innerHTML).toBe('2');
+            expect(el.children[1].innerHTML).toBe('3');
+            // 因为是计算属性，相当于是 data 的属性
+            // 只是添加了 get 方法，所以数据获取的时候
+            // 肯定是最新的
+            expect(data.completedTodos).toEqual(
+                [
+                    {name: '2', complete: true},
+                    {name: '3', complete: true},
+                    {name: '4', complete: true}
+                ]
+            );
+            utils.removeDIV(el);
+        })
+        .serial(done);
+});

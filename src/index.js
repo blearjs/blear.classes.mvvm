@@ -135,7 +135,7 @@ pro[_initVM] = function () {
     var options = the[_options];
     var rootEl = the.view = selector.query(options.el)[0];
     var fragment = modification.create('#fragment');
-    var anchorNode = anchor(rootEl, 'mvvm');
+    var anchorNode = anchor(rootEl);
 
     fragment.appendChild(rootEl);
     the[_vm] = new ViewModel(rootEl, the.scope);

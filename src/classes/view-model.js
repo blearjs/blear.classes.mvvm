@@ -122,17 +122,6 @@ var ViewModel = Class.extend({
     },
 
     /**
-     * 移除指定的指令
-     * @param directive
-     */
-    un: function (directive) {
-        var the = this;
-
-        directive.destroy();
-        array.delete(the.directives, directive);
-    },
-
-    /**
      * 销毁当前 VM
      * @param removeEl {Boolean}
      */
