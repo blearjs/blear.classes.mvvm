@@ -7,6 +7,7 @@
 'use strict';
 
 var Events = require('blear.classes.events');
+var Watcher = require('blear.classes.watcher');
 var selector = require('blear.core.selector');
 var modification = require('blear.core.modification');
 var object = require('blear.utils.object');
@@ -50,30 +51,18 @@ var MVVM = Events.extend({
         the[_initWatch]();
     },
     watch: function (exp, callback, options) {
-        var the = this;
-        options = object.assign({}, the[_options].watchDefaults, options);
-        var virtualDirective = new Directive({
-            exp: exp,
-            update: function (node, newVal, oldVal, signal) {
-                if (this.bound || options.imme && !this.bound) {
-                    callback.call(the.scope, newVal, oldVal, signal);
-                }
-            }
-        });
-        the[_vm].add(virtualDirective);
-        return function unwatch() {
-            the[_vm].un(virtualDirective);
-            virtualDirective = null;
-        };
+        return this[_watcher].watch(exp, callback, options);
     },
     destroy: function () {
         var the = this;
 
         the[_vm].destroy();
+        the[_watcher].destroy();
     }
 });
 var _options = MVVM.sole();
 var _vm = MVVM.sole();
+var _watcher = MVVM.sole();
 var _initScope = MVVM.sole();
 var _initComputed = MVVM.sole();
 var _initDirectives = MVVM.sole();
@@ -89,6 +78,7 @@ pro[_initScope] = function () {
     var options = the[_options];
 
     the.scope = object.assign(options.data, options.methods);
+    the[_watcher] = new Watcher(the.scope);
 };
 
 pro[_initComputed] = function () {

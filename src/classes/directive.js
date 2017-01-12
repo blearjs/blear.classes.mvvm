@@ -24,13 +24,6 @@ var Directive = Class.extend({
         var the = this;
         var args = access.args(arguments);
 
-        // 虚拟指令
-        if (args.length === 1) {
-            definition = args[0];
-            category = 'virtual';
-            name = random.guid();
-        }
-
         if (typeis.Function(definition)) {
             definition = {
                 update: definition
@@ -81,9 +74,9 @@ var Directive = Class.extend({
             return;
         }
 
-        responder.beforeGet();
+        responder.before();
         fun.noop(definition.bind || definition.update).call(the, the.node, responder.get());
-        responder.afterGet();
+        responder.after();
         the.bound = true;
     },
 
@@ -114,7 +107,7 @@ var Directive = Class.extend({
         var the = this;
         var definition = the.definition;
 
-        the.responder.unlink();
+        the.responder.destroy();
         fun.noop(definition.destroy).apply(the, arguments);
         // 响应者
         the.responder

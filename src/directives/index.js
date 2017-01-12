@@ -16,4 +16,4 @@ exports.attr = require('./attr');
 exports.pre = require('./pre');
 exports.condition = require('./condition');
 exports.display = require('./display');
-exports.virtual = require('./virtual');
+// exports.virtual = require('./virtual');
