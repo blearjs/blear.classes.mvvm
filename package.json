@@ -40,7 +40,7 @@
   "dependencies": {
     "blear.classes.class": "1.x",
     "blear.classes.events": "1.x",
-    "blear.classes.watcher": "1.x",
+    "blear.classes.watcher": "2.x",
     "blear.core.attribute": "1.x",
     "blear.core.event": "1.x",
     "blear.core.modification": "1.x",

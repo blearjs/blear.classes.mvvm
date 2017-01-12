@@ -14,7 +14,7 @@ var array = require('blear.utils.array');
 var access = require('blear.utils.access');
 var typeis = require('blear.utils.typeis');
 var object = require('blear.utils.object');
-var Watcher = require('../watcher/index');
+var Watcher = require('blear.classes.watcher');
 
 var Queue = require('./queue');
 var expParser = require('../parsers/expression');
