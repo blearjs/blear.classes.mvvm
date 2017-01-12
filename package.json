@@ -1,7 +1,7 @@
 {
   "name": "blear.classes.mvvm",
   "version": "1.0.0",
-  "description": "描述",
+  "description": "前端 MVVM 模块，类 vue",
   "scripts": {
     "live": "browser-sync start --config bs-config.js",
     "test": "node ./node_modules/.bin/karma start karma.conf.js --single-run",
