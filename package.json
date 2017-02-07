@@ -1,6 +1,6 @@
 {
   "name": "blear.classes.mvvm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "前端 MVVM 模块，类 vue",
   "scripts": {
     "live": "browser-sync start --config bs-config.js",
@@ -45,7 +45,6 @@
     "blear.core.event": "1.x",
     "blear.core.modification": "1.x",
     "blear.core.selector": "1.x",
-    "blear.shims.lexer": "1.x",
     "blear.utils.access": "1.x",
     "blear.utils.array": "1.x",
     "blear.utils.collection": "1.x",
