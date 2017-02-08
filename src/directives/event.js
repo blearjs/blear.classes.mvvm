@@ -109,14 +109,14 @@ module.exports = {
         if (doNotBubbleEvents[eventType] || filters.stop || filters['false']) {
             event.on(node, eventType, listener);
         } else {
-            event.on(vm.el, eventType, node, listener);
+            event.on(vm.root.el, eventType, node, listener);
         }
     },
 
     destroy: function () {
         var the = this;
 
-        event.un(the.vm.el, the.eventType, the.listener);
+        event.un(the.vm.root.el, the.eventType, the.listener);
         event.un(the.node, the.eventType, the.listener);
     }
 };
