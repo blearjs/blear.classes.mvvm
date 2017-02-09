@@ -26,7 +26,7 @@ var INPUT_LISTENER = varible();
 exports.init = function (directive) {
     var vm = directive.vm;
     var node = directive.node;
-    var el = vm.el;
+    var el = vm.root.el;
     var compositionstart = false;
 
     event.on(el, COMPOSITIONSTART_EVENT, node, directive[COMPOSITIONSTART_LISTENER] = function () {
@@ -67,7 +67,7 @@ exports.init = function (directive) {
         }, 1);
     });
 
-    event.on(el, 'change', function () {
+    event.on(el, 'change', node, function () {
         inputing = null;
 
         if (directive.destroyed) {
@@ -99,7 +99,7 @@ exports.update = function (directive, newVal) {
 };
 
 exports.destroy = function (directive) {
-    var el = directive.vm.el;
+    var el = directive.vm.root.el;
 
     clearTimeout(inputTimer);
     inputTimer = null;

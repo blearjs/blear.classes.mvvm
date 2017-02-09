@@ -23,7 +23,7 @@ exports.init = function (directive, newVal) {
     var modelName = directive.modelName;
     var vm = directive.vm;
 
-    event.on(vm.el, CHANGE_EVENT, node, directive[CHANGE_LISTENER] = function (ev) {
+    event.on(vm.root.el, CHANGE_EVENT, node, directive[CHANGE_LISTENER] = function (ev) {
         changing = node;
         directive.scope[modelName] = node.value;
     });
@@ -46,7 +46,7 @@ exports.update = function (directive, newVal) {
 };
 
 exports.destroy = function (directive) {
-    event.un(directive.vm.el, CHANGE_EVENT, directive[CHANGE_LISTENER]);
+    event.un(directive.vm.root.el, CHANGE_EVENT, directive[CHANGE_LISTENER]);
     directive[CHANGE_LISTENER] = null;
 };
 

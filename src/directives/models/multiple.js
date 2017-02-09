@@ -27,7 +27,7 @@ exports.init = function (directive, newVal) {
     var node = directive.node;
     var vm = directive.vm;
 
-    event.on(vm.el, CHANGE_EVENT, node, directive[CHANGE_LISTENER] = function (ev) {
+    event.on(vm.root.el, CHANGE_EVENT, node, directive[CHANGE_LISTENER] = function (ev) {
         changing = node;
         var children = selector.children(node);
         array.each(children, function (index, optionEl) {
@@ -60,7 +60,7 @@ exports.update = function (directive, newVal) {
 };
 
 exports.destroy = function (directive) {
-    event.un(directive.vm.el, CHANGE_EVENT, directive[CHANGE_LISTENER]);
+    event.un(directive.vm.root.el, CHANGE_EVENT, directive[CHANGE_LISTENER]);
     directive[CHANGE_LISTENER] = null;
 };
 
