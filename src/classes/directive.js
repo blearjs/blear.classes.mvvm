@@ -58,7 +58,7 @@ var Directive = Class.extend({
         var the = this;
         var definition = the.definition;
 
-        fun.noop(definition.init).apply(the, arguments);
+        fun.ensure(definition.init).apply(the, arguments);
         the.inited = true;
     },
 
@@ -75,7 +75,7 @@ var Directive = Class.extend({
         }
 
         responder.before();
-        fun.noop(definition.bind || definition.update).call(the, the.node, responder.get());
+        fun.ensure(definition.bind || definition.update).call(the, the.node, responder.get());
         responder.after();
         the.bound = true;
     },
@@ -91,7 +91,7 @@ var Directive = Class.extend({
         var the = this;
         var definition = the.definition;
 
-        fun.noop(definition.update).apply(the, arguments);
+        fun.ensure(definition.update).apply(the, arguments);
         the.updated = true;
     },
 
@@ -103,7 +103,7 @@ var Directive = Class.extend({
         var definition = the.definition;
 
         the.responder.destroy();
-        fun.noop(definition.destroy).apply(the, arguments);
+        fun.ensure(definition.destroy).apply(the, arguments);
         // 响应者
         the.responder
             // 指令定义
