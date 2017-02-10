@@ -123,7 +123,7 @@ var Responder = Terminal.extend({
         // 计算数组 filteredTodos = todos.filter(...)
         if (notSameOrigin && !setSameKey) {
             // 如果是计算属性的话，当做 set 来处理，重写 signal
-            if (newVal[configs.computedFlagName]) {
+            if (newVal && newVal[configs.computedFlagName]) {
                 signal = object.filter(signal, [
                     'newVal',
                     'oldVal',
