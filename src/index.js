@@ -19,7 +19,6 @@ var random = require('blear.utils.random');
 
 var anchor = require('./utils/anchor');
 var ViewModel = require('./classes/view-model');
-var Directive = require('./classes/directive');
 var configs = require('./configs');
 
 var defaults = {
@@ -35,7 +34,8 @@ var defaults = {
         deep: false
     }
 };
-var definitions = {};
+var STATIC_DIRECTIVES = {};
+var STATIC_METHODS = {};
 var MVVM = Events.extend({
     className: 'MVVM',
     constructor: function (options) {
@@ -50,9 +50,32 @@ var MVVM = Events.extend({
         the[_initVM]();
         the[_initWatch]();
     },
+
+    /**
+     * 监听数据
+     * @param exp
+     * @param callback
+     * @param options
+     * @returns {Function}
+     */
     watch: function (exp, callback, options) {
         return this[_watcher].watch(exp, callback, options);
     },
+
+    /**
+     * 添加实例方法
+     * @param name
+     * @param method
+     */
+    method: function (name, method) {
+        var the = this;
+        the.scope[name] = method;
+        return the;
+    },
+
+    /**
+     * 销毁实例
+     */
     destroy: function () {
         var the = this;
 
@@ -77,7 +100,7 @@ pro[_initScope] = function () {
     var the = this;
     var options = the[_options];
 
-    the.scope = object.assign(options.data, options.methods);
+    the.scope = object.assign(options.data, STATIC_METHODS, options.methods);
     the[_watcher] = new Watcher(the.scope);
 };
 
@@ -140,7 +163,7 @@ pro[_initVM] = function () {
     fragment.appendChild(rootEl);
     the[_vm] = new ViewModel(rootEl, the.scope);
     the[_vm].setInstanceDefinitions(the[_definitions]);
-    the[_vm].setStaticlDefinitions(definitions);
+    the[_vm].setStaticlDefinitions(STATIC_DIRECTIVES);
     the[_vm].run();
     rootEl[_mvvmID] = random.guid();
     modification.insert(rootEl, anchorNode, 3);
@@ -183,9 +206,24 @@ pro[_initWatch] = function () {
 // ======================================== static ========================================
 
 
-MVVM.directives = definitions;
+MVVM.directives = STATIC_DIRECTIVES;
+
+/**
+ * 添加静态指令
+ * @param name
+ * @param definition
+ */
 MVVM.directive = function (name, definition) {
-    definitions[name] = definition;
+    STATIC_DIRECTIVES[name] = definition;
+};
+
+/**
+ * 添加静态方法
+ * @param name
+ * @param method
+ */
+MVVM.method = function (name, method) {
+    STATIC_METHODS[name] = method;
 };
 
 

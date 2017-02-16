@@ -47,4 +47,40 @@ it('>methods', function (done) {
         .serial(done);
 });
 
+it('静态、实例方法', function (done) {
+    var el = utils.createDIV();
+    MVVM.method('onA', function () {
+
+    });
+    MVVM.method('onC', function () {
+
+    });
+    var onA = function () {
+
+    };
+    onA.xx = 3;
+    var mvvm = new MVVM({
+        el: el,
+        methods: {
+            onA: onA,
+            onB: function () {
+
+            }
+        }
+    });
+
+    plan
+        .wait(10)
+        .taskSync(function () {
+            expect(typeof mvvm.scope.onA).toBe('function');
+            expect(mvvm.scope.onA.xx).toBe(3);
+            expect(typeof mvvm.scope.onB).toBe('function');
+            expect(typeof mvvm.scope.onC).toBe('function');
+        })
+        .taskSync(function () {
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
+});
 
