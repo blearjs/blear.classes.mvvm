@@ -1,6 +1,6 @@
 {
   "name": "blear.classes.mvvm",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "前端 MVVM 模块，类 vue",
   "scripts": {
     "live": "browser-sync start --config bs-config.js",

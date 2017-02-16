@@ -230,3 +230,89 @@ it('table', function (done) {
         })
         .serial(done);
 });
+
+it('覆盖新数据 数组', function (done) {
+    var el = utils.createDIV();
+    el.innerHTML = '<a @for="item in user.list">{{item}}</a>';
+    var data = {
+        user: {
+            list: []
+        }
+    };
+    var mvvm = new MVVM({
+        el: el,
+        data: data
+    });
+
+    plan
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toBe('');
+            data.user = {list: [1]};
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toBe('<a>1</a>');
+        })
+        .taskSync(function () {
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
+});
+
+it('添加新属性', function (done) {
+    var el = utils.createDIV();
+    el.innerHTML = '{{user.age}}';
+    var data = {
+        user: {}
+    };
+    var mvvm = new MVVM({
+        el: el,
+        data: data
+    });
+
+    plan
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toBe('');
+            data.user = {age: 1};
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.innerHTML).toBe('1');
+        })
+        .taskSync(function () {
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
+});
+
+// it('method 不能放在 data 上', function (done) {
+//     var el1 = utils.createDIV();
+//     var el2 = utils.createDIV();
+//     var method1 = false;
+//     var data = {};
+//     var mvvm1 = new MVVM({
+//         el: el1,
+//         data: data,
+//         methods: {
+//             onMethod: function () {
+//                 method1 = true;
+//             }
+//         }
+//     });
+//
+//     plan
+//         .wait(10)
+//         .taskSync(function () {
+//            expect(data.onMethod).toBe(undefined);
+//         })
+//         .taskSync(function () {
+//             mvvm1.destroy();
+//             utils.removeDIV(el1);
+//             utils.removeDIV(el2);
+//         })
+//         .serial(done);
+// });

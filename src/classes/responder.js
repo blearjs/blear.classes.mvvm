@@ -113,7 +113,7 @@ var Responder = Terminal.extend({
         var isForDirective = directive.category === 'for';
 
         // for 变化的不是同一个数组（多维数组）
-        var notSameOrigin = isForDirective && newVal !== signal.parent;
+        var notSameOrigin = isForDirective && newVal !== signal.parent && signal.method !== 'set';
 
         // set 的是 for 指定的字段 abc.list = [1, 2, 3];
         var setSameKey = isForDirective && signal.method === 'set' && signal.key === directive.exp;
