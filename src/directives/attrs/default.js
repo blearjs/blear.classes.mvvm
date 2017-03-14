@@ -26,7 +26,10 @@ var booleanAttrs = array.reduce('checked selected readonly disabled multiple hid
     p[n] = 1;
     return p;
 }, {});
-
+var booleanAttrMap = {
+    readonly: 'readOnly',
+    contenteditable: 'contentEditable'
+};
 
 exports.update = function (directive, newVal) {
     var value = directive.get();
@@ -37,7 +40,8 @@ exports.update = function (directive, newVal) {
     if (directive.filters.prop) {
         node[name] = value;
     } else if (isBooleanAttr) {
-        node[name] = Boolean(value);
+        var key = booleanAttrMap[name.toLowerCase()] || name;
+        node[key] = Boolean(value);
     } else {
         attribute.attr(node, name, strFlow.to(value));
     }
