@@ -22,21 +22,31 @@ new MVVM({
     data: data,
     methods: {
         onConcat: function () {
+            var len = random.number(1, 10);
             data.list = data.list.concat([
-                rs(),
-                rs()
+                rs(len)
             ]);
         },
         onPush: function () {
-            data.list.push(rs(), rs());
+            var len = random.number(1, 10);
+            data.list.push(rs(len));
         },
         onUnshift: function () {
-            data.list.unshift(rs(), rs());
+            var len = random.number(1, 10);
+            data.list.unshift(rs(len));
         },
         onSort: function () {
             data.list.sort(function (a, b) {
                 return Math.random() - 0.5;
             });
+        },
+        onReset: function () {
+            var len = random.number(1, 10);
+            data.list = [
+                rs(len),
+                rs(len),
+                rs(len)
+            ];
         }
     }
 });

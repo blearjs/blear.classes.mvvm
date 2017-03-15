@@ -129,6 +129,25 @@ module.exports = {
             //     insertValue = newVal;
             // }
 
+            var remove = function (index, count) {
+                childScopeList.splice(index, count);
+                childNodeList.splice(index, count);
+
+                var removeVMList = childVMList.splice(index, count);
+
+                while (removeVMList.length) {
+                    removeVMList.pop().destroy(true);
+                }
+            };
+
+            var insert = function (index, value) {
+                array.each(value, function (_index, data) {
+                    buildChildMVVM(the, index + _index, data, {
+                        method: ARRAY_SPLICE
+                    });
+                });
+            };
+
             switch (signal.method) {
                 case ARRAY_SET:
                 case ARRAY_SORT:
@@ -187,32 +206,20 @@ module.exports = {
                                 moveList(childVMList, from1, to1, howMany);
                                 break;
 
+                            case 'remove':
+                                remove(diff.index, diff.howMany);
+                                break;
+
                             case 'insert':
-                                array.each(diff.values, function (index, data) {
-                                    buildChildMVVM(the, diff.index + index, data, {
-                                        method: ARRAY_SPLICE
-                                    });
-                                });
+                                insert(diff.index, diff.values);
                                 break;
                         }
                     });
                     break;
 
                 default:
-                    childScopeList.splice(spliceIndex, spliceCount);
-                    childNodeList.splice(spliceIndex, spliceCount);
-
-                    var removeVMList = childVMList.splice(spliceIndex, spliceCount);
-
-                    while (removeVMList.length) {
-                        removeVMList.pop().destroy(true);
-                    }
-
-                    array.each(insertValue, function (index, data) {
-                        buildChildMVVM(the, spliceIndex + index, data, {
-                            method: ARRAY_SPLICE
-                        });
-                    });
+                    remove(spliceIndex, spliceCount);
+                    insert(spliceIndex, insertValue);
                     break;
             }
 
