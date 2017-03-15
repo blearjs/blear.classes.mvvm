@@ -40,6 +40,7 @@ it('@for 1 维数组', function (done) {
             data.list.push(3);
         })
         .wait(1)
+        // [1, 2, 3]
         .taskSync(function () {
             expect(el.innerHTML).toEqual(
                 '<p>1</p>' +
@@ -50,6 +51,7 @@ it('@for 1 维数组', function (done) {
             data.list.pop();
         })
         .wait(1)
+        // [1, 2]
         .taskSync(function () {
             expect(el.innerHTML).toEqual(
                 '<p>1</p>' +
@@ -59,6 +61,7 @@ it('@for 1 维数组', function (done) {
             data.list.unshift(4);
         })
         .wait(1)
+        // [4, 1, 2]
         .taskSync(function () {
             expect(el.innerHTML).toEqual(
                 '<p>4</p>' +
@@ -797,6 +800,39 @@ it('@for 计算属性', function (done) {
                     {name: '4', complete: true}
                 ]
             );
+            utils.removeDIV(el);
+        })
+        .serial(done);
+});
+
+it('@for set', function (done) {
+    var el = utils.createDIV();
+    var data = {
+        list: [1]
+    };
+    el.innerHTML = '<p @for="item in list">{{item}}</p>';
+    var mvvm = new MVVM({
+        el: el,
+        data: data
+    });
+    var firstPEl;
+
+    plan
+        .wait(10)
+        .taskSync(function () {
+            firstPEl = el.firstElementChild;
+
+            data.list = data.list.concat([2]);
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.firstElementChild).toBe(firstPEl);
+            expect(firstPEl.innerHTML).toBe('1');
+            expect(firstPEl.nextElementSibling.innerHTML).toBe('2');
+        })
+        .wait(10)
+        .taskSync(function () {
+            mvvm.destroy();
             utils.removeDIV(el);
         })
         .serial(done);

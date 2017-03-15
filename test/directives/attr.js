@@ -30,7 +30,7 @@ it(':attr', function (done) {
         .wait(10)
         .taskSync(function () {
             expect(childEl.readOnly).toBe(true);
-            expect(childEl.readonly).toBe(false);
+            expect(childEl.readonly).toBe(undefined);
             expect(childEl.getAttribute('abc')).toBe('123');
             data.abc = 456;
         })
