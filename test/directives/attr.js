@@ -19,7 +19,7 @@ it(':attr', function (done) {
         def: 456,
         xyz: true
     };
-    el.innerHTML = '<p :abc="abc" :def.prop="def" :hidden="xyz"></p>';
+    el.innerHTML = '<p :abc="abc" :readonly="xyz" :def.prop="def" :hidden="xyz"></p>';
     var childEl = el.firstChild;
     var mvvm = new MVVM({
         el: el,
@@ -27,7 +27,10 @@ it(':attr', function (done) {
     });
 
     plan
+        .wait(10)
         .taskSync(function () {
+            expect(childEl.readOnly).toBe(true);
+            expect(childEl.readonly).toBe(false);
             expect(childEl.getAttribute('abc')).toBe('123');
             data.abc = 456;
         })
