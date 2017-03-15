@@ -134,7 +134,6 @@ module.exports = {
                 case ARRAY_SORT:
                     var diffs = arrayDiff(oldVal, newVal);
                     // @todo 性能优化
-                    console.log(diffs);
                     array.each(diffs, function (index, diff) {
                         switch (diff.type) {
                             case 'move':
