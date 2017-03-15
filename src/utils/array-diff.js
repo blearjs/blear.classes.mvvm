@@ -21,17 +21,17 @@ module.exports = arrayDiff;
 // arrayDiff.RemoveDiff = RemoveDiff;
 // arrayDiff.MoveDiff = MoveDiff;
 
-// function InsertDiff(index, values) {
-//     this.index = index;
-//     this.values = values;
-//     this.type = 'insert';
-// }
-//
-// function RemoveDiff(index, howMany) {
-//     this.index = index;
-//     this.howMany = howMany;
-//     this.type = 'remove'
-// }
+function InsertDiff(index, values) {
+    this.index = index;
+    this.values = values;
+    this.type = 'insert';
+}
+
+function RemoveDiff(index, howMany) {
+    this.index = index;
+    this.howMany = howMany;
+    this.type = 'remove'
+}
 
 function MoveDiff(from, to, howMany) {
     this.from = from;
@@ -61,10 +61,12 @@ function arrayDiff(before, after, equalFn) {
     var afterMarked = {};
     var howMany = 0;
     var move;
+    var index;
+    var afterIndex;
 
     for (var beforeIndex = 0; beforeIndex < beforeLength; beforeIndex++) {
         var beforeItem = before[beforeIndex];
-        for (var afterIndex = 0; afterIndex < afterLength; afterIndex++) {
+        for (afterIndex = 0; afterIndex < afterLength; afterIndex++) {
             if (afterMarked[afterIndex]) continue;
             if (!equalFn(beforeItem, after[afterIndex])) continue;
             var from = beforeIndex;
@@ -84,65 +86,65 @@ function arrayDiff(before, after, equalFn) {
         }
     }
 
-    // // Create a remove for all of the items in the before array that were
-    // // not marked as being matched in the after array as well
-    // var removes = [];
-    // for (beforeIndex = 0; beforeIndex < beforeLength;) {
-    //     if (beforeMarked[beforeIndex]) {
-    //         beforeIndex++;
-    //         continue;
-    //     }
-    //     var index = beforeIndex;
-    //     howMany = 0;
-    //     while (beforeIndex < beforeLength && !beforeMarked[beforeIndex++]) {
-    //         howMany++;
-    //     }
-    //     removes.push(new RemoveDiff(index, howMany));
-    // }
-    //
-    // // Create an insert for all of the items in the after array that were
-    // // not marked as being matched in the before array as well
-    // var inserts = [];
-    // for (var afterIndex = 0; afterIndex < afterLength;) {
-    //     if (afterMarked[afterIndex]) {
-    //         afterIndex++;
-    //         continue;
-    //     }
-    //     var index = afterIndex;
-    //     howMany = 0;
-    //     while (afterIndex < afterLength && !afterMarked[afterIndex++]) {
-    //         howMany++;
-    //     }
-    //     var values = after.slice(index, index + howMany);
-    //     inserts.push(new InsertDiff(index, values));
-    // }
-    //
-    // var insertsLength = inserts.length;
-    // var removesLength = removes.length;
+    // Create a remove for all of the items in the before array that were
+    // not marked as being matched in the after array as well
+    var removes = [];
+    for (beforeIndex = 0; beforeIndex < beforeLength;) {
+        if (beforeMarked[beforeIndex]) {
+            beforeIndex++;
+            continue;
+        }
+        index = beforeIndex;
+        howMany = 0;
+        while (beforeIndex < beforeLength && !beforeMarked[beforeIndex++]) {
+            howMany++;
+        }
+        removes.push(new RemoveDiff(index, howMany));
+    }
+
+    // Create an insert for all of the items in the after array that were
+    // not marked as being matched in the before array as well
+    var inserts = [];
+    for (afterIndex = 0; afterIndex < afterLength;) {
+        if (afterMarked[afterIndex]) {
+            afterIndex++;
+            continue;
+        }
+        index = afterIndex;
+        howMany = 0;
+        while (afterIndex < afterLength && !afterMarked[afterIndex++]) {
+            howMany++;
+        }
+        var values = after.slice(index, index + howMany);
+        inserts.push(new InsertDiff(index, values));
+    }
+
+    var insertsLength = inserts.length;
+    var removesLength = removes.length;
     var movesLength = moves.length;
     var i, j;
-    //
-    // // Offset subsequent removes and moves by removes
-    // var count = 0;
-    // for (i = 0; i < removesLength; i++) {
-    //     var remove = removes[i];
-    //     remove.index -= count;
-    //     count += remove.howMany;
-    //     for (j = 0; j < movesLength; j++) {
-    //         move = moves[j];
-    //         if (move.from >= remove.index) move.from -= remove.howMany;
-    //     }
-    // }
-    //
-    // // Offset moves by inserts
-    // for (i = insertsLength; i--;) {
-    //     var insert = inserts[i];
-    //     howMany = insert.values.length;
-    //     for (j = movesLength; j--;) {
-    //         move = moves[j];
-    //         if (move.to >= insert.index) move.to -= howMany;
-    //     }
-    // }
+
+    // Offset subsequent removes and moves by removes
+    var count = 0;
+    for (i = 0; i < removesLength; i++) {
+        var remove = removes[i];
+        remove.index -= count;
+        count += remove.howMany;
+        for (j = 0; j < movesLength; j++) {
+            move = moves[j];
+            if (move.from >= remove.index) move.from -= remove.howMany;
+        }
+    }
+
+    // Offset moves by inserts
+    for (i = insertsLength; i--;) {
+        var insert = inserts[i];
+        howMany = insert.values.length;
+        for (j = movesLength; j--;) {
+            move = moves[j];
+            if (move.to >= insert.index) move.to -= howMany;
+        }
+    }
 
     // Offset the to of moves by later moves
     for (i = movesLength; i-- > 1;) {
@@ -170,7 +172,6 @@ function arrayDiff(before, after, equalFn) {
         }
     }
 
-    return outputMoves;
-    // return removes.concat(outputMoves, inserts);
+    return removes.concat(outputMoves, inserts);
 }
 

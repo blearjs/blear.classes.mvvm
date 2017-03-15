@@ -24,6 +24,7 @@ var ARRAY_SHIFT = 'shift';
 var ARRAY_SORT = 'sort';
 var ARRAY_UNSHIFT = 'unshift';
 var ARRAY_SPLICE = 'splice';
+var ARRAY_SET = 'set';
 
 var buildChildMVVM = function (directive, index, data, signal) {
     // 以 parentScope 创建一个实例，这个实例属性是空的，但原型指向 parentScope
@@ -121,12 +122,12 @@ module.exports = {
             var spliceCount = signal.spliceCount;
             var insertValue = signal.insertValue;
 
-            // object set 操作
-            if (signal.method === 'set') {
-                spliceIndex = 0;
-                spliceCount = oldVal.length;
-                insertValue = newVal;
-            }
+            // // object set 操作
+            // if (signal.method === 'set') {
+            //     spliceIndex = 0;
+            //     spliceCount = oldVal.length;
+            //     insertValue = newVal;
+            // }
 
             switch (signal.method) {
                 case ARRAY_SORT:
