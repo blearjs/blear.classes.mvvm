@@ -130,9 +130,11 @@ module.exports = {
             // }
 
             switch (signal.method) {
+                case ARRAY_SET:
                 case ARRAY_SORT:
                     var diffs = arrayDiff(oldVal, newVal);
                     // @todo 性能优化
+                    console.log(diffs);
                     array.each(diffs, function (index, diff) {
                         switch (diff.type) {
                             case 'move':
@@ -184,6 +186,14 @@ module.exports = {
                                 moveList(childNodeList, from1, to1, howMany);
                                 moveList(childScopeList, from1, to1, howMany);
                                 moveList(childVMList, from1, to1, howMany);
+                                break;
+
+                            case 'insert':
+                                array.each(diff.values, function (index, data) {
+                                    buildChildMVVM(the, diff.index + index, data, {
+                                        method: ARRAY_SPLICE
+                                    });
+                                });
                                 break;
                         }
                     });
