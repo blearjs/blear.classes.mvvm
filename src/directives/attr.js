@@ -26,6 +26,7 @@ var groupRE = /\s*[,;]\s*/;
 var itemRE = /^(.*?)[:=](.*)$/;
 var arrRE = /^\[|]$/g;
 var strRE = /^["']/;
+var blankRE = /[\n\t]/g;
 var TRUE_STR = 'true';
 var STYLE_STR = 'style';
 var CLASS_STR = 'class';
@@ -52,6 +53,7 @@ module.exports = {
         var fun = name === CLASS_STR ? 'Boolean' : '';
         var map = {};
         var list = [];
+        value = value.replace(blankRE, '');
 
         // 先按 {} 分组
         var mapMatches = value.match(mapRE) || [];

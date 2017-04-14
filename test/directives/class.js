@@ -185,4 +185,34 @@ it(':class 组合表示', function (done) {
         .serial(done);
 });
 
+it(':class 换行', function (done) {
+    var el = utils.createDIV();
+
+    el.innerHTML = '<p :class="{a-b: aB,\n\n\n\t\t\t\tc-d-e: cDE}"></p>';
+    var pEl = el.firstElementChild;
+    var data = {
+        aB: false,
+        cDE: true
+    };
+    var mvvm = new MVVM({
+        el: el,
+        data: data
+    });
+
+    plan
+        .taskSync(function () {
+            expect(pEl.classList.has('c-d-e')).toBe(true);
+
+            data.cDE = false;
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(pEl.classList.has('c-d-e')).toBe(false);
+        })
+        .taskSync(function () {
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
+});
 
