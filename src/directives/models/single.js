@@ -20,12 +20,11 @@ var CHANGE_LISTENER = varible();
 
 exports.init = function (directive, newVal) {
     var node = directive.node;
-    var modelName = directive.modelName;
     var vm = directive.vm;
 
     event.on(vm.root.el, CHANGE_EVENT, node, directive[CHANGE_LISTENER] = function (ev) {
         changing = node;
-        directive.scope[modelName] = node.value;
+        directive.set(node.value);
     });
 };
 
