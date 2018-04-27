@@ -12,7 +12,7 @@ var number = require('blear.utils.number');
 // var time = require('blear.utils.time');
 
 // var configs = require('../../configs');
-var varible = require('../../utils/varible');
+var varible = require('../../utils/variable');
 
 var inputTimer;
 var inputing;

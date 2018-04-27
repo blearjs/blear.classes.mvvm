@@ -13,7 +13,7 @@ var array = require('blear.utils.array');
 // var time = require('blear.utils.time');
 
 var arrFlow = require('../../utils/array-flow');
-var varible = require('../../utils/varible');
+var varible = require('../../utils/variable');
 // var configs = require('../../configs');
 
 var getOptionVal = function (el) {

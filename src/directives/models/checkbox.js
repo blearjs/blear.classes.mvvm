@@ -10,7 +10,7 @@
 var typeis = require('blear.utils.typeis');
 var event = require('blear.core.event');
 
-var varible = require('../../utils/varible');
+var varible = require('../../utils/variable');
 // var configs = require('../../configs');
 var arrFlow = require('../../utils/array-flow');
 

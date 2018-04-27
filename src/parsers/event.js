@@ -7,7 +7,7 @@
 
 'use strict';
 
-var varible = require('../utils/varible');
+var varible = require('../utils/variable');
 var configs = require('../configs');
 
 var excuteRE = /\(.*?\)\s*?$/;

@@ -11,7 +11,7 @@ var event = require('blear.core.event');
 // var time = require('blear.utils.time');
 
 var strFlow = require('../../utils/string-flow');
-var varible = require('../../utils/varible');
+var varible = require('../../utils/variable');
 // var configs = require('../../configs');
 
 var changing;
