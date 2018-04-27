@@ -31,6 +31,12 @@ var Queue = Events.extend({
         var guid = responder.guid;
         var foundIndex = the[_map][guid];
 
+        // 如果是数组操作信号则及时处理不进入队列
+        if (signal.type === 'array') {
+            responder.speak(newVal, oldVal, signal);
+            return;
+        }
+
         // 同一个响应只运行添加一次
         // 防止同一份数据多次变化影响页面展示
         // 增加这个的原因是 computed 的字段易出现问题，尤其是数组
