@@ -837,3 +837,37 @@ it('@for set', function (done) {
         })
         .serial(done);
 });
+
+it('@for 连续 push', function (done) {
+    var el = utils.createDIV();
+    var data = {
+        list: []
+    };
+    el.innerHTML = '<p @for="item in list">{{item}}</p>';
+    var mvvm = new MVVM({
+        el: el,
+        data: data
+    });
+
+    plan
+        .wait(10)
+        .taskSync(function () {
+            var i = 0;
+            var j = 2;
+
+            for (; i < j; i++) {
+                data.list.push(i);
+            }
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(el.children.length).toBe(2);
+            expect(el.children[0].innerHTML).toBe('0');
+            expect(el.children[1].innerHTML).toBe('1');
+        })
+        .taskSync(function () {
+            mvvm.destroy();
+            utils.removeDIV(el);
+        })
+        .serial(done);
+});
