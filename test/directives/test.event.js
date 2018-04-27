@@ -14,6 +14,9 @@ var plan = require('blear.utils.plan');
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
+
+describe('event', function () {
+
 it('@click($el $ev)', function (done) {
     var el = utils.createDIV();
     var data = {
@@ -197,3 +200,6 @@ it('@click destroy', function (done) {
         })
         .serial(done);
 });
+
+});
+

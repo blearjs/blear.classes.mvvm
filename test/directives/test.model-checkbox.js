@@ -14,6 +14,9 @@ var plan = require('blear.utils.plan');
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
+
+describe('model checkbox', function () {
+
 it('@model checkbox single', function (done) {
     var el = utils.createDIV();
     var data = {
@@ -155,4 +158,5 @@ it('@model checkbox multiple', function (done) {
         .serial(done);
 });
 
+});
 

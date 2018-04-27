@@ -30,6 +30,9 @@ var matchClass = function (a, b) {
 };
 
 
+describe('class', function () {
+
+
 it(':class 对象表示', function (done) {
     var el = utils.createDIV();
     var data = {
@@ -214,5 +217,6 @@ it(':class 换行', function (done) {
             utils.removeDIV(el);
         })
         .serial(done);
+});
 });
 

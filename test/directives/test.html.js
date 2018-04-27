@@ -12,6 +12,9 @@ var plan = require('blear.utils.plan');
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
+
+describe('html', function () {
+
 it('@html', function (done) {
     var el = utils.createDIV();
     var data = {
@@ -38,4 +41,5 @@ it('@html', function (done) {
         .serial(done);
 });
 
+});
 

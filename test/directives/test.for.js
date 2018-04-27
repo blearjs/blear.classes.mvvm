@@ -14,6 +14,9 @@ var plan = require('blear.utils.plan');
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
+
+describe('for', function () {
+
 it('@for 1 维数组', function (done) {
     var el = utils.createDIV();
     var data = {
@@ -871,3 +874,6 @@ it('@for 连续 push', function (done) {
         })
         .serial(done);
 });
+
+});
+

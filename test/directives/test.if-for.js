@@ -12,6 +12,9 @@ var plan = require('blear.utils.plan');
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
+
+describe('if for', function () {
+
 it('@if 嵌套 @for，初始为 false', function (done) {
     var el = utils.createDIV();
     var data = {
@@ -80,4 +83,5 @@ it('@if 嵌套 @for，初始为 true', function (done) {
         .serial(done);
 });
 
+});
 

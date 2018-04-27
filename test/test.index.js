@@ -12,6 +12,6 @@ var MVVM = require('../src/index.js');
 
 describe('index', function () {
     it('exports', function () {
-
+        console.log('index');
     });
 });

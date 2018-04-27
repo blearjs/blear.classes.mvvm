@@ -14,6 +14,9 @@ var MVVM = require('../../src/index');
 var utils = require('../utils');
 
 
+describe('directive', function () {
+
+
 it('数据连续更新 DOM 变动只更新一次', function (done) {
     var el = utils.createDIV();
     var data = {text: ''};
@@ -51,5 +54,6 @@ it('数据连续更新 DOM 变动只更新一次', function (done) {
             mvvm.destroy();
         })
         .serial(done);
+});
 });
 

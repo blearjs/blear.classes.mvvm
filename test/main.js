@@ -12,7 +12,6 @@
     coolie.config({
         nodeModuleMainPath: 'src/index.js'
     });
-
     coolie.use(tests);
 
     coolie.callback(function () {

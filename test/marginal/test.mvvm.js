@@ -14,6 +14,9 @@ var selector = require('blear.core.selector');
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
+
+describe('mvvm', function () {
+
 it('mvvm 嵌套，父级先销毁', function (done) {
     var el = utils.createDIV();
 
@@ -316,3 +319,6 @@ it('添加新属性', function (done) {
 //         })
 //         .serial(done);
 // });
+
+});
+

@@ -12,6 +12,9 @@ var plan = require('blear.utils.plan');
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
+
+describe('directives', function () {
+
 it('>directive', function (done) {
     var el = utils.createDIV();
     el.innerHTML = '<button @my-directive1="a" @my-directive2="a"></button>';
@@ -62,4 +65,5 @@ it('>directive', function (done) {
         .serial(done);
 });
 
+});
 

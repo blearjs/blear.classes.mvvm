@@ -14,6 +14,9 @@ var plan = require('blear.utils.plan');
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
+
+describe('model radio', function () {
+
 it('@model radio single', function (done) {
     var el = utils.createDIV();
     var data = {
@@ -97,4 +100,5 @@ it('@model radio single', function (done) {
 });
 
 
+});
 

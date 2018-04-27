@@ -12,6 +12,9 @@ var plan = require('blear.utils.plan');
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
+
+describe('directive', function () {
+
 it('静态指令 abc', function (done) {
     var stack = [];
     var callback = function (v) {
@@ -99,4 +102,5 @@ it('静态指令 def', function (done) {
 });
 
 
+});
 

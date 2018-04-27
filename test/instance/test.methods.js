@@ -12,6 +12,9 @@ var plan = require('blear.utils.plan');
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
+
+describe('methods', function () {
+
 it('>methods', function (done) {
     var el = utils.createDIV();
     el.innerHTML = '<button @click="onClick"></button>';
@@ -82,5 +85,6 @@ it('静态、实例方法', function (done) {
             utils.removeDIV(el);
         })
         .serial(done);
+});
 });
 

@@ -14,6 +14,9 @@ var plan = require('blear.utils.plan');
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
+
+describe('model text', function () {
+
 it('@model input:text', function (done) {
     var el = utils.createDIV();
     var data = {
@@ -206,4 +209,5 @@ it('@model textarea', function (done) {
         .serial(done);
 });
 
+});
 

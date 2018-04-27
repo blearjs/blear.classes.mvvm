@@ -14,6 +14,9 @@ var plan = require('blear.utils.plan');
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
+
+describe('model select', function () {
+
 it('@model select single', function (done) {
     var el = utils.createDIV();
     var data = {
@@ -162,5 +165,6 @@ it('@model select multiple', function (done) {
             utils.removeDIV(el);
         })
         .serial(done);
+});
 });
 

@@ -12,6 +12,9 @@ var plan = require('blear.utils.plan');
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
+
+describe('computed', function () {
+
 it('>computed get', function (done) {
     var el = utils.createDIV();
     var data = {
@@ -157,3 +160,6 @@ it('>computed get object', function (done) {
         })
         .serial(done);
 });
+
+});
+

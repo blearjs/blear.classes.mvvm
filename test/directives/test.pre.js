@@ -10,6 +10,9 @@
 var MVVM = require('../../src/index');
 var utils = require('../utils');
 
+
+describe('pre', function () {
+
 it('@pre', function (done) {
     var el = utils.createDIV();
     var data = {
@@ -30,4 +33,5 @@ it('@pre', function (done) {
     done();
 });
 
+});
 
