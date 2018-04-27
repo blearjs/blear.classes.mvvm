@@ -12,8 +12,8 @@ var random = require('blear.utils.random');
 var fun = require('blear.utils.function');
 var typeis = require('blear.utils.typeis');
 var object = require('blear.utils.object');
-var string = require('blear.utils.string');
-var array = require('blear.utils.array');
+// var string = require('blear.utils.string');
+// var array = require('blear.utils.array');
 var access = require('blear.utils.access');
 
 var definitionMap = require('../directives/index');

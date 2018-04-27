@@ -8,9 +8,9 @@
 'use strict';
 
 var attribute = require('blear.core.attribute');
-var modification = require('blear.core.modification');
+// var modification = require('blear.core.modification');
 
-var anchor = require('../utils/anchor');
+// var anchor = require('../utils/anchor');
 
 module.exports = {
     init: function () {

@@ -7,8 +7,8 @@
 
 'use strict';
 
-var event = require('blear.core.event');
-var object = require('blear.utils.object');
+// var event = require('blear.core.event');
+// var object = require('blear.utils.object');
 
 var cateMap = {
     text: require('./models/text'),

@@ -8,7 +8,7 @@
 'use strict';
 
 var array = require('blear.utils.array');
-var random = require('blear.utils.random');
+// var random = require('blear.utils.random');
 
 var parse = require('./parse');
 

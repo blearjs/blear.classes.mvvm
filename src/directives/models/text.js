@@ -9,9 +9,9 @@
 
 var event = require('blear.core.event');
 var number = require('blear.utils.number');
-var time = require('blear.utils.time');
+// var time = require('blear.utils.time');
 
-var configs = require('../../configs');
+// var configs = require('../../configs');
 var varible = require('../../utils/varible');
 
 var inputTimer;

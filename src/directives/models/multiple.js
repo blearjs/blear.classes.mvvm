@@ -10,11 +10,11 @@
 var event = require('blear.core.event');
 var selector = require('blear.core.selector');
 var array = require('blear.utils.array');
-var time = require('blear.utils.time');
+// var time = require('blear.utils.time');
 
 var arrFlow = require('../../utils/array-flow');
 var varible = require('../../utils/varible');
-var configs = require('../../configs');
+// var configs = require('../../configs');
 
 var getOptionVal = function (el) {
     return el.value || el.textContent;

@@ -8,11 +8,11 @@
 'use strict';
 
 var event = require('blear.core.event');
-var time = require('blear.utils.time');
+// var time = require('blear.utils.time');
 
 var strFlow = require('../../utils/string-flow');
 var varible = require('../../utils/varible');
-var configs = require('../../configs');
+// var configs = require('../../configs');
 
 var changing;
 var CHANGE_EVENT = 'change';

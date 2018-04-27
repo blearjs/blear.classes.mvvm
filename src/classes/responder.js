@@ -9,9 +9,9 @@
 
 
 var random = require('blear.utils.random');
-var array = require('blear.utils.array');
-var access = require('blear.utils.access');
-var typeis = require('blear.utils.typeis');
+// var array = require('blear.utils.array');
+// var access = require('blear.utils.access');
+// var typeis = require('blear.utils.typeis');
 var object = require('blear.utils.object');
 var Terminal = require('blear.classes.watcher').Terminal;
 

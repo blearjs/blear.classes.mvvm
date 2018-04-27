@@ -13,7 +13,7 @@ var modification = require('blear.core.modification');
 var object = require('blear.utils.object');
 var array = require('blear.utils.array');
 var typeis = require('blear.utils.typeis');
-var access = require('blear.utils.access');
+// var access = require('blear.utils.access');
 var fun = require('blear.utils.function');
 var random = require('blear.utils.random');
 

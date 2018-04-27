@@ -11,7 +11,7 @@ var typeis = require('blear.utils.typeis');
 var event = require('blear.core.event');
 
 var varible = require('../../utils/varible');
-var configs = require('../../configs');
+// var configs = require('../../configs');
 var arrFlow = require('../../utils/array-flow');
 
 var CHANGE_EVENT = 'change';

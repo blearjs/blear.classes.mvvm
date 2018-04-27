@@ -7,7 +7,7 @@
 
 'use strict';
 
-var attribute = require('blear.core.attribute');
+// var attribute = require('blear.core.attribute');
 var modification = require('blear.core.modification');
 
 var anchor = require('../utils/anchor');

@@ -9,7 +9,7 @@
 
 var array = require('blear.utils.array');
 var string = require('blear.utils.string');
-var event = require('blear.core.event');
+// var event = require('blear.core.event');
 var modification = require('blear.core.modification');
 
 var textParser = require('../parsers/text');

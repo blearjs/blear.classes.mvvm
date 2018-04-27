@@ -9,9 +9,9 @@
 
 var object = require('blear.utils.object');
 var array = require('blear.utils.array');
-var attribute = require('blear.core.attribute');
+// var attribute = require('blear.core.attribute');
 
-var varible = require('../utils/varible');
+// var varible = require('../utils/varible');
 var map = {
     style: require('./attrs/style'),
     class: require('./attrs/class'),

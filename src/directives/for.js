@@ -10,8 +10,8 @@
 var modification = require('blear.core.modification');
 var array = require('blear.utils.array');
 var collection = require('blear.utils.collection');
-var typeis = require('blear.utils.typeis');
-var random = require('blear.utils.random');
+// var typeis = require('blear.utils.typeis');
+// var random = require('blear.utils.random');
 
 var anchor = require('../utils/anchor');
 var arrayDiff = require('../utils/array-diff');

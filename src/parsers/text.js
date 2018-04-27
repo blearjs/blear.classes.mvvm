@@ -8,8 +8,8 @@
 'use strict';
 
 var string = require('blear.utils.string');
-var array = require('blear.utils.array');
-var modification = require('blear.core.modification');
+// var array = require('blear.utils.array');
+// var modification = require('blear.core.modification');
 
 var configs = require('../configs');
 
