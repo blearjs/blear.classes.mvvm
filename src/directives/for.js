@@ -10,7 +10,7 @@
 var modification = require('blear.core.modification');
 var array = require('blear.utils.array');
 var collection = require('blear.utils.collection');
-// var typeis = require('blear.utils.typeis');
+var typeis = require('blear.utils.typeis');
 // var random = require('blear.utils.random');
 
 var anchor = require('../utils/anchor');
@@ -123,11 +123,14 @@ module.exports = {
             var insertValue = signal.insertValue;
 
             // // object set 操作
-            // if (signal.method === 'set') {
-            //     spliceIndex = 0;
-            //     spliceCount = oldVal.length;
-            //     insertValue = newVal;
-            // }
+            if (signal.method === 'set') {
+                var type = typeis(signal.newVal);
+
+                // set 值里不是一个对象或数组
+                if (type !== 'object' && type !== 'array') {
+                    return;
+                }
+            }
 
             var remove = function (index, count) {
                 childScopeList.splice(index, count);
