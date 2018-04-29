@@ -32,10 +32,6 @@ it('@model input:text', function (done) {
         data: data
     });
 
-    event.on(inputEl, 'input', function (ev) {
-        console.log('input event trigged');
-    });
-
     plan
         .taskSync(function () {
             expect(inputEl.value).toBe('x');
@@ -52,34 +48,34 @@ it('@model input:text', function (done) {
             expect(data.text).toBe('y');
             expect(inputEl.value).toBe('y');
             expect(pEl.innerHTML).toBe('y');
-            // data.text = 'z';
+            data.text = 'z';
         })
-        // .wait(10)
-        // .taskSync(function () {
-        //     expect(inputEl.value).toBe('z');
-        //     expect(pEl.innerHTML).toBe('z');
-        //
-        //     mvvm.destroy();
-        //     data.text = 'ooo';
-        // })
-        // .wait(10)
-        // .taskSync(function () {
-        //     expect(inputEl.value).toBe('z');
-        //     expect(pEl.innerHTML).toBe('z');
-        //
-        //     inputEl.value = 'ppp';
-        //     event.emit(inputEl, 'input');
-        // })
-        // .wait(10)
-        // .taskSync(function () {
-        //     event.emit(inputEl, 'change');
-        // })
-        // .wait(10)
-        // .taskSync(function () {
-        //     expect(pEl.innerHTML).toBe('z');
-        //     expect(data.text).toBe('ooo');
-        //     utils.removeDIV(el);
-        // })
+        .wait(10)
+        .taskSync(function () {
+            expect(inputEl.value).toBe('z');
+            expect(pEl.innerHTML).toBe('z');
+
+            mvvm.destroy();
+            data.text = 'ooo';
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(inputEl.value).toBe('z');
+            expect(pEl.innerHTML).toBe('z');
+
+            inputEl.value = 'ppp';
+            event.emit(inputEl, 'input');
+        })
+        .wait(10)
+        .taskSync(function () {
+            event.emit(inputEl, 'change');
+        })
+        .wait(10)
+        .taskSync(function () {
+            expect(pEl.innerHTML).toBe('z');
+            expect(data.text).toBe('ooo');
+            utils.removeDIV(el);
+        })
         .serial(done);
 });
 

@@ -72,6 +72,10 @@ it('静态、实例方法', function (done) {
         }
     });
 
+    mvvm.method('onD', function () {
+
+    });
+
     plan
         .wait(10)
         .taskSync(function () {
@@ -79,6 +83,7 @@ it('静态、实例方法', function (done) {
             expect(mvvm.scope.onA.xx).toBe(3);
             expect(typeof mvvm.scope.onB).toBe('function');
             expect(typeof mvvm.scope.onC).toBe('function');
+            expect(typeof mvvm.scope.onD).toBe('function');
         })
         .taskSync(function () {
             mvvm.destroy();
