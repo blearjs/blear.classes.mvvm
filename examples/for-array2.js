@@ -15,6 +15,7 @@ var data = window.data = {
 };
 
 var random = require('blear.utils.random');
+var event = require('blear.core.event');
 
 new MVVM({
     el: '#app',
@@ -33,3 +34,5 @@ new MVVM({
     }
 });
 
+
+window.event = event;

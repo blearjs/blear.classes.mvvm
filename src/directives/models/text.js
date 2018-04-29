@@ -29,17 +29,17 @@ exports.init = function (directive) {
     var el = vm.root.el;
     var compositionstart = false;
 
-    event.on(el, COMPOSITIONSTART_EVENT, node, directive[COMPOSITIONSTART_LISTENER] = function () {
+    event.on(node, COMPOSITIONSTART_EVENT, directive[COMPOSITIONSTART_LISTENER] = function () {
         /* istanbul ignore next */
         compositionstart = true;
     });
 
-    event.on(el, COMPOSITIONEND_EVENT, node, directive[COMPOSITIONEND_LISTENER] = function () {
+    event.on(node, COMPOSITIONEND_EVENT, directive[COMPOSITIONEND_LISTENER] = function () {
         /* istanbul ignore next */
         compositionstart = false;
     });
 
-    event.on(el, INPUT_EVENT, node, directive[INPUT_LISTENER] = function (ev) {
+    event.on(node, INPUT_EVENT, directive[INPUT_LISTENER] = function (ev) {
         inputing = node;
         clearTimeout(inputTimer);
         inputTimer = setTimeout(function () {
@@ -67,7 +67,7 @@ exports.init = function (directive) {
         }, 1);
     });
 
-    event.on(el, 'change', node, function () {
+    event.on(node, 'change', function () {
         inputing = null;
 
         if (directive.destroyed) {
@@ -99,7 +99,7 @@ exports.update = function (directive, newVal) {
 };
 
 exports.destroy = function (directive) {
-    var el = directive.vm.root.el;
+    var el = directive.node;
 
     clearTimeout(inputTimer);
     inputTimer = null;
