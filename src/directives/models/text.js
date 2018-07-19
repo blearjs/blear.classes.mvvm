@@ -28,6 +28,22 @@ exports.init = function (directive) {
     var node = directive.node;
     var el = vm.root.el;
     var compositionstart = false;
+    var setValue = function (value) {
+        if (directive.filters.trim) {
+            value = value.trim();
+        }
+
+        if (
+            directive.filters.number ||
+            directive.modelType === 'number'
+        ) {
+            if (value !== '') {
+                value = number.parseFloat(value);
+            }
+        }
+
+        directive.set(value);
+    };
 
     event.on(node, COMPOSITIONSTART_EVENT, directive[COMPOSITIONSTART_LISTENER] = function () {
         /* istanbul ignore next */
@@ -48,22 +64,7 @@ exports.init = function (directive) {
                 return;
             }
 
-            var setVal = node.value;
-
-            if (directive.filters.trim) {
-                setVal = setVal.trim();
-            }
-
-            if (
-                directive.filters.number ||
-                directive.modelType === 'number'
-            ) {
-                if (setVal !== '') {
-                    setVal = number.parseFloat(setVal);
-                }
-            }
-
-            directive.set(setVal);
+            setValue(node.value);
         }, 1);
     });
 
@@ -77,7 +78,7 @@ exports.init = function (directive) {
         var newVal = directive.get();
 
         if (newVal !== node.value) {
-            node.value = newVal;
+            setValue(node.value);
         }
     });
 };
