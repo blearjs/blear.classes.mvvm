@@ -28,7 +28,9 @@ exports.init = function (directive) {
     var node = directive.node;
     var el = vm.root.el;
     var compositionstart = false;
-    var setValue = function (value) {
+    var setValue = function () {
+        var value = node.value;
+
         if (directive.filters.trim) {
             value = value.trim();
         }
@@ -42,7 +44,7 @@ exports.init = function (directive) {
             }
         }
 
-        directive.set(value);
+        directive.set(node.value = value);
     };
 
     event.on(node, COMPOSITIONSTART_EVENT, directive[COMPOSITIONSTART_LISTENER] = function () {
@@ -64,7 +66,7 @@ exports.init = function (directive) {
                 return;
             }
 
-            setValue(node.value);
+            setValue();
         }, 1);
     });
 
@@ -78,7 +80,7 @@ exports.init = function (directive) {
         var newVal = directive.get();
 
         if (newVal !== node.value) {
-            setValue(node.value);
+            setValue();
         }
     });
 };
