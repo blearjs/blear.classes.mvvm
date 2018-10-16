@@ -56,6 +56,8 @@ module.exports = function (options) {
         var styleEl = modification.importStyle(cssText);
         vm.$once('hook:destroyed', function () {
             modification.remove(styleEl);
+            modification.insert(options.el, this.$el, 0);
+            modification.remove(this.$el);
         });
     };
 
