@@ -1,7 +1,7 @@
 {
   "name": "blear.classes.mvvm",
   "version": "1.0.12",
-  "description": "前端 MVVM 模块，基于 vue@^2.5.17",
+  "description": "前端 MVVM 模块，基于 vue@2.5.17",
   "scripts": {
     "live": "browser-sync start --config bs-config.js",
     "test": "node ./node_modules/.bin/karma start karma.conf.js --single-run",
@@ -45,7 +45,7 @@
     "blear.utils.function": "^1.0.5",
     "blear.utils.object": "^1.0.14",
     "blear.utils.scope-css": "^2.0.2",
-    "vue": "^2.5.17"
+    "vue": "2.5.17"
   },
   "peerDependencies": {},
   "devDependencies": {
