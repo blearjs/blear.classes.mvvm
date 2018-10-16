@@ -121,11 +121,7 @@ function scopeAllComponentsCSS(options) {
 
         var scopeId = 'data-mvvm-' + increaseId++;
         component._scopeId = scopeId;
-        component.style = scopeCSS({
-            cssText: component.style,
-            type: 1,
-            scopeSelector: '[' + scopeId + ']'
-        });
+        component.style = scopeCSS(component.style, '[' + scopeId + ']', 2);
         object.each(component.components, function (key, component) {
             process(component);
         });
