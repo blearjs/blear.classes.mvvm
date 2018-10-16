@@ -42,3 +42,10 @@ window.mv2 = new MVVM({
 
     }
 });
+
+window.mv3 = new MVVM({
+    el: '#demo3',
+    data: {
+        msg: 'Hello'
+    }
+});
