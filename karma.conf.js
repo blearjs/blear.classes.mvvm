@@ -69,17 +69,17 @@ module.exports = function (config) {
                 included: false
             },
             {
-                // 加载 src 下的原始文件，但不直接引入，使用模块加载器引入
+                // 加载 vue
+                pattern: './node_modules/vue/dist/**',
+                included: false
+            },
+            {
+                // 加载 test 下的单元测试文件，但不直接引入，使用模块加载器引入
                 pattern: './test/**/test.*.js',
                 included: false
             },
             {
-                // 加载 test 下的入口文件，但不直接引入，使用模块加载器引入
-                pattern: './test/utils.js',
-                included: false
-            },
-            {
-                // 加载 test 下的入口文件，但不直接引入，使用模块加载器引入
+                // 加载 test 下的入口文件，直接引入
                 pattern: './test/main.js',
                 included: true
             }
