@@ -1,230 +1,138 @@
 /**
- * blear.classes.mvvm
+ * MVVM
  * @author ydr.me
- * @create 2016年06月04日14:09:36
+ * @create 2018-10-16 11:29
+ * @update 2018-10-16 11:29
  */
+
 
 'use strict';
 
-var Events = require('blear.classes.events');
-var Watcher = require('blear.classes.watcher');
+var Vue = require('vue/dist/vue.common');
+var attribute = require('blear.core.attribute');
 var selector = require('blear.core.selector');
 var modification = require('blear.core.modification');
 var object = require('blear.utils.object');
 var array = require('blear.utils.array');
-var typeis = require('blear.utils.typeis');
-// var access = require('blear.utils.access');
 var fun = require('blear.utils.function');
-var random = require('blear.utils.random');
-
-var anchor = require('./utils/anchor');
-var ViewModel = require('./classes/view-model');
-var configs = require('./configs');
-
-var defaults = {
-    el: 'body',
-    data: {},
-    computed: {},
-    watch: {},
-    methods: {},
-    directives: {},
-    watchDefaults: {
-        // immediately
-        imme: false,
-        deep: false
-    }
-};
-var STATIC_DIRECTIVES = {};
-var STATIC_METHODS = {};
-var MVVM = Events.extend({
-    className: 'MVVM',
-    constructor: function (options) {
-        var the = this;
-
-        MVVM.parent(the);
-        the[_computedWatchList] = [];
-        the[_options] = object.assign({}, defaults, options);
-        the[_initScope]();
-        the[_initComputed]();
-        the[_initDirectives]();
-        the[_initVM]();
-        the[_initWatch]();
-    },
-
-    /**
-     * 监听数据
-     * @param exp
-     * @param callback
-     * @param options
-     * @returns {Function}
-     */
-    watch: function (exp, callback, options) {
-        return this[_watcher].watch(exp, callback, options);
-    },
-
-    /**
-     * 添加实例方法
-     * @param name
-     * @param method
-     */
-    method: function (name, method) {
-        var the = this;
-        the.scope[name] = method;
-        return the;
-    },
-
-    /**
-     * 销毁实例
-     */
-    destroy: function () {
-        var the = this;
-
-        the[_vm].destroy();
-        the[_watcher].destroy();
-    }
-});
-var _options = MVVM.sole();
-var _vm = MVVM.sole();
-var _watcher = MVVM.sole();
-var _initScope = MVVM.sole();
-var _initComputed = MVVM.sole();
-var _initDirectives = MVVM.sole();
-var _definitions = MVVM.sole();
-var _initVM = MVVM.sole();
-var _computedWatchList = MVVM.sole();
-var _initWatch = MVVM.sole();
-var _mvvmID = MVVM.sole();
-var pro = MVVM.prototype;
-
-pro[_initScope] = function () {
-    var the = this;
-    var options = the[_options];
-
-    the.scope = object.assign(options.data, STATIC_METHODS, options.methods);
-    the[_watcher] = new Watcher(the.scope);
-};
-
-pro[_initComputed] = function () {
-    var the = this;
-    var scope = the.scope;
-    var options = the[_options];
-
-    object.each(options.computed, function (key, val) {
-        var computedSet = function (newVal) {
-            return newVal;
-        };
-        var computedGet;
-
-        if (typeis.Function(val)) {
-            computedGet = fun.bind(val, scope);
-        } else {
-            computedGet = fun.bind(val.get, scope);
-            computedSet = fun.bind(val.set, scope);
-        }
-
-        var rewritedGet = function () {
-            var val = computedGet();
-
-            if (typeof val === 'object') {
-                object.define(val, configs.computedFlagName, {
-                    value: true
-                });
-            }
-
-            return val;
-        };
-
-        // 加入观察列表
-        the[_computedWatchList].push([scope, key, computedGet, computedSet]);
-        object.define(scope, key, {
-            enumerable: true,
-            get: rewritedGet,
-            set: computedSet
-        });
-    });
-    options.computed = null;
-};
-
-pro[_initDirectives] = function () {
-    var the = this;
-    var options = the[_options];
-
-    the[_definitions] = options.directives;
-};
-
-// 编译
-pro[_initVM] = function () {
-    var the = this;
-    var options = the[_options];
-    var rootEl = the.view = selector.query(options.el)[0];
-    var fragment = modification.create('#fragment');
-    var anchorNode = anchor(rootEl);
-
-    fragment.appendChild(rootEl);
-    the[_vm] = new ViewModel(rootEl, the.scope);
-    the[_vm].setInstanceDefinitions(the[_definitions]);
-    the[_vm].setStaticlDefinitions(STATIC_DIRECTIVES);
-    the[_vm].run();
-    rootEl[_mvvmID] = random.guid();
-    modification.insert(rootEl, anchorNode, 3);
-};
-
-pro[_initWatch] = function () {
-    var the = this;
-    var options = the[_options];
-
-    array.each(the[_computedWatchList], function (index, comb) {
-        var scope = comb[0];
-        var key = comb[1];
-        var computedGet = comb[2];
-        var computedSet = comb[3];
-
-        the.watch(computedGet, function (newVal) {
-            scope[key] = newVal
-        }, {
-            imme: true
-        });
-    });
-    the[_computedWatchList] = null;
-
-    object.each(options.watch, function (key, watcher) {
-        var options = null;
-
-        if (typeis.Object(watcher)) {
-            options = {
-                imme: watcher.imme,
-                deep: watcher.deep
-            };
-            watcher = watcher.handle;
-        }
-
-        the.watch(key, watcher, options);
-    });
-    options.watch = null;
-};
-
-// ======================================== static ========================================
+var scopeCSS = require('blear.utils.scope-css');
 
 
-MVVM.directives = STATIC_DIRECTIVES;
+var increaseId = 0;
 
 /**
- * 添加静态指令
- * @param name
- * @param definition
+ * MVVM（封装 VUE）
+ * @param options
+ * @param options.el
+ * @param [options.cssScope] {string} 作用域
+ * @param options.data
+ * @param options.components
+ * @param options.template
+ * @param options.method
+ * @param options.render
+ * @param options.computed
+ * @param options.props
+ * @param options.propsData
+ * @param options.watch
+ * @param options.directives
+ * @param options.filters
+ * @param options.name
+ * @param options.delimiters
+ * @param options.functional
+ * @param options.model
+ * @param options.inheritAttrs
+ * @param options.comments
+ * @returns {Vue}
  */
-MVVM.directive = function (name, definition) {
-    STATIC_DIRECTIVES[name] = definition;
+module.exports = function (options) {
+    // 实例化之前进行 css 作用域处理
+    var beforeCreate = fun.ensure(options.beforeCreate);
+    options.beforeCreate = function () {
+        var vm = this;
+        var options = vm.$options;
+        beforeCreate.call(vm);
+        scopeAllComponentsCSS(options);
+        var cssText = getAllComponentsCSS(options);
+        var styleEl = modification.importStyle(cssText);
+        vm.$once('hook:destroyed', function () {
+            modification.remove(styleEl);
+        });
+    };
+
+    var el = options.el = selector.query(options.el)[0];
+    var attrs = el.attributes;
+    var mounted = fun.ensure(options.mounted);
+    options.mounted = function () {
+        var vm = this;
+        // 恢复 DOM 元素属性
+        // @link https://cn.vuejs.org/v2/api/#el
+        // 提供的元素只能作为挂载点。不同于 Vue 1.x，所有的挂载元素会被 Vue 生成的 DOM 替换。
+        array.each(attrs, function (index, attr) {
+            attribute.attr(vm.$el, attr.name, attr.value);
+        });
+        mounted.call(vm);
+    };
+
+    // 实例化 VUE
+    return new Vue(options);
 };
 
 /**
- * 添加静态方法
- * @param name
- * @param method
+ * 获取所有子组件的样式
+ * @param options
+ * @returns {string}
  */
-MVVM.method = function (name, method) {
-    STATIC_METHODS[name] = method;
-};
+function getAllComponentsCSS(options) {
+    var scopeIdMap = {};
+    var cssText = '';
+    var process = function (component) {
+        var scopeId = component._scopeId;
+        if (scopeIdMap[scopeId]) {
+            return;
+        }
+
+        cssText += component.style;
+        scopeIdMap[scopeId] = true;
+
+        if (!component.components) {
+            return;
+        }
+
+        object.each(component.components, function (key, component) {
+            process(component);
+        });
+    };
+
+    process(options);
+    return cssText;
+}
 
 
-module.exports = MVVM;
+/**
+ * 处理组件 css 作用域
+ * @param options
+ */
+function scopeAllComponentsCSS(options) {
+    var process = function (component) {
+        // 之前已经有处理过作用域
+        if (component._scopeId) {
+            return;
+        }
+
+        var scopeId = 'data-mvvm-' + increaseId++;
+        component._scopeId = scopeId;
+        component.style = scopeCSS({
+            cssText: component.style,
+            type: 1,
+            scopeSelector: '[' + scopeId + ']'
+        });
+        object.each(component.components, function (key, component) {
+            process(component);
+        });
+    };
+
+    process(options);
+}
+
+
+
