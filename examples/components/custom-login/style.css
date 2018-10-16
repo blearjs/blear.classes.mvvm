@@ -1,0 +1,17 @@
+.form {
+  border: 1px solid #eee;
+  background: #f9f9f9;
+  padding: 25px;
+  border-radius: 4px; }
+  .form-title {
+    text-align: center;
+    letter-spacing: 4px;
+    font-size: 20px;
+    font-weight: 900;
+    color: #333; }
+  .form-ctrls {
+    list-style: none; }
+  .form-ctrl {
+    margin-bottom: 20px; }
+    .form-ctrl:last-child {
+      margin-bottom: 0; }

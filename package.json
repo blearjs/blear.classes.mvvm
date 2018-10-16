@@ -50,7 +50,7 @@
   "peerDependencies": {},
   "devDependencies": {
     "blear.utils.plan": "^2.0.0",
-    "coolie.js": "2.2.3",
+    "coolie.js": "^2.4.1",
     "jasmine-core": "2.8.0",
     "karma": "1.7.1",
     "karma-chrome-launcher": "2.2.0",

@@ -1,0 +1,18 @@
+
+button {
+  display: block;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 36px;
+  outline: 0;
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:active {
+    border-color: #a7a7a7;
+    background: #f6f6f6;
+  }
+}

@@ -1,0 +1,28 @@
+<form action="/login.action" method="post" enctype="multipart/form-data">
+    <fieldset class="form">
+        <legend class="form-title">登录</legend>
+
+        <ul class="form-ctrls">
+            <li class="form-ctrl">
+                <custom-input
+                        :placeholder="'用户名'"
+                        :value.sync="username"></custom-input>
+            </li>
+
+            <li class="form-ctrl">
+                <custom-input
+                        :placeholder="'密码'"
+                        :type="'password'"
+                        :value.sync="password"></custom-input>
+            </li>
+
+            <li class="form-ctrl form-ctrl_action">
+                <custom-button @click.native.prevent="onSubmit">点击登录</custom-button>
+            </li>
+
+            <li class="form-ctrl form-ctrl_desc">
+                您当前输入的用户名是：{{username}}，密码是：{{password}}
+            </li>
+        </ul>
+    </fieldset>
+</form>
