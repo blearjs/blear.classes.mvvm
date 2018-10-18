@@ -43,6 +43,7 @@ describe('blear.classes.mvvm', function () {
         var el = document.createElement('div');
         el.setAttribute('a', '1');
         el.setAttribute('b', '2');
+        el.setAttribute('v-cloak', '');
         document.body.appendChild(el);
         var mv = new MVVM({
             el: el,
@@ -51,6 +52,7 @@ describe('blear.classes.mvvm', function () {
         expect(mv.$el.tagName.toLowerCase()).toEqual('a');
         expect(mv.$el.getAttribute('a')).toEqual('1');
         expect(mv.$el.getAttribute('b')).toEqual('2');
+        expect(mv.$el.getAttribute('v-cloak')).toBe(null);
     });
 
     it('实例销毁', function () {
