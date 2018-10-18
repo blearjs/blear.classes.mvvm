@@ -70,6 +70,11 @@ module.exports = function (options) {
         // @link https://cn.vuejs.org/v2/api/#el
         // 提供的元素只能作为挂载点。不同于 Vue 1.x，所有的挂载元素会被 Vue 生成的 DOM 替换。
         array.each(attrs, function (index, attr) {
+            // ignore v-cloak
+            if (attr.name === 'v-cloak') {
+                return;
+            }
+
             attribute.attr(vm.$el, attr.name, attr.value);
         });
         mounted.call(vm);
