@@ -63,6 +63,7 @@ module.exports = function (options) {
 
     var el = options.el = selector.query(options.el)[0];
     var attrs = el.attributes;
+    var styles = el.style;
     var mounted = fun.ensure(options.mounted);
     options.mounted = function () {
         var vm = this;
@@ -80,6 +81,14 @@ module.exports = function (options) {
                 return;
             }
 
+            if (attr.name === 'style') {
+                array.each(el.style, function (index, name) {
+                    attribute.style(vm.$el, name, el.style[name]);
+                });
+                return;
+            }
+
+            el = null;
             attribute.attr(vm.$el, attr.name, attr.value);
         });
         mounted.call(vm);
