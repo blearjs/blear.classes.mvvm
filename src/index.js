@@ -75,6 +75,11 @@ module.exports = function (options) {
                 return;
             }
 
+            if (attr.name === 'class') {
+                attribute.addClass(vm.$el, attr.value);
+                return;
+            }
+
             attribute.attr(vm.$el, attr.name, attr.value);
         });
         mounted.call(vm);
