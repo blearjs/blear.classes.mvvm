@@ -44,8 +44,8 @@
     "blear.utils.array": "^1.0.12",
     "blear.utils.function": "^1.0.5",
     "blear.utils.object": "^1.0.14",
-    "blear.utils.scope-css": "^2.0.2",
-    "vue": "2.5.17"
+    "blear.utils.scope-css": "^2.0.5",
+    "vue": "^2.6.10"
   },
   "peerDependencies": {},
   "devDependencies": {
