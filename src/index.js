@@ -45,54 +45,56 @@ var increaseId = 0;
  * @returns {Vue}
  */
 module.exports = function (options) {
-    // 实例化之前进行 css 作用域处理
-    var beforeCreate = fun.ensure(options.beforeCreate);
-    options.beforeCreate = function () {
-        var vm = this;
-        var options = vm.$options;
-        beforeCreate.call(vm);
-        scopeAllComponentsCSS(options);
-        var cssText = getAllComponentsCSS(options);
-        var styleEl = modification.importStyle(cssText);
-        vm.$once('hook:destroyed', function () {
-            modification.remove(styleEl);
-            modification.insert(options.el, this.$el, 0);
-            modification.remove(this.$el);
-        });
-    };
-
     var el = options.el = selector.query(options.el)[0];
-    var attrs = el.attributes;
-    var styles = el.style;
-    var mounted = fun.ensure(options.mounted);
-    options.mounted = function () {
-        var vm = this;
-        // 恢复 DOM 元素属性
-        // @link https://cn.vuejs.org/v2/api/#el
-        // 提供的元素只能作为挂载点。不同于 Vue 1.x，所有的挂载元素会被 Vue 生成的 DOM 替换。
-        array.each(attrs, function (index, attr) {
-            // ignore v-cloak
-            if (attr.name === 'v-cloak') {
-                return;
-            }
 
-            if (attr.name === 'class') {
-                attribute.addClass(vm.$el, attr.value);
-                return;
-            }
+    if (el) {
+        var attrs = el.attributes;
+        var mounted = fun.ensure(options.mounted);
+        var beforeCreate = fun.ensure(options.beforeCreate);
 
-            if (attr.name === 'style') {
-                array.each(el.style, function (index, name) {
-                    attribute.style(vm.$el, name, el.style[name]);
-                });
-                return;
-            }
+        options.beforeCreate = function () {
+            var vm = this;
+            var options = vm.$options;
+            beforeCreate.call(vm);
+            scopeAllComponentsCSS(options);
+            var cssText = getAllComponentsCSS(options);
+            var styleEl = modification.importStyle(cssText);
+            vm.$once('hook:destroyed', function () {
+                modification.remove(styleEl);
+                modification.insert(options.el, this.$el, 0);
+                modification.remove(this.$el);
+            });
+        };
+        options.mounted = function () {
+            var vm = this;
 
-            el = null;
-            attribute.attr(vm.$el, attr.name, attr.value);
-        });
-        mounted.call(vm);
-    };
+            // 恢复 DOM 元素属性
+            // @link https://cn.vuejs.org/v2/api/#el
+            // 提供的元素只能作为挂载点。不同于 Vue 1.x，所有的挂载元素会被 Vue 生成的 DOM 替换。
+            array.each(attrs, function (index, attr) {
+                // ignore v-cloak
+                if (attr.name === 'v-cloak') {
+                    return;
+                }
+
+                if (attr.name === 'class') {
+                    attribute.addClass(vm.$el, attr.value);
+                    return;
+                }
+
+                if (attr.name === 'style') {
+                    array.each(el.style, function (index, name) {
+                        attribute.style(vm.$el, name, el.style[name]);
+                    });
+                    return;
+                }
+
+                el = null;
+                attribute.attr(vm.$el, attr.name, attr.value);
+            });
+            mounted.call(vm);
+        };
+    }
 
     // 实例化 VUE
     return new Vue(options);

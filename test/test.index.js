@@ -13,6 +13,18 @@ var attribute = require('blear.core.attribute');
 var selector = require('blear.core.selector');
 
 describe('blear.classes.mvvm', function () {
+    it('没有 `el` 参数', function (done) {
+        var data = {a: 1};
+        var mv = new MVVM({
+            data: data
+        });
+        mv.$watch('a', function (val) {
+            expect(val).toBe(2);
+            done();
+        });
+        data.a++;
+    });
+
     it('元素、样式独立', function () {
         var el1 = document.createElement('div');
         var el2 = document.createElement('div');
