@@ -51,7 +51,7 @@
   "devDependencies": {
     "coolie.js": "^2.4.1",
     "jasmine-core": "2.8.0",
-    "karma": "1.7.1",
+    "karma": "6.4.1",
     "karma-chrome-launcher": "2.2.0",
     "karma-coolie": "2.0.2",
     "karma-coverage": "1.1.1",
